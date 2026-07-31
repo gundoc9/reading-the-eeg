@@ -386,21 +386,9 @@ const { useState, useEffect, useRef, useCallback } = React;
 
    All waveforms are SYNTHESISED from published parameters, not patient data.
    ========================================================================== */
-const C = {
-    ground: "#14161A",
-    panel: "#1C2027",
-    panel2: "#22272F",
-    rule: "#2C323B",
-    ink: "#EFE9DC",
-    dim: "#98A0AA",
-    brass: "#C2913F",
-    trace: "#F2ECE0",
-    warn: "#D97066",
-    ok: "#6FA98A",
-};
-const SERIF = "'Newsreader', Georgia, 'Times New Roman', serif";
-const SANS = "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif";
-const MONO = "'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+/* The v1 palette and its three font constants used to live here. Nothing has
+   referenced them since the phone-first rebuild — measured at 0 uses — and a
+   second dead palette beside a live theme table is a trap for the next edit. */
 /* ===================== signal engine ======================================
    Verified byte-identical to engine.mjs, the reference that passes the
    55-gate suite (gates.mjs + gates2.mjs). Do not edit here — edit the
@@ -882,7 +870,7 @@ const KEY = [
     { p: 0.21, n: "Loss of consciousness", d: "Beta collapses into slow-delta. Frontal alpha begins to build.", a: { occAlpha: 1, front18: 1, emg: 0.03, slow: 22, delta: 10, theta: 3, froAlpha: 8, beta: 3 } },
     { p: 0.34, n: "Maintenance", d: "Surgical depth. Slow-delta with a continuous frontal alpha.", a: { occAlpha: 0, front18: 0.5, emg: 0.01, slow: 32, delta: 14, theta: 1, froAlpha: 17, beta: 1 } },
     { p: 0.52, n: "Incision", d: "Alpha drops out. Read it as nociception before you read it as lightening.", a: { occAlpha: 0, front18: 1, emg: 0.03, slow: 26, delta: 12, theta: 3, froAlpha: 3, beta: 4 } },
-    { p: 0.64, n: "Analgesia given", d: "Alpha returns without changing the hypnotic. That is the diagnostic test.", a: { occAlpha: 0, front18: 0.5, emg: 0.01, slow: 32, delta: 14, theta: 1, froAlpha: 17, beta: 1 } },
+    { p: 0.64, n: "Analgesia given", d: "Alpha returns without changing the hypnotic. That supports the nociceptive reading; it does not settle it.", a: { occAlpha: 0, front18: 0.5, emg: 0.01, slow: 32, delta: 14, theta: 1, froAlpha: 17, beta: 1 } },
     { p: 0.80, n: "Emergence", d: "Slow-delta recedes, theta appears, the alpha weakens.", a: { occAlpha: 1, front18: 1.5, emg: 0.04, slow: 15, delta: 8, theta: 7, froAlpha: 9, beta: 3 } },
     { p: 0.91, n: "Light", d: "Faster activity returns and EMG comes back with the muscles.", a: { occAlpha: 4, front18: 2.5, emg: 0.07, slow: 5, delta: 4, theta: 4, froAlpha: 3, beta: 7 } },
     { p: 1.00, n: "Awake", d: "Back to the baseline you recorded. Compare them.", a: { occAlpha: 10, front18: 2.6, emg: 0.09, slow: 0, delta: 0, theta: 0, froAlpha: 0, beta: 0 } },
@@ -931,13 +919,13 @@ const COMBOS = {
     },
     "propofol+ketamine": {
         label: "Propofol + ketamine",
-        sourced: false,
-        note: "Interpolated from the single-agent signatures: gamma bursts arrive on a propofol background and the alpha weakens. The combination itself is not separately characterised in the held sources.",
+        sourced: true,
+        note: "Ketamine does not fade the propofol alpha, it moves it. The peak shifts up out of the alpha band into beta, and the slow-delta falls with it. Watch the stripe climb the axis rather than dim. Described by Kim 2020, reporting Hayashi's finding; that primary paper is not held here.",
         comps: [
-            { f: 0.8, amp: 30, topo: "flat", mode: "sustained", band: "slow", shape: "slow" },
-            { f: 2.2, amp: 13, topo: "flat", mode: "sustained", band: "delta" },
+            { f: 0.8, amp: 24, topo: "flat", mode: "sustained", band: "slow", shape: "slow" },
+            { f: 2.2, amp: 9, topo: "flat", mode: "sustained", band: "delta" },
             { f: 5.2, amp: 6, topo: "front", mode: "sustained", band: "theta" },
-            { f: 10.2, amp: 9, topo: "front", mode: "sustained", band: "alpha" },
+            { f: 15.0, amp: 11, topo: "front", mode: "sustained", band: "beta" },
             { f: 28.0, amp: 8, topo: "front", mode: "burst", band: "gamma", period: 1.35, dur: 0.6 },
         ],
         noise: 2.2, ageAlpha: true, ageSlow: true,
@@ -1186,9 +1174,9 @@ const REFS = {
     },
     purdon13: {
         s: "Purdon 2013", ok: false,
-        full: "Purdon et al. Electroencephalogram signatures of loss and recovery of consciousness from propofol. PNAS 2013. Source of the anterior alpha shift.",
-        doi: "",
-        note: "Cited second-hand through Purdon 2015 and Guay 2025. Primary text not held — verify before teaching.",
+        full: "Purdon, Pierce, Mukamel, Prerau, Walsh, Wong, Salazar-Gomez, Harrell, Sampson, Cimenser, Ching, Kopell, Tavares-Stoeckel, Habeeb, Merhar, Brown. Electroencephalogram signatures of loss and recovery of consciousness from propofol. Proc Natl Acad Sci U S A 2013;110(12):E1142-51. Source of the anterior alpha shift.",
+        doi: "10.1073/pnas.1221180110",
+        note: "Citation now complete; the primary text is still not held, so everything taught from it here comes second-hand through Purdon 2015 and Guay 2025. Read it before teaching from it.",
     },
     markus: {
         s: "Markus 2026", ok: true,
@@ -1210,11 +1198,23 @@ const REFS = {
         full: "Bong, Yuan. The utility of electroencephalography in guiding general anaesthesia in children. Anesth Analg 2026;142:1155-1168. Narrative review with an age-stratified reliability table and SEF95 targets. Yuan declares a consulting fee and research grant from Masimo.",
         doi: "10.1213/ANE.0000000000007230",
     },
+    kim20: {
+        s: "Kim 2020", ok: true,
+        full: "Kim, Fricchione, Brown, Akeju. Role of electroencephalogram oscillations and the spectrogram in monitoring anaesthesia. BJA Education 2020;20(5):166-172. A review, not primary research. Carries a corrigendum at BJA Education 2020;20(7):249 correcting three figure cross-references in the text.",
+        doi: "10.1016/j.bjae.2020.01.004",
+        note: "Source of the propofol-plus-ketamine morphology used here, which it reports from Hayashi 2007. That primary paper is not held.",
+    },
+    sewell19: {
+        s: "Sewell 2019", ok: true,
+        full: "Sewell, Abbas, Kane. Introduction to interpretation of the EEG in intensive care. BJA Education 2019;19(3):74-82. A review, not primary research, written for critical care rather than theatre.",
+        doi: "10.1016/j.bjae.2018.11.002",
+        note: "Source for burst suppression having causes other than the anaesthetic. It also uses the critical-care glossary, in which suppression is under 10 microvolts; this programme teaches Guay's 5. Two thresholds are in circulation and the difference is not settled here.",
+    },
     paeds: {
         s: "Paediatric set", ok: false,
-        full: "Long 2022 (RCT, sevoflurane requirements under EEG guidance) and Kratzer & Davidson 2025 remain without full citation strings. Yoon, Markus, Derylo and Bong & Yuan are now held in full and cited separately.",
+        full: "Long, Lim, Balanza, Allen, Purdon, Bong. Sevoflurane requirements during electroencephalogram (EEG)-guided vs standard anesthesia care in children: a randomized controlled trial. J Clin Anesth 2022;81:110913, doi 10.1016/j.jclinane.2022.110913. And Kratzer, Davidson. Processed EEGs in children; are they useful? Pediatric Anesthesia 2025;35(5):336-337, doi 10.1111/pan.15089 — an editorial, not a study. Yoon, Markus, Derylo and Bong & Yuan are held in full and cited separately.",
         doi: "",
-        note: "Two of the original five still need completing before teaching.",
+        note: "Both citations are now complete. Neither primary text is held here, so nothing in this programme should rest on either without reading them first.",
     },
     convention: {
         s: "Display convention", ok: false,
@@ -1449,7 +1449,7 @@ const MODULES = [
         points: [
             { t: "Almost nobody gives one drug. The single-agent signatures are the vocabulary; real anaesthesia is sentences.", r: "esaic", cfg: { combo: "propofol+remifentanil" }, ctrl: "combo", look: "Cycle the four combinations and watch which features survive and which are swamped." },
             { t: "Propofol with remifentanil looks like propofol. The opioid has no signature of its own at clinical dose — it changes the propofol dose needed to produce this picture, not the picture.", r: "purdon15", cfg: { combo: "propofol+remifentanil" }, ctrl: "combo", look: "What the EEG cannot show you is often the thing that changed." },
-            { t: "Add ketamine to propofol and gamma arrives on the propofol background while the alpha weakens. This one is interpolated from the single-agent signatures, not measured.", r: "interp", cfg: { combo: "propofol+ketamine" }, ctrl: "combo", look: "Use it to teach the principle. Do not quote the morphology as a finding." },
+            { t: "Add ketamine to propofol and the alpha does not fade, it moves: the peak climbs out of the alpha band into beta, and the slow-delta falls with it.", r: "kim20", cfg: { combo: "propofol+ketamine" }, ctrl: "combo", look: "Watch the stripe climb the axis rather than dim. Put it beside the propofol alpha in Four agents, four signatures." },
             { t: "Propofol with dexmedetomidine puts a continuous alpha and an episodic sigma on the same record. Also interpolated.", r: "interp", cfg: { combo: "propofol+dexmedetomidine" }, ctrl: "combo", look: "Two stripes: one solid, one broken. Naming which is which is the skill." },
             { t: "Nitrous oxide does not suppress the EEG in the way the intravenous and volatile hypnotics do. Slow-delta falls and high-frequency activity rises. Direction is sourced; magnitude here is chosen.", r: "esaic", cfg: { combo: "sevoflurane+n2o" }, ctrl: "combo", look: "A record that looks lighter than the patient is. This is how indices get misled." },
             { t: "Akeju's ketamine cohort mostly had midazolam and fentanyl as well. Even the single-agent literature is often not single-agent.", r: "akeju16", cfg: { combo: "propofol+ketamine" }, ctrl: "combo", look: "Worth saying out loud whenever you teach the four signatures." },
@@ -1540,6 +1540,11 @@ const MODULES = [
 ];
 /* ===================== drill bank ========================================= */
 const AGENTS = ["propofol", "sevoflurane", "ketamine", "dexmedetomidine"];
+/* The bank only ever grows by APPENDING. prog.drill.box is keyed by index, so
+   inserting an item would silently shift every stored Leitner box for everyone
+   who has already used the app. A gate enforces it. v18 added six so that no
+   module sits below three — module 01 had one, and the module check asks
+   min(3, pool.length) questions, so finishing it gave a one-question check. */
 const DRILLS = [
     { mod: "08", cfg: { state: "propofol", ch: 0 }, q: "Which agent?", opts: AGENTS, a: "propofol",
         why: "Slow-delta with a single continuous frontal alpha stripe and nothing between them. No theta, no gamma, no spindles." },
@@ -1660,6 +1665,34 @@ const DRILLS = [
     { mod: "13", cfg: { state: "propofol", age: 1.5, bsr: 0.85 }, q: "Isoelectric EEG in a young child — what is the reported association?",
         opts: ["Awareness", "Hypotension between induction and incision", "Emergence delirium", "Nothing"], a: "Hypotension between induction and incision",
         why: "Odds ratio 3.5 to 4.6 between induction and incision, and 3.6 to 7.1 during maintenance, across a 15-centre study (Bong & Yuan 2026). Observational, and the between-site range of 9 to 88 per cent suggests practice rather than patients." },
+    { mod: "01", cfg: { state: "propofol", ch: 0, age: 82 }, q: "Standard propofol maintenance dose. What does this record tell you about the dose?",
+        opts: ["It is too high", "It is too low", "Nothing — dose is the input, this is the output", "It is correct for the weight"],
+        a: "Nothing — dose is the input, this is the output",
+        why: "Two patients on the same dose of the same drug can sit in different states, so the record reports where this brain has arrived, not whether the number on the pump was right. Reading it the other way round is how a normal dose gets defended in front of an abnormal record." },
+    { mod: "01", cfg: { state: "ketamine", ch: 0 }, q: "The blood pressure and heart rate are up. Does this record support \"too light\"?",
+        opts: ["Yes", "No — this is an anaesthetised record", "Cannot say from the EEG", "Only if the alpha returns"],
+        a: "No — this is an anaesthetised record",
+        why: "Gamma alternating with slow-delta is the ketamine signature at depth (Akeju 2016). Whatever is driving the haemodynamics, the record is not showing arousal — and that divergence is the argument for reading the organ rather than the variables downstream of it." },
+    { mod: "02", cfg: { state: "propofol", ch: 0, scale: 500 }, q: "At 500 µV full scale this trace looks small. Is the amplitude low?",
+        opts: ["Yes", "No — read the µV number", "Only for this age", "Cannot tell without the DSA"],
+        a: "No — read the µV number",
+        why: "Around 100 µV peak to peak, which is ordinary maintenance. The vertical scale is a setting; the readout is the fact. Since amplitude changes five- to twentyfold between states, a fixed gain misleads you in one direction or the other most of the time." },
+    { mod: "07", cfg: { state: "dexmedetomidine", ch: 0 }, q: "Frontal, around 13 Hz. Is \"frontal alpha\" the right name for it?",
+        opts: ["Yes, it is frontal and rhythmic", "No — it is spindle activity, and continuity is the difference", "Yes, if the patient is anaesthetised", "No — it is beta"],
+        a: "No — it is spindle activity, and continuity is the difference",
+        why: "Two things separate them and neither is topography. It sits at 13 Hz, above this programme's 8 to 12 Hz alpha band — under one per cent of the power here is inside it. And it arrives in discrete runs with gaps, where propofol's alpha is continuous. Solid stripe or broken stripe is the discriminator (Akeju 2014)." },
+    { mod: "11", cfg: { state: "propofol", ch: 0, bsr: 1 }, q: "No bursts at all, and the trace is small but not a straight line. What is this?",
+        opts: ["Burst suppression", "Attenuation", "Electrocerebral inactivity if it measures 2 µV or less", "A disconnected electrode"],
+        a: "Electrocerebral inactivity if it measures 2 µV or less",
+        why: "Burst suppression needs bursts. With none, and amplitude at or below 2 µV, the term is electrocerebral inactivity — a different statement, made from the µV readout rather than from how flat it looks. Gain alone can make either look like the other (Guay 2025)." },
+    { mod: "12", cfg: { state: "sevoflurane", ch: 0 }, q: "Your monitor's index reads 42. The spectrogram beside it shows slow-delta, theta and a frontal alpha. Which is the primary observation?",
+        opts: ["The index — it is validated", "The spectrum — the index is computed from it", "Whichever matches the vaporiser", "Neither on its own"],
+        a: "The spectrum — the index is computed from it",
+        why: "An index is an abstract of the spectrum you are already looking at. Where the two disagree, the record is the observation and the number is the summary of it — which is why this programme shows SEF95, which is defined and computable, and no proprietary index at all." },
+    { mod: "11", cfg: { state: "propofol", ch: 0, bsr: 0.5 }, q: "Burst suppression on a standard dose. What does this record tell you about the cause?",
+        opts: ["The dose is too high", "The patient is hypothermic", "Nothing — the record cannot name the cause", "There has been a seizure"],
+        a: "Nothing — the record cannot name the cause",
+        why: "The anaesthetic is the commonest cause and the first thing to check. But a discontinuous record looks the same whether it comes from drug, hypothermia, cerebral ischaemia or the period after a seizure (Sewell 2019). The EEG gives you the state, not the reason — which is why the next move is to look at the patient and not only at the vaporiser." },
 ];
 /* ===================== point-of-care reference ============================
    Deliberately written as REFERENCE, not instruction. It states criteria and
@@ -1758,7 +1791,7 @@ const LOOKUP = [
             ["Deep, over 0.8 MAC", "9.6 ± 3.2 Hz"],
             ["Ketamine or nitrous oxide", "SEF95 rises despite deeper hypnosis"],
         ],
-        foot: "Suggested targets for propofol or sevoflurane in children. No association with age was found for the measured values. Unreliable under three months.",
+        foot: "Suggested targets for propofol or sevoflurane in children, from a narrative review rather than a trial. No association with age was found for the measured values. Unreliable under three months.",
     },
 ];
 /* ---- further reading, distinct from the sources the teaching rests on ---- */
@@ -1796,7 +1829,7 @@ const REAL_RECORDS = {
 /* ===================== storage ============================================ */
 const KEY_STORE = "eeg-programme:v9";
 const KEY_OLD = "eeg-programme:v2";
-const EMPTY_PROG = { done: {}, last: null, seenIntro: false, drill: { seen: 0, right: 0, byMod: {}, box: {}, idx: 0 } };
+const EMPTY_PROG = { done: {}, last: null, seenIntro: false, theme: "dark", drill: { seen: 0, right: 0, byMod: {}, box: {}, idx: 0 } };
 async function loadProgress() {
     try {
         if (!window.storage)
@@ -1840,17 +1873,97 @@ function resolveCfg(cfg) {
    the instrument takes only the height it earns, and each screen carries one
    teaching point rather than a page of prose.
    ========================================================================= */
-const P = {
-    bg: "#0E1116",
-    surface: "#171B22",
-    surface2: "#212831",
-    line: "#2C3540",
-    ink: "#F2EEE6",
-    dim: "#99A2AE",
-    accent: "#F0A63C",
-    ok: "#5FBF8F",
-    warn: "#E0796E",
+/* ---- themes --------------------------------------------------------------
+   Two palettes for one instrument. The dark theme is the monitor in a darkened
+   theatre; the paper theme is a neurophysiology chart — ink on stock, with the
+   pen colours doing the work the amber does in the dark. The density spectral
+   array keeps a dark inset in BOTH, because jet needs a dark floor to read and
+   a spectrogram is a screen object, not a paper one.
+
+   P is MUTATED IN PLACE, never reassigned. Every inline style object is built
+   during render and the scope reads P inside its animation loop, so a theme
+   change reaches all of them on the next frame WITHOUT remounting anything.
+   That matters: remounting Scope would destroy the canvas 2d context and the
+   drawn spectrogram along with it.
+
+   Every colour literal in this file lives in the table below. A gate enforces
+   it, because a stray hex is a value that only one theme can be right about. */
+const THEMES = {
+    dark: {
+        label: "Instrument",
+        note: "Dark. Built for theatre light and for reading a trace at night.",
+        bg: "#0E1116",
+        surface: "#171B22",
+        surface2: "#212831",
+        line: "#2C3540",
+        ink: "#F2EEE6",
+        dim: "#99A2AE",
+        accent: "#F0A63C",
+        ok: "#5FBF8F",
+        warn: "#E0796E",
+        specBg: "#171B22",
+        gridA: 0.22,
+    },
+    paper: {
+        label: "Chart paper",
+        note: "Light. For a bright room, a shared screen or a projector.",
+        bg: "#E3E7E1",
+        surface: "#FBFBF8",
+        surface2: "#EDF0EA",
+        line: "#C3C9BF",
+        ink: "#14181D",
+        dim: "#57544C",
+        accent: "#0F5285",
+        ok: "#1E523E",
+        warn: "#822A24",
+        specBg: "#171B22",
+        gridA: 0.30,
+    },
 };
+const P = { name: "dark", ...THEMES.dark };
+function rgbOf(hex) {
+    const h = String(hex).replace("#", "");
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+}
+// A wash of a token at low alpha, so tinted surfaces follow the theme instead
+// of being frozen at whatever the dark palette happened to be.
+function tint(hex, a) {
+    const c = rgbOf(hex);
+    return `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+}
+function applyTheme(name) {
+    const t = THEMES[name] ? name : "dark";
+    for (const k in THEMES[t])
+        P[k] = THEMES[t][k];
+    P.name = t;
+    // the page behind #root, and the iOS status bar, are outside React
+    try {
+        if (typeof document !== "undefined" && document.body) {
+            document.body.style.background = P.bg;
+            const m = document.querySelector('meta[name="theme-color"]');
+            if (m)
+                m.setAttribute("content", P.bg);
+        }
+    }
+    catch ( /* no document in the test harness */_a) { /* no document in the test harness */ }
+    return t;
+}
+// Read the stored theme synchronously at load where we can, so a paper user
+// does not get a dark flash on every launch. window.storage is async by design;
+// localStorage is not, and the standalone build is backed by it.
+function bootTheme() {
+    try {
+        const raw = localStorage.getItem(KEY_STORE);
+        if (raw)
+            applyTheme(JSON.parse(raw).theme || "dark");
+    }
+    catch ( /* first run, private mode, or no localStorage */_a) { /* first run, private mode, or no localStorage */ }
+}
+bootTheme();
+// Bump both by hand when the content changes. Without them a colleague who hits
+// a problem cannot say which build, and there is no way to issue a correction.
+const VERSION = "v20";
+const BUILT = "29 July 2026";
 const AUTHOR = "Dr Ganesh Sivasankara";
 const CREDENTIALS = "MD · FRCA · FCARCSI · Consultant Anaesthetist";
 const UI = "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif";
@@ -1878,6 +1991,37 @@ const SCOPE = {
     t: 0,
     acc: 0,
 };
+// The spectrogram fills one column every 0.25 s and holds 150 of them, so an
+// unprimed scope spends 37.5 s as a small block in the corner of an empty panel
+// while the landing text says everything above is live and running. Generate
+// that history up front, through the SAME code path the live loop uses, so the
+// instrument opens full. Costs one synchronous pass at first mount and nothing
+// afterwards — SCOPE is a singleton and this runs once.
+function primeScope(cfg) {
+    var _a;
+    if (SCOPE.cols.length)
+        return;
+    const c = resolveCfg(cfg);
+    const ch = (_a = c.ch) !== null && _a !== void 0 ? _a : 0;
+    const step = Math.round(0.25 * FS);
+    const buf = SCOPE.buf, win = SCOPE.win;
+    // fill the ring buffer first, so no column is computed over silence
+    for (let i = 0; i < buf.length; i++) {
+        SCOPE.t += 1 / FS;
+        buf[SCOPE.wr] = SCOPE.eng(SCOPE.t, c, ch);
+        SCOPE.wr = (SCOPE.wr + 1) % buf.length;
+    }
+    for (let n = 0; n < 150 * step; n++) {
+        SCOPE.t += 1 / FS;
+        buf[SCOPE.wr] = SCOPE.eng(SCOPE.t, c, ch);
+        SCOPE.wr = (SCOPE.wr + 1) % buf.length;
+        if ((n + 1) % step === 0) {
+            win.set(buf.subarray(SCOPE.wr));
+            win.set(buf.subarray(0, SCOPE.wr), buf.length - SCOPE.wr);
+            SCOPE.cols.push(spectrum(win.subarray(win.length - WIN_N), NFFT, 3));
+        }
+    }
+}
 function Scope({ cfg, trace = 104, spec = 104, onPause }) {
     var _a;
     const traceRef = useRef(null);
@@ -1910,6 +2054,7 @@ function Scope({ cfg, trace = 104, spec = 104, onPause }) {
         let tctx = fit(tc), sctx = fit(sc);
         const onResize = () => { tctx = fit(tc); sctx = fit(sc); };
         window.addEventListener("resize", onResize);
+        primeScope(cfgRef.current);
         const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const minGap = reduced ? 1000 / 12 : 0;
         const step = (now) => {
@@ -1961,7 +2106,7 @@ function Scope({ cfg, trace = 104, spec = 104, onPause }) {
             const secs = (_c = c.window) !== null && _c !== void 0 ? _c : 5;
             const n = Math.min(win.length, Math.round(secs * FS));
             const uvPerPx = ((_d = c.scale) !== null && _d !== void 0 ? _d : 200) / H;
-            tctx.strokeStyle = "rgba(240,166,60,0.22)";
+            tctx.strokeStyle = tint(P.accent, P.gridA);
             tctx.lineWidth = 1;
             for (const uv of [-50, 50]) {
                 const y = H / 2 - uv / uvPerPx;
@@ -1990,6 +2135,7 @@ function Scope({ cfg, trace = 104, spec = 104, onPause }) {
             }
             tctx.stroke();
             const cols = SCOPE.cols;
+            const se = rgbOf(P.specBg);
             const map = c.map === "viridis" ? viridis : jet;
             const lo = -8, hi = 44;
             for (let x = 0; x < NCOL; x++) {
@@ -1997,9 +2143,9 @@ function Scope({ cfg, trace = 104, spec = 104, onPause }) {
                 for (let y = 0; y < NBIN; y++) {
                     const o = (y * NCOL + x) * 4;
                     if (!col) {
-                        img.data[o] = 23;
-                        img.data[o + 1] = 27;
-                        img.data[o + 2] = 34;
+                        img.data[o] = se[0];
+                        img.data[o + 1] = se[1];
+                        img.data[o + 2] = se[2];
                         img.data[o + 3] = 255;
                         continue;
                     }
@@ -2047,11 +2193,30 @@ function Scope({ cfg, trace = 104, spec = 104, onPause }) {
                 "Q",
                 Math.round(ro.sqi)),
             onPause ? (React.createElement("button", { onClick: onPause, "aria-label": cfg.paused ? "Resume the trace" : "Still the trace", style: {
-                    background: "none", border: "none", cursor: "pointer", padding: "0 4px", minHeight: 36,
+                    background: "none", border: "none", cursor: "pointer", padding: "0 8px", minHeight: 44,
                     fontFamily: MN, fontSize: 11, color: cfg.paused ? P.accent : P.dim,
                 } }, cfg.paused ? "resume" : "still")) : null)));
 }
 /* ---- primitives ---------------------------------------------------------- */
+/* App installs its theme setter here on render. The alternative was threading
+   two props through eight screens to reach one 40px button; this renderer has
+   no context API, and there is exactly one App, so a module-level pointer is
+   the honest version of the same thing. ThemeButton holds no state of its own —
+   the re-render that follows a change comes from App, and the button simply
+   reads P.name again on the way through. */
+let setThemeFromAnywhere = () => { };
+function ThemeButton() {
+    const keys = Object.keys(THEMES);
+    const next = keys[(keys.indexOf(P.name) + 1) % keys.length];
+    return (React.createElement("button", { onClick: () => setThemeFromAnywhere(next), title: `Switch to ${THEMES[next].label}`, "aria-label": `Switch to the ${THEMES[next].label} theme`, style: {
+            background: P.surface2, border: "none", borderRadius: 10, width: 44, height: 44,
+            cursor: "pointer", flexShrink: 0, padding: 0,
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+        } },
+        React.createElement("svg", { width: "20", height: "20", viewBox: "0 0 20 20", "aria-hidden": "true" },
+            React.createElement("circle", { cx: "10", cy: "10", r: "8.4", fill: P.surface, stroke: P.dim, strokeWidth: "1.4" }),
+            React.createElement("path", { d: "M10 1.6 A8.4 8.4 0 0 1 10 18.4 Z", fill: P.ink }))));
+}
 function Btn({ children, onClick, kind = "ghost", full, size = "md" }) {
     const base = {
         fontFamily: UI, fontWeight: 600, cursor: "pointer", borderRadius: 12,
@@ -2069,7 +2234,7 @@ function Btn({ children, onClick, kind = "ghost", full, size = "md" }) {
 function Pill({ children, active, onClick }) {
     return (React.createElement("button", { onClick: onClick, style: {
             fontFamily: UI, fontSize: 13, fontWeight: 500, cursor: "pointer",
-            borderRadius: 999, minHeight: 38, padding: "0 15px",
+            borderRadius: 999, minHeight: 44, padding: "0 15px",
             background: active ? P.accent : P.surface2, color: active ? P.bg : P.dim, border: "none",
         } }, children));
 }
@@ -2117,10 +2282,10 @@ function CaseScrubber({ cfg, setCfg }) {
                 Math.round(p * 100),
                 "%")),
         React.createElement("input", { type: "range", min: 0, max: 1, step: 0.005, value: p, "aria-label": `Position through the case, currently ${ph.n}`, onChange: (e) => setCfg({ ...cfg, casePos: parseFloat(e.target.value) }) }),
-        React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.dim, margin: "10px 0 12px" } }, ph.d),
+        React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.ink, margin: "10px 0 12px" } }, ph.d),
         React.createElement("div", { style: { display: "flex", gap: 6, overflowX: "auto", paddingBottom: 4, WebkitOverflowScrolling: "touch" } }, CASE_KEYS.map((k) => (React.createElement("button", { key: k.n, onClick: () => setCfg({ ...cfg, casePos: k.p }), style: {
                 fontFamily: UI, fontSize: 12.5, whiteSpace: "nowrap", cursor: "pointer",
-                borderRadius: 999, minHeight: 36, padding: "0 13px", border: "none",
+                borderRadius: 999, minHeight: 44, padding: "0 14px", border: "none",
                 background: Math.abs(p - k.p) < 0.02 ? P.accent : P.surface2,
                 color: Math.abs(p - k.p) < 0.02 ? P.bg : P.dim,
             } }, k.n))))));
@@ -2133,7 +2298,7 @@ function ComboControls({ cfg, setCfg }) {
         React.createElement("div", { style: { background: P.surface2, borderRadius: 12, padding: "12px 14px" } },
             React.createElement("p", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
                     color: c.sourced ? P.ok : P.warn, margin: "0 0 5px" } }, c.sourced ? "Sourced" : "Teaching interpolation"),
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.dim, margin: 0 } }, c.note))));
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.ink, margin: 0 } }, c.note))));
 }
 function BandControls({ cfg, setCfg }) {
     const cur = cfg.band || "alpha";
@@ -2150,7 +2315,7 @@ function BandControls({ cfg, setCfg }) {
                 " Hz \u00B7 ",
                 Math.round(1000 / b.f),
                 " ms a cycle"),
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.dim, margin: 0 } }, b.note))));
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.ink, margin: 0 } }, b.note))));
 }
 function ElementControls({ cfg, setCfg }) {
     const kind = (cfg.transient && cfg.transient.kind) || "kcomplex";
@@ -2167,7 +2332,7 @@ function ElementControls({ cfg, setCfg }) {
                 Math.round(spec.dur * 1000),
                 " ms",
                 spec.sourced ? "" : " · criterion not in a held source"),
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.dim, margin: 0 } }, spec.note)),
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.ink, margin: 0 } }, spec.note)),
         React.createElement("div", { style: { display: "flex", gap: 7, flexWrap: "wrap" } },
             React.createElement(Pill, { active: (cfg.polarity || "neg-up") === "neg-up", onClick: () => setCfg({ ...cfg, polarity: "neg-up" }) }, "Negative up"),
             React.createElement(Pill, { active: cfg.polarity === "pos-up", onClick: () => setCfg({ ...cfg, polarity: "pos-up" }) }, "Positive up"),
@@ -2228,11 +2393,15 @@ function scoreDrill(prog, idx, right, mod) {
 /* ---- screens ------------------------------------------------------------- */
 function Landing({ onStart, onSkip }) {
     const mins = MODULES.reduce((a, m) => a + m.mins, 0);
-    const fact = { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.dim, margin: "0 0 9px", paddingLeft: 15, position: "relative" };
+    // These four are the first prose anyone reads, and one of them is the promise
+    // that nothing is downloaded. Full strength, like every other paragraph.
+    const fact = { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.ink, margin: "0 0 9px", paddingLeft: 15, position: "relative" };
     const dot = { position: "absolute", left: 0, top: 8, width: 5, height: 5, borderRadius: 3, background: P.accent };
     return (React.createElement("div", null,
         React.createElement(Scope, { cfg: { state: "propofol", ch: 0, age: 40, bsr: 0, window: 5, scale: 220, map: "jet", art: {} }, trace: 112, spec: 112 }),
-        React.createElement("p", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: P.accent, margin: "22px 0 8px" } }, "A teaching instrument"),
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, margin: "18px 0 8px" } },
+            React.createElement("p", { style: { flex: 1, minWidth: 0, fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: P.accent, margin: 0 } }, "A teaching instrument"),
+            React.createElement(ThemeButton, null)),
         React.createElement("h1", { style: { fontFamily: UI, fontSize: 30, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, margin: "0 0 12px" } }, "Reading the EEG"),
         React.createElement("p", { style: { fontFamily: UI, fontSize: 17, lineHeight: 1.45, color: P.ink, margin: "0 0 22px" } }, "Fourteen modules on the raw EEG and the density spectral array, for anaesthetists learning to read the brain rather than the number. Everything above is live and running now."),
         React.createElement("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", padding: "0 0 20px", marginBottom: 20, borderBottom: `1px solid ${P.line}` } },
@@ -2269,9 +2438,10 @@ function Home({ prog, onOpen, onSession }) {
     return (React.createElement("div", null,
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14, marginBottom: 20 } },
             React.createElement(Ring, { done: done, total: MODULES.length }),
-            React.createElement("div", { style: { minWidth: 0 } },
+            React.createElement("div", { style: { minWidth: 0, flex: 1 } },
                 React.createElement("h1", { style: { fontFamily: UI, fontSize: 21, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" } }, "Reading the EEG"),
-                React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, color: P.dim, margin: "3px 0 0" } }, done ? `${done} of ${MODULES.length} done · ${mins} min left` : `${MODULES.length} modules · ${mins} min`))),
+                React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, color: P.dim, margin: "3px 0 0" } }, done ? `${done} of ${MODULES.length} done · ${mins} min left` : `${MODULES.length} modules · ${mins} min`)),
+            React.createElement(ThemeButton, null)),
         React.createElement("button", { onClick: () => onOpen(MODULES.indexOf(next), resume ? resume.pi : 0), style: {
                 width: "100%", textAlign: "left", cursor: "pointer", border: "none",
                 background: P.surface, borderRadius: 16, padding: "16px 17px", marginBottom: 22,
@@ -2290,9 +2460,9 @@ function Home({ prog, onOpen, onSession }) {
             React.createElement("p", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: 0 } }, "All modules"),
             React.createElement("button", { onClick: () => onOpen(5, 0), style: {
                     background: "none", border: "none", cursor: "pointer", padding: "6px 0",
-                    fontFamily: UI, fontSize: 13, fontWeight: 600, color: P.accent, minHeight: 36,
+                    fontFamily: UI, fontSize: 13, fontWeight: 600, color: P.accent, minHeight: 44,
                 } }, "Skip the foundations \u203A")),
-        React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.dim, margin: "0 0 12px" } }, "Modules 01 to 05 are foundations \u2014 why to look, the two displays, the bands, morphology and artefacts. If you already read raw EEG, start at Awake, and asleep."),
+        React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: "0 0 12px" } }, "Modules 01 to 05 are foundations \u2014 why to look, the two displays, the bands, morphology and artefacts. If you already read raw EEG, start at Awake, and asleep."),
         React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, MODULES.map((m, i) => {
             const isDone = !!prog.done[m.id];
             return (React.createElement("button", { key: m.id, onClick: () => onOpen(i), style: {
@@ -2320,9 +2490,9 @@ function ModuleScreen({ mi, pi, setPi, cfg, setCfg, onBack, onDone, narrow }) {
     const last = pi === mod.points.length - 1;
     const ref = REFS[pt.r];
     return (React.createElement("div", null,
-        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 14 } },
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 14 } },
             React.createElement("button", { onClick: onBack, "aria-label": "Back to all modules", style: {
-                    background: P.surface2, border: "none", borderRadius: 10, width: 40, height: 40,
+                    background: P.surface2, border: "none", borderRadius: 10, width: 44, height: 44,
                     color: P.ink, fontSize: 19, cursor: "pointer", flexShrink: 0,
                 } }, "\u2039"),
             React.createElement("span", { style: { flex: 1, minWidth: 0 } },
@@ -2334,8 +2504,9 @@ function ModuleScreen({ mi, pi, setPi, cfg, setCfg, onBack, onDone, narrow }) {
                     pi + 1,
                     " of ",
                     mod.points.length)),
+            React.createElement(ThemeButton, null),
             React.createElement("button", { onClick: () => setNotes(!notes), "aria-label": "Teaching notes", style: {
-                    background: notes ? P.accent : P.surface2, border: "none", borderRadius: 10, minWidth: 40, height: 40,
+                    background: notes ? P.accent : P.surface2, border: "none", borderRadius: 10, minWidth: 44, height: 44,
                     color: notes ? P.bg : P.dim, fontFamily: UI, fontSize: 12.5, fontWeight: 700, cursor: "pointer", flexShrink: 0,
                 } }, "T")),
         notes ? (React.createElement("div", { style: { background: P.surface, borderRadius: 12, padding: "13px 15px", marginBottom: 14, borderLeft: `3px solid ${P.accent}` } },
@@ -2384,9 +2555,10 @@ function DrillScreen({ prog, persist, cfg, setCfg, narrow, only, onDone }) {
     };
     const pct = prog.drill.seen ? Math.round((prog.drill.right / prog.drill.seen) * 100) : null;
     return (React.createElement("div", null,
-        React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 } },
-            React.createElement("h1", { style: { fontFamily: UI, fontSize: 21, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" } }, only ? "Module check" : "Drill"),
-            React.createElement("span", { style: { fontFamily: MN, fontSize: 12, color: P.dim } }, pct !== null ? `${prog.drill.right}/${prog.drill.seen} · ${pct}%` : "no attempts")),
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 14 } },
+            React.createElement("h1", { style: { flex: 1, minWidth: 0, fontFamily: UI, fontSize: 21, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" } }, only ? "Module check" : "Drill"),
+            React.createElement("span", { style: { fontFamily: MN, fontSize: 12, color: P.dim, flexShrink: 0 } }, pct !== null ? `${prog.drill.right}/${prog.drill.seen} · ${pct}%` : "no attempts"),
+            React.createElement(ThemeButton, null)),
         React.createElement(Scope, { cfg: cfg, trace: narrow ? 96 : 132, spec: narrow ? 96 : 132 }),
         React.createElement("p", { style: { fontFamily: MN, fontSize: 11, color: P.dim, margin: "14px 0 8px" } }, only ? `Question ${asked + (picked ? 0 : 1)} · module ${d.mod}` : `Module ${d.mod} · box ${(prog.drill.box || {})[DRILLS.indexOf(d)] || 1} of 3`),
         React.createElement("p", { style: { fontFamily: UI, fontSize: narrow ? 18.5 : 21, fontWeight: 600, lineHeight: 1.35, margin: "0 0 16px", letterSpacing: "-0.01em" } }, d.q),
@@ -2397,7 +2569,7 @@ function DrillScreen({ prog, persist, cfg, setCfg, narrow, only, onDone }) {
                     width: "100%", textAlign: "left", cursor: picked ? "default" : "pointer",
                     minHeight: 52, padding: "13px 16px", borderRadius: 12, fontFamily: UI,
                     fontSize: 15.5, fontWeight: 500, lineHeight: 1.35,
-                    background: isA ? "rgba(95,191,143,0.14)" : isW ? "rgba(224,121,110,0.14)" : P.surface,
+                    background: isA ? tint(P.ok, 0.14) : isW ? tint(P.warn, 0.14) : P.surface,
                     color: isA ? P.ok : isW ? P.warn : P.ink,
                     border: `1px solid ${isA ? P.ok : isW ? P.warn : "transparent"}`,
                 } }, o));
@@ -2412,7 +2584,9 @@ function BenchScreen({ cfg, setCfg, narrow }) {
     var _a;
     const section = { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "22px 0 10px" };
     return (React.createElement("div", null,
-        React.createElement("h1", { style: { fontFamily: UI, fontSize: 21, fontWeight: 700, margin: "0 0 14px", letterSpacing: "-0.02em" } }, "Bench"),
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 14 } },
+            React.createElement("h1", { style: { flex: 1, fontFamily: UI, fontSize: 21, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" } }, "Bench"),
+            React.createElement(ThemeButton, null)),
         React.createElement(Scope, { cfg: cfg, trace: narrow ? 104 : 140, spec: narrow ? 104 : 140 }),
         React.createElement("p", { style: section }, "State or agent"),
         React.createElement("div", { style: { display: "flex", gap: 7, flexWrap: "wrap" } }, Object.keys(STATES).filter((k) => k !== "quiet").map((s) => (React.createElement(Pill, { key: s, active: cfg.state === s && !cfg.combo && cfg.casePos == null, onClick: () => setCfg({ ...cfg, state: s, combo: null, casePos: null }) }, STATES[s].label)))),
@@ -2436,13 +2610,15 @@ function BenchScreen({ cfg, setCfg, narrow }) {
             React.createElement(Pill, { active: cfg.ch === 1, onClick: () => setCfg({ ...cfg, ch: 1 }) }, "Occipital"),
             React.createElement(Pill, { active: cfg.map === "jet", onClick: () => setCfg({ ...cfg, map: "jet" }) }, "Jet"),
             React.createElement(Pill, { active: cfg.map === "viridis", onClick: () => setCfg({ ...cfg, map: "viridis" }) }, "Viridis")),
-        React.createElement("p", { style: { fontFamily: UI, fontSize: 14, lineHeight: 1.55, color: P.dim, marginTop: 18 } }, "Jet is the map used in the source papers and on most clinical monitors, so it is the default. Viridis is perceptually uniform. Learn on jet, because that is what theatre shows you.")));
+        React.createElement("p", { style: { fontFamily: UI, fontSize: 14, lineHeight: 1.55, color: P.ink, marginTop: 18 } }, "Jet is the map used in the source papers and on most clinical monitors, so it is the default. Viridis is perceptually uniform. Learn on jet, because that is what theatre shows you.")));
 }
 function RefScreen() {
     const [open, setOpen] = useState(LOOKUP[0].id);
     return (React.createElement("div", null,
-        React.createElement("h1", { style: { fontFamily: UI, fontSize: 21, fontWeight: 700, margin: "0 0 6px", letterSpacing: "-0.02em" } }, "Reference"),
-        React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.dim, margin: "0 0 16px" } }, "Criteria and what a finding is consistent with. It does not tell you what to do \u2014 that judgement is yours and your department's."),
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 6 } },
+            React.createElement("h1", { style: { flex: 1, fontFamily: UI, fontSize: 21, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" } }, "Reference"),
+            React.createElement(ThemeButton, null)),
+        React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: "0 0 16px" } }, "Criteria and what a finding is consistent with. It does not tell you what to do \u2014 that judgement is yours and your department's."),
         LOOKUP.map((card) => {
             const isOpen = open === card.id;
             const ref = REFS[card.r];
@@ -2456,9 +2632,9 @@ function RefScreen() {
                     React.createElement("span", { style: { color: P.accent, fontSize: 15, transform: isOpen ? "rotate(90deg)" : "none", display: "inline-block" } }, "\u203A")),
                 isOpen ? (React.createElement("div", { style: { padding: "0 16px 14px" } },
                     card.rows.map((row) => (React.createElement("div", { key: row[0], style: { display: "flex", gap: 12, alignItems: "flex-start", padding: "7px 0", borderTop: `1px solid ${P.line}` } },
-                        React.createElement("span", { style: { fontFamily: UI, fontSize: 14.5, fontWeight: 600, color: P.ink, flex: "0 0 42%", lineHeight: 1.35 } }, row[0]),
-                        React.createElement("span", { style: { fontFamily: UI, fontSize: 14.5, color: P.dim, flex: 1, lineHeight: 1.35 } }, row[1])))),
-                    card.foot ? (React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.dim, margin: "11px 0 0", paddingTop: 10, borderTop: `1px solid ${P.line}` } }, card.foot)) : null,
+                        React.createElement("span", { style: { fontFamily: UI, fontSize: 14.5, color: P.dim, flex: "0 0 42%", lineHeight: 1.35 } }, row[0]),
+                        React.createElement("span", { style: { fontFamily: UI, fontSize: 14.5, fontWeight: 600, color: P.ink, flex: 1, lineHeight: 1.35 } }, row[1])))),
+                    card.foot ? (React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: "11px 0 0", paddingTop: 10, borderTop: `1px solid ${P.line}` } }, card.foot)) : null,
                     React.createElement("p", { style: { fontFamily: MN, fontSize: 11, color: ref && ref.ok ? P.dim : P.warn, margin: "9px 0 0" } }, ref ? ref.s + (ref.ok ? "" : " · flagged") : ""))) : null));
         }),
         React.createElement("div", { style: { background: P.surface, borderRadius: 14, padding: "15px 16px", marginTop: 14, borderLeft: `3px solid ${P.accent}` } },
@@ -2466,19 +2642,28 @@ function RefScreen() {
             React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 12px" } }, REAL_RECORDS.body),
             REAL_RECORDS.links.map((l) => (React.createElement("div", { key: l[0], style: { marginBottom: 10 } },
                 React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 14.5, fontWeight: 600, color: P.ink } }, l[0]),
-                React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 13.5, lineHeight: 1.45, color: P.dim, margin: "2px 0" } }, l[1]),
+                React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 13.5, lineHeight: 1.45, color: P.ink, margin: "2px 0" } }, l[1]),
                 React.createElement("span", { style: { display: "block", fontFamily: MN, fontSize: 12, color: P.accent } }, l[2])))))));
 }
-function MoreScreen({ prog, persist }) {
+function MoreScreen({ prog, persist, theme, onTheme }) {
     const [panel, setPanel] = useState("framework");
     const all = FRAMEWORK.flatMap(([, , items]) => items);
     const n2 = all.filter((i) => i[2] === 2).length;
     const n1 = all.filter((i) => i[2] === 1).length;
     const n0 = all.filter((i) => i[2] === 0).length;
-    const dot = (s) => (s === 2 ? P.ok : s === 1 ? P.accent : P.line);
+    // "out of scope" used the rule colour, which measured 1.4:1 against the card
+    // where a meaningful indicator needs 3:1 — so the one state this panel most
+    // needs to be honest about was the one you could not see. dim clears it.
+    // Three filled circles told apart by hue alone are unreadable to a colour-blind
+    // eye. Shape now carries the meaning and colour reinforces it: disc, square, ring.
+    const dotStyle = (s) => (s === 2 ? { background: P.ok, borderRadius: 4 }
+        : s === 1 ? { background: P.accent, borderRadius: 1 }
+            : { background: "transparent", border: `2px solid ${P.dim}`, borderRadius: 4 });
     const word = (s) => (s === 2 ? "covered" : s === 1 ? "partly covered" : "out of scope");
     return (React.createElement("div", null,
-        React.createElement("h1", { style: { fontFamily: UI, fontSize: 21, fontWeight: 700, margin: "0 0 14px", letterSpacing: "-0.02em" } }, "More"),
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 14 } },
+            React.createElement("h1", { style: { flex: 1, fontFamily: UI, fontSize: 21, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" } }, "More"),
+            React.createElement(ThemeButton, null)),
         React.createElement("div", { style: { display: "flex", gap: 7, marginBottom: 18 } },
             React.createElement(Pill, { active: panel === "framework", onClick: () => setPanel("framework") }, "Framework"),
             React.createElement(Pill, { active: panel === "sources", onClick: () => setPanel("sources") }, "Sources"),
@@ -2486,21 +2671,24 @@ function MoreScreen({ prog, persist }) {
             React.createElement(Pill, { active: panel === "reading", onClick: () => setPanel("reading") }, "Reading"),
             React.createElement(Pill, { active: panel === "reset", onClick: () => setPanel("reset") }, "Progress")),
         panel === "framework" && (React.createElement(React.Fragment, null,
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 18, fontWeight: 600, margin: "0 0 8px", lineHeight: 1.35 } },
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 18, fontWeight: 600, margin: "0 0 10px", lineHeight: 1.35 } },
                 n2,
                 " covered \u00B7 ",
                 n1,
                 " partly \u00B7 ",
                 n0,
                 " out of scope"),
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 14, lineHeight: 1.55, color: P.dim, margin: "0 0 20px" } }, "Against the 58 learning outcomes in Berger-Estilita et al., Eur J Anaesthesiol 2026;43:1-12. That paper defines outcomes only \u2014 no assessment standard, no proficiency bar, no mapping to training year \u2014 so this programme cannot certify anyone against it. Seven of the twelve advanced outcomes are research and mentorship activities rather than EEG competencies."),
+            React.createElement("div", { style: { display: "flex", gap: 15, flexWrap: "wrap", margin: "0 0 16px" } }, [[2, "covered"], [1, "partly"], [0, "out of scope"]].map(([s, w]) => (React.createElement("span", { key: w, style: { display: "inline-flex", alignItems: "center", gap: 7, fontFamily: UI, fontSize: 12.5, color: P.dim } },
+                React.createElement("span", { style: { width: 9, height: 9, flexShrink: 0, ...dotStyle(s) } }),
+                w)))),
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 14, lineHeight: 1.55, color: P.ink, margin: "0 0 20px" } }, "Against the 58 learning outcomes in Berger-Estilita et al., Eur J Anaesthesiol 2026;43:1-12. That paper defines outcomes only \u2014 no assessment standard, no proficiency bar, no mapping to training year \u2014 so this programme cannot certify anyone against it. Seven of the twelve advanced outcomes are research and mentorship activities rather than EEG competencies."),
             FRAMEWORK.map(([level, dim, items]) => (React.createElement("div", { key: level + dim, style: { marginBottom: 18 } },
-                React.createElement("p", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: P.dim, margin: "0 0 8px" } },
+                React.createElement("h3", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: P.dim, margin: "0 0 8px" } },
                     level,
                     " \u00B7 ",
                     dim),
                 items.map(([code, text, status, where]) => (React.createElement("div", { key: code, style: { display: "flex", gap: 10, alignItems: "flex-start", background: P.surface, borderRadius: 10, padding: "10px 12px", marginBottom: 6 } },
-                    React.createElement("span", { "aria-label": word(status), title: word(status), style: { width: 8, height: 8, borderRadius: 4, background: dot(status), flexShrink: 0, marginTop: 6 } }),
+                    React.createElement("span", { "aria-label": word(status), title: word(status), style: { width: 9, height: 9, flexShrink: 0, marginTop: 6, ...dotStyle(status) } }),
                     React.createElement("span", { style: { fontFamily: MN, fontSize: 11.5, color: P.accent, width: 42, flexShrink: 0, paddingTop: 1 } }, code),
                     React.createElement("span", { style: { flex: 1, minWidth: 0 } },
                         React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 14.5, lineHeight: 1.4 } }, text),
@@ -2514,12 +2702,12 @@ function MoreScreen({ prog, persist }) {
                 React.createElement("p", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: r.ok ? P.accent : P.warn, margin: "0 0 5px" } },
                     r.s,
                     r.ok ? "" : " · flagged"),
-                React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.dim, margin: 0 } }, r.full),
+                React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: 0 } }, r.full),
                 r.doi ? React.createElement("p", { style: { fontFamily: MN, fontSize: 11.5, color: P.dim, margin: "4px 0 0" } },
                     "doi ",
                     r.doi) : null,
                 r.note ? React.createElement("p", { style: { fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.warn, margin: "5px 0 0" } }, r.note) : null))),
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.dim, margin: "12px 0 0" } }, "Declared conflicts. Berger-Estilita 2026: six authors report Medtronic travel support, four Medtronic speaker fees, two Masimo grants, one BIS and Narcotrend honoraria, one Medtronic consulting for EEG teaching; Medtronic owns BIS through Covidien. Purdon 2015 discloses a Masimo licensing agreement with MGH. Guay 2025: Brown cofounded Pascall Systems with royalties from Masimo and issued patents, Guay reports Masimo travel support, and recordings were made on a Masimo Sedline. Bong & Yuan 2026 also declares a Masimo interest."))),
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.ink, margin: "12px 0 0" } }, "Declared conflicts. Berger-Estilita 2026: six authors report Medtronic travel support, four Medtronic speaker fees, two Masimo grants, one BIS and Narcotrend honoraria, one Medtronic consulting for EEG teaching; Medtronic owns BIS through Covidien. Purdon 2015 discloses a Masimo licensing agreement with MGH. Guay 2025: Brown cofounded Pascall Systems with royalties from Masimo and issued patents, Guay reports Masimo travel support, and recordings were made on a Masimo Sedline. Bong & Yuan 2026 also declares a Masimo interest."))),
         panel === "about" && (React.createElement("div", null,
             React.createElement("h2", { style: { fontFamily: UI, fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", margin: "0 0 10px" } }, "Reading the EEG"),
             React.createElement("p", { style: { fontFamily: UI, fontSize: 15.5, lineHeight: 1.55, color: P.ink, margin: "0 0 14px" } },
@@ -2527,15 +2715,25 @@ function MoreScreen({ prog, persist }) {
                 " modules, ",
                 MODULES.reduce((a, m) => a + m.mins, 0),
                 " minutes, on the raw EEG and the density spectral array for anaesthetists learning to read the brain rather than the number."),
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.dim, margin: "0 0 14px" } }, "Every waveform is synthesised from published parameters. It teaches recognition, not acquisition. It is mapped to the ESAIC 2026 learning outcomes and cannot certify anyone against them \u2014 that paper defines outcomes only and sets no assessment standard. Nothing is downloaded and no data leaves this device."),
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.dim, margin: "0 0 16px" } }, "The sources every claim rests on are under Sources. What to read next is under Reading. Where to see real records is at the foot of the Reference tab."),
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 14px" } }, "Every waveform is synthesised from published parameters. It teaches recognition, not acquisition. It is mapped to the ESAIC 2026 learning outcomes and cannot certify anyone against them \u2014 that paper defines outcomes only and sets no assessment standard. Nothing is downloaded and no data leaves this device."),
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 16px" } }, "The sources every claim rests on are under Sources. What to read next is under Reading. Where to see real records is at the foot of the Reference tab."),
             React.createElement("div", { style: { padding: "14px 0 16px", marginBottom: 16, borderTop: `1px solid ${P.line}`, borderBottom: `1px solid ${P.line}` } },
+                React.createElement("p", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 9px" } }, "Appearance"),
+                React.createElement("div", { style: { display: "flex", gap: 7, flexWrap: "wrap", marginBottom: 9 } }, Object.entries(THEMES).map(([k, t]) => (React.createElement(Pill, { key: k, active: theme === k, onClick: () => onTheme(k) }, t.label)))),
+                React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.dim, margin: 0 } },
+                    THEMES[theme].note,
+                    " Same modules, same readings \u2014 only the colours change, and the choice stays on this device.")),
+            React.createElement("div", { style: { padding: "0 0 16px", marginBottom: 16, borderBottom: `1px solid ${P.line}` } },
                 React.createElement("p", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 6px" } }, "Written by"),
                 React.createElement("p", { style: { fontFamily: UI, fontSize: 16, fontWeight: 600, color: P.ink, margin: "0 0 2px" } }, AUTHOR),
-                React.createElement("p", { style: { fontFamily: UI, fontSize: 14, color: P.dim, margin: 0 } }, CREDENTIALS)),
+                React.createElement("p", { style: { fontFamily: UI, fontSize: 14, color: P.dim, margin: 0 } }, CREDENTIALS),
+                React.createElement("p", { style: { fontFamily: MN, fontSize: 11.5, color: P.dim, margin: "9px 0 0" } },
+                    VERSION,
+                    " \u00B7 built ",
+                    BUILT)),
             React.createElement(Btn, { kind: "ghost", full: true, onClick: () => persist({ ...prog, seenIntro: false }) }, "Show the opening screen again"))),
         panel === "reading" && (React.createElement(React.Fragment, null,
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.dim, margin: "0 0 16px" } }, FURTHER.note),
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 16px" } }, FURTHER.note),
             FURTHER.items.map((it) => (React.createElement("div", { key: it.doi, style: { background: P.surface, borderRadius: 12, padding: "13px 15px", marginBottom: 8 } },
                 React.createElement("p", { style: { fontFamily: UI, fontSize: 15, fontWeight: 600, lineHeight: 1.35, margin: "0 0 4px" } }, it.t),
                 React.createElement("p", { style: { fontFamily: UI, fontSize: 13, color: P.dim, margin: "0 0 6px" } },
@@ -2547,7 +2745,7 @@ function MoreScreen({ prog, persist }) {
                     "doi ",
                     it.doi)))))),
         panel === "reset" && (React.createElement("div", null,
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 15, lineHeight: 1.55, color: P.dim, margin: "0 0 16px" } },
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 15, lineHeight: 1.55, color: P.ink, margin: "0 0 16px" } },
                 Object.keys(prog.done).length,
                 " of ",
                 MODULES.length,
@@ -2600,11 +2798,13 @@ function Session({ mi, pi, setMi, setPi, cfg, setCfg, onExit }) {
     return (React.createElement("div", { style: { minHeight: "100vh", background: P.bg, color: P.ink, fontFamily: UI, padding: "22px 20px 40px" } },
         React.createElement("div", { style: { maxWidth: 940, margin: "0 auto" } },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16 } },
-                React.createElement("span", { style: { fontFamily: UI, fontSize: 14, fontWeight: 600, color: P.accent } },
+                React.createElement("span", { style: { flex: 1, minWidth: 0, fontFamily: UI, fontSize: 14, fontWeight: 600, color: P.accent } },
                     mod.n,
                     " \u00B7 ",
                     mod.title),
-                React.createElement(Btn, { kind: "quiet", onClick: onExit }, "Exit")),
+                React.createElement("span", { style: { display: "flex", alignItems: "center", gap: 10, flexShrink: 0 } },
+                    React.createElement(ThemeButton, null),
+                    React.createElement(Btn, { kind: "quiet", onClick: onExit }, "Exit"))),
             React.createElement(Scope, { cfg: cfg, trace: 170, spec: 170 }),
             React.createElement("p", { style: { fontSize: "clamp(21px, 3.4vw, 33px)", lineHeight: 1.34, fontWeight: 500, margin: "22px 0 12px", letterSpacing: "-0.015em" } }, pt.t),
             pt.look ? React.createElement("p", { style: { fontSize: "clamp(15px, 2vw, 18px)", lineHeight: 1.5, color: P.dim, margin: "0 0 16px" } }, pt.look) : null,
@@ -2617,7 +2817,7 @@ function Session({ mi, pi, setMi, setPi, cfg, setCfg, onExit }) {
                     pi + 1,
                     "/",
                     mod.points.length)),
-            React.createElement("p", { style: { fontSize: 15, lineHeight: 1.55, color: P.dim, marginTop: 22, paddingTop: 16, borderTop: `1px solid ${P.line}` } }, mod.prompt),
+            React.createElement("p", { style: { fontSize: 15, lineHeight: 1.55, color: P.ink, marginTop: 22, paddingTop: 16, borderTop: `1px solid ${P.line}` } }, mod.prompt),
             React.createElement("p", { style: { fontFamily: MN, fontSize: 11.5, color: P.dim, marginTop: 12 } }, "Arrow keys to move \u00B7 Esc to exit"))));
 }
 /* ---- app ----------------------------------------------------------------- */
@@ -2630,11 +2830,13 @@ function App() {
     const [showIntro, setShowIntro] = useState(false);
     const [cfg, setCfg] = useState({ state: "awake", ch: 0, age: 40, bsr: 0, window: 5, scale: 200, map: "jet", art: {} });
     const [prog, setProg] = useState(EMPTY_PROG);
+    const [theme, setTheme] = useState(P.name);
     const { narrow } = useViewport();
     useEffect(() => {
         loadProgress().then((p) => {
             if (p)
                 setProg(p);
+            setTheme(applyTheme((p && p.theme) || "dark"));
             // the landing is orientation, not a gate: shown on the first run only,
             // and reachable from More afterwards
             if (!p || !p.seenIntro)
@@ -2642,6 +2844,15 @@ function App() {
         });
     }, []);
     const persist = useCallback((p) => { setProg(p); saveProgress(p); }, []);
+    // applyTheme mutates P in place, so the re-render triggered by setTheme is
+    // what repaints the tree; Scope picks the new colours up on its next frame
+    // without unmounting, which is why the spectrogram history survives.
+    const chooseTheme = (name) => {
+        const t = applyTheme(name);
+        setTheme(t);
+        persist({ ...prog, theme: t });
+    };
+    setThemeFromAnywhere = chooseTheme;
     const pt = MODULES[mi].points[Math.min(pi, MODULES[mi].points.length - 1)];
     useEffect(() => {
         if (view === "module" && !inSession)
@@ -2668,8 +2879,20 @@ function App() {
         return React.createElement(Session, { mi: mi, pi: pi, setMi: setMi, setPi: setPi, cfg: cfg, setCfg: setCfg, onExit: () => setInSession(false) });
     }
     const TABS = [["learn", "Learn"], ["drill", "Drill"], ["bench", "Bench"], ["ref", "Ref"], ["more", "More"]];
+    // Tapping a tab swaps the whole screen with no focus change, so a screen
+    // reader user was left where they stood with nothing announced. This string
+    // only changes when the screen does, so the live region does not chatter.
+    const announce = tab !== "learn" ? { drill: "Drill", bench: "Bench", ref: "Reference", more: "More" }[tab]
+        : view === "module" ? `${MODULES[mi].n}, ${MODULES[mi].title}, point ${pi + 1} of ${MODULES[mi].points.length}`
+            : view === "check" ? `Module check, ${MODULES[mi].title}`
+                : showIntro ? "Reading the EEG, opening screen"
+                    : "All modules";
     return (React.createElement("div", { style: { minHeight: "100vh", background: P.bg, color: P.ink, fontFamily: UI } },
         React.createElement(Styles, null),
+        React.createElement("p", { "aria-live": "polite", "aria-atomic": "true", style: {
+                position: "absolute", width: 1, height: 1, margin: -1, padding: 0,
+                overflow: "hidden", whiteSpace: "nowrap", border: 0, clip: "rect(0 0 0 0)",
+            } }, announce),
         React.createElement("main", { style: { maxWidth: 620, margin: "0 auto", padding: "20px 17px 108px" } },
             tab === "learn" && view === "home" && showIntro && (React.createElement(Landing, { onStart: () => { persist({ ...prog, seenIntro: true }); setShowIntro(false); openModule(0, 0); }, onSkip: () => { persist({ ...prog, seenIntro: true }); setShowIntro(false); openModule(5, 0); } })),
             tab === "learn" && view === "home" && !showIntro && (React.createElement(Home, { prog: prog, onOpen: openModule, onSession: () => { setMi(0); setPi(0); setInSession(true); } })),
@@ -2678,10 +2901,10 @@ function App() {
             tab === "drill" && React.createElement(DrillScreen, { prog: prog, persist: persist, cfg: cfg, setCfg: setCfg, narrow: narrow }),
             tab === "bench" && React.createElement(BenchScreen, { cfg: cfg, setCfg: setCfg, narrow: narrow }),
             tab === "ref" && React.createElement(RefScreen, null),
-            tab === "more" && React.createElement(MoreScreen, { prog: prog, persist: persist })),
+            tab === "more" && React.createElement(MoreScreen, { prog: prog, persist: persist, theme: theme, onTheme: chooseTheme })),
         React.createElement("nav", { style: {
                 position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 10,
-                background: "rgba(14,17,22,0.94)", borderTop: `1px solid ${P.line}`,
+                background: tint(P.bg, 0.94), borderTop: `1px solid ${P.line}`,
                 backdropFilter: "blur(12px)", paddingBottom: "env(safe-area-inset-bottom)",
             } },
             React.createElement("div", { style: { maxWidth: 620, margin: "0 auto", display: "flex" } }, TABS.map(([k, l]) => (React.createElement("button", { key: k, onClick: () => { setTab(k); if (k === "learn")
@@ -2700,7 +2923,7 @@ class Boundary extends React.Component {
     render() {
         if (!this.state.err)
             return this.props.children;
-        return React.createElement("div", { style: { minHeight: "100vh", background: P.bg, color: P.ink, fontFamily: UI, padding: "44px 20px" } }, React.createElement("div", { style: { maxWidth: 560, margin: "0 auto" } }, React.createElement("p", { style: { fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.warn, margin: 0 } }, "Something broke"), React.createElement("h1", { style: { fontSize: 24, fontWeight: 700, margin: "6px 0 12px", letterSpacing: "-0.02em" } }, "The programme stopped."), React.createElement("p", { style: { fontSize: 15.5, lineHeight: 1.55, color: P.dim, margin: "0 0 16px" } }, "Reload to carry on. Progress is saved per module, so you will come back where you were. If it happens again, the message below is what to report."), React.createElement("pre", { style: { fontFamily: MN, fontSize: 12.5, lineHeight: 1.5, color: P.warn, background: P.surface, borderRadius: 12, padding: "13px 15px", whiteSpace: "pre-wrap", margin: 0 } }, String((this.state.err && this.state.err.message) || this.state.err))));
+        return React.createElement("div", { style: { minHeight: "100vh", background: P.bg, color: P.ink, fontFamily: UI, padding: "44px 20px" } }, React.createElement("div", { style: { maxWidth: 560, margin: "0 auto" } }, React.createElement("p", { style: { fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.warn, margin: 0 } }, "Something broke"), React.createElement("h1", { style: { fontSize: 24, fontWeight: 700, margin: "6px 0 12px", letterSpacing: "-0.02em" } }, "The programme stopped."), React.createElement("p", { style: { fontSize: 15.5, lineHeight: 1.55, color: P.ink, margin: "0 0 16px" } }, "Reload to carry on. Progress is saved per module, so you will come back where you were. If it happens again, the message below is what to report."), React.createElement("pre", { style: { fontFamily: MN, fontSize: 12.5, lineHeight: 1.5, color: P.warn, background: P.surface, borderRadius: 12, padding: "13px 15px", whiteSpace: "pre-wrap", margin: 0 } }, String((this.state.err && this.state.err.message) || this.state.err))));
     }
 }
 function Root() {
@@ -2708,7 +2931,12 @@ function Root() {
 }
 function Styles() {
     return (React.createElement("style", null, `
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:wght@400;500&display=swap');
+      /* No web font is fetched. The page states on the landing screen and in
+         More > About that nothing is downloaded and no data leaves the device,
+         and a Google Fonts import would have made all three of those sentences
+         false while sending every reader's IP and referrer to Google. The font
+         stacks below already name system faces as fallbacks, so the type
+         degrades to SF / Georgia / SF Mono rather than breaking. */
       *{ -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
       input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:4px; background:${P.line}; border-radius:2px; }
       input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:26px; height:26px; border-radius:50%; background:${P.accent}; cursor:pointer; }
