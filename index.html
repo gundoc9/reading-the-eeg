@@ -8,11 +8,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Reading the EEG</title>
 <meta name="author" content="Dr Ganesh Sivasankara">
-<meta name="description" content="A teaching instrument on the raw EEG and the density spectral array for anaesthetists. Fourteen modules. Waveforms are synthesised.">
+<meta name="description" content="A teaching instrument on the raw EEG and the density spectral array for anaesthetists. A basics primer and fourteen modules. Waveforms are synthesised.">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230E1116'/%3E%3Cpath d='M8 50 L22 50 L28 26 L36 74 L44 38 L50 62 L56 50 L92 50' stroke='%23F0A63C' stroke-width='6' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
   html,body{margin:0;padding:0;background:#0E1116;-webkit-text-size-adjust:100%;}
-  #root{min-height:100vh;}
+  #root{min-height:100vh;box-sizing:border-box;
+        padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);}
   .boot{color:#99A2AE;font:15px/1.55 -apple-system,system-ui,sans-serif;padding:48px 22px;max-width:520px;margin:0 auto;}
   .boot b{color:#F2EEE6;display:block;font-size:19px;margin-bottom:8px;}
   .boot code{color:#E0796E;font-size:13px;display:block;margin-top:14px;white-space:pre-wrap;}
@@ -20,11 +21,7 @@
 </head>
 <body>
 <div id="root"></div>
-
 <script>
-/* Progress store. Inside a Claude artifact window.storage is provided; a
-   standalone page has none, so back the same interface with localStorage —
-   including get() rejecting on a missing key, which is what the app expects. */
 if (!window.storage) {
   window.storage = {
     get: function (k) {
@@ -42,7 +39,6 @@ if (!window.storage) {
   };
 }
 </script>
-
 <script>
 /* =========================================================================
    A minimal React-compatible renderer.
@@ -241,7 +237,7 @@ if (!window.storage) {
   function reconcile(vnode, parentDom, oldInst, doc) {
     // text
     if (typeof vnode !== "object") {
-      if (oldInst && oldInst.isText) { 
+      if (oldInst && oldInst.isText) {
         if (oldInst.dom.nodeValue !== String(vnode)) oldInst.dom.nodeValue = String(vnode);
         oldInst.vnode = vnode;
         return oldInst;
@@ -374,7 +370,6 @@ if (!window.storage) {
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
-
 <script>
 const { useState, useEffect, useRef, useCallback } = React;
 /* ==========================================================================
@@ -1829,7 +1824,7 @@ const REAL_RECORDS = {
 /* ===================== storage ============================================ */
 const KEY_STORE = "eeg-programme:v9";
 const KEY_OLD = "eeg-programme:v2";
-const EMPTY_PROG = { done: {}, last: null, seenIntro: false, theme: "dark", drill: { seen: 0, right: 0, byMod: {}, box: {}, idx: 0 } };
+const EMPTY_PROG = { done: {}, last: null, seenIntro: false, theme: "dark", primer: { seen: false, at: 0 }, drill: { seen: 0, right: 0, byMod: {}, box: {}, idx: 0 } };
 async function loadProgress() {
     try {
         if (!window.storage)
@@ -1902,6 +1897,8 @@ const THEMES = {
         ok: "#5FBF8F",
         warn: "#E0796E",
         specBg: "#171B22",
+        specInk: "#F2EEE6",
+        specRef: "#F0A63C",
         gridA: 0.22,
     },
     paper: {
@@ -1917,6 +1914,8 @@ const THEMES = {
         ok: "#1E523E",
         warn: "#822A24",
         specBg: "#171B22",
+        specInk: "#F2EEE6",
+        specRef: "#F0A63C",
         gridA: 0.30,
     },
 };
@@ -1962,8 +1961,8 @@ function bootTheme() {
 bootTheme();
 // Bump both by hand when the content changes. Without them a colleague who hits
 // a problem cannot say which build, and there is no way to issue a correction.
-const VERSION = "v20";
-const BUILT = "29 July 2026";
+const VERSION = "v23";
+const BUILT = "7 August 2026";
 const AUTHOR = "Dr Ganesh Sivasankara";
 const CREDENTIALS = "MD · FRCA · FCARCSI · Consultant Anaesthetist";
 const UI = "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif";
@@ -2217,6 +2216,31 @@ function ThemeButton() {
             React.createElement("circle", { cx: "10", cy: "10", r: "8.4", fill: P.surface, stroke: P.dim, strokeWidth: "1.4" }),
             React.createElement("path", { d: "M10 1.6 A8.4 8.4 0 0 1 10 18.4 Z", fill: P.ink }))));
 }
+/* An outbound link is not an outbound FETCH. The page still needs no network to
+   run; tapping one opens a new tab on a deliberate action. The build gate now
+   distinguishes the two, and the privacy wording says so. */
+function Link({ href, children, style }) {
+    return (React.createElement("a", { href: href, target: "_blank", rel: "noopener noreferrer", style: { color: P.accent, textDecoration: "underline",
+            textUnderlineOffset: 2, ...(style || {}) } }, children));
+}
+/* Every outbound destination is a literal here, so the build can audit the list
+   rather than guess at a runtime-built string. A site not on it simply is not
+   tappable — it fails safe rather than opening somewhere unaudited. */
+const OUTBOUND = {
+    "youtube.com/@eegforanesthesia3954": "https://youtube.com/@eegforanesthesia3954",
+    "pedseeg.com": "https://pedseeg.com",
+};
+const DOI_RE = /\b(10\.\d{4,9}\/[^\s,;)\]]+)/;
+// render a line of prose with any doi inside it turned into a link
+function withDoi(text, key) {
+    const m = DOI_RE.exec(text);
+    if (!m)
+        return text;
+    const i = m.index;
+    return [text.slice(0, i),
+        React.createElement(Link, { href: "https://doi.org/" + m[1], key: "d" + key }, m[1]),
+        text.slice(i + m[1].length)];
+}
 function Btn({ children, onClick, kind = "ghost", full, size = "md" }) {
     const base = {
         fontFamily: UI, fontWeight: 600, cursor: "pointer", borderRadius: 12,
@@ -2391,7 +2415,7 @@ function scoreDrill(prog, idx, right, mod) {
     return { ...prog, drill: { ...d, seen: (d.seen || 0) + 1, right: (d.right || 0) + (right ? 1 : 0), box, byMod } };
 }
 /* ---- screens ------------------------------------------------------------- */
-function Landing({ onStart, onSkip }) {
+function Landing({ onStart, onSkip, onPrimer }) {
     const mins = MODULES.reduce((a, m) => a + m.mins, 0);
     // These four are the first prose anyone reads, and one of them is the promise
     // that nothing is downloaded. Full strength, like every other paragraph.
@@ -2420,11 +2444,13 @@ function Landing({ onStart, onSkip }) {
                 "Every waveform is synthesised from published parameters. It teaches recognition, not acquisition, and it is not a patient."),
             React.createElement("p", { style: fact },
                 React.createElement("span", { style: dot }),
-                "Nothing is downloaded and nothing is sent anywhere. Your progress stays on this device."),
+                "Nothing is downloaded and nothing is sent anywhere. Your progress stays on this device. Links open in a new tab, and only if you tap one."),
             React.createElement("p", { style: { ...fact, margin: 0 } },
                 React.createElement("span", { style: dot }),
                 "Mapped to the ESAIC 2026 learning outcomes, but it cannot certify you against them.")),
-        React.createElement(Btn, { kind: "primary", size: "lg", full: true, onClick: onStart }, "Start at the beginning"),
+        React.createElement(Btn, { kind: "primary", size: "lg", full: true, onClick: onPrimer }, "Start with the basics"),
+        React.createElement("div", { style: { marginTop: 10 } },
+            React.createElement(Btn, { kind: "ghost", full: true, onClick: onStart }, "I know the vocabulary \u2014 start at module 01")),
         React.createElement("div", { style: { marginTop: 10 } },
             React.createElement(Btn, { kind: "ghost", full: true, onClick: onSkip }, "I already read raw EEG \u2014 skip the foundations")),
         React.createElement("p", { style: { fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.dim, margin: "16px 0 0", textAlign: "center" } }, "You can reopen this from More.")));
@@ -2643,9 +2669,11 @@ function RefScreen() {
             REAL_RECORDS.links.map((l) => (React.createElement("div", { key: l[0], style: { marginBottom: 10 } },
                 React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 14.5, fontWeight: 600, color: P.ink } }, l[0]),
                 React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 13.5, lineHeight: 1.45, color: P.ink, margin: "2px 0" } }, l[1]),
-                React.createElement("span", { style: { display: "block", fontFamily: MN, fontSize: 12, color: P.accent } }, l[2])))))));
+                OUTBOUND[l[2]]
+                    ? React.createElement(Link, { href: OUTBOUND[l[2]], style: { display: "block", fontFamily: MN, fontSize: 12 } }, l[2])
+                    : React.createElement("span", { style: { display: "block", fontFamily: MN, fontSize: 12, color: P.dim } }, l[2])))))));
 }
-function MoreScreen({ prog, persist, theme, onTheme }) {
+function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
     const [panel, setPanel] = useState("framework");
     const all = FRAMEWORK.flatMap(([, , items]) => items);
     const n2 = all.filter((i) => i[2] === 2).length;
@@ -2705,7 +2733,7 @@ function MoreScreen({ prog, persist, theme, onTheme }) {
                 React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: 0 } }, r.full),
                 r.doi ? React.createElement("p", { style: { fontFamily: MN, fontSize: 11.5, color: P.dim, margin: "4px 0 0" } },
                     "doi ",
-                    r.doi) : null,
+                    React.createElement(Link, { href: "https://doi.org/" + r.doi }, r.doi)) : null,
                 r.note ? React.createElement("p", { style: { fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.warn, margin: "5px 0 0" } }, r.note) : null))),
             React.createElement("p", { style: { fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.ink, margin: "12px 0 0" } }, "Declared conflicts. Berger-Estilita 2026: six authors report Medtronic travel support, four Medtronic speaker fees, two Masimo grants, one BIS and Narcotrend honoraria, one Medtronic consulting for EEG teaching; Medtronic owns BIS through Covidien. Purdon 2015 discloses a Masimo licensing agreement with MGH. Guay 2025: Brown cofounded Pascall Systems with royalties from Masimo and issued patents, Guay reports Masimo travel support, and recordings were made on a Masimo Sedline. Bong & Yuan 2026 also declares a Masimo interest."))),
         panel === "about" && (React.createElement("div", null,
@@ -2715,7 +2743,7 @@ function MoreScreen({ prog, persist, theme, onTheme }) {
                 " modules, ",
                 MODULES.reduce((a, m) => a + m.mins, 0),
                 " minutes, on the raw EEG and the density spectral array for anaesthetists learning to read the brain rather than the number."),
-            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 14px" } }, "Every waveform is synthesised from published parameters. It teaches recognition, not acquisition. It is mapped to the ESAIC 2026 learning outcomes and cannot certify anyone against them \u2014 that paper defines outcomes only and sets no assessment standard. Nothing is downloaded and no data leaves this device."),
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 14px" } }, "Every waveform is synthesised from published parameters. It teaches recognition, not acquisition. It is mapped to the ESAIC 2026 learning outcomes and cannot certify anyone against them \u2014 that paper defines outcomes only and sets no assessment standard. Nothing is downloaded and no data leaves this device. The doi and site links open in a new tab, and only when you tap them."),
             React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 16px" } }, "The sources every claim rests on are under Sources. What to read next is under Reading. Where to see real records is at the foot of the Reference tab."),
             React.createElement("div", { style: { padding: "14px 0 16px", marginBottom: 16, borderTop: `1px solid ${P.line}`, borderBottom: `1px solid ${P.line}` } },
                 React.createElement("p", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 9px" } }, "Appearance"),
@@ -2731,7 +2759,7 @@ function MoreScreen({ prog, persist, theme, onTheme }) {
                     VERSION,
                     " \u00B7 built ",
                     BUILT)),
-            React.createElement(Btn, { kind: "ghost", full: true, onClick: () => persist({ ...prog, seenIntro: false }) }, "Show the opening screen again"))),
+            React.createElement(Btn, { kind: "ghost", full: true, onClick: onShowIntro }, "Show the opening screen again"))),
         panel === "reading" && (React.createElement(React.Fragment, null,
             React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 16px" } }, FURTHER.note),
             FURTHER.items.map((it) => (React.createElement("div", { key: it.doi, style: { background: P.surface, borderRadius: 12, padding: "13px 15px", marginBottom: 8 } },
@@ -2741,9 +2769,9 @@ function MoreScreen({ prog, persist, theme, onTheme }) {
                     " \u00B7 ",
                     it.j),
                 React.createElement("p", { style: { fontFamily: UI, fontSize: 14, lineHeight: 1.5, color: P.ink, margin: "0 0 6px" } }, it.w),
-                React.createElement("p", { style: { fontFamily: MN, fontSize: 11.5, color: P.accent, margin: 0 } },
+                React.createElement("p", { style: { fontFamily: MN, fontSize: 11.5, color: P.dim, margin: 0 } },
                     "doi ",
-                    it.doi)))))),
+                    React.createElement(Link, { href: "https://doi.org/" + it.doi }, it.doi))))))),
         panel === "reset" && (React.createElement("div", null,
             React.createElement("p", { style: { fontFamily: UI, fontSize: 15, lineHeight: 1.55, color: P.ink, margin: "0 0 16px" } },
                 Object.keys(prog.done).length,
@@ -2820,6 +2848,1649 @@ function Session({ mi, pi, setMi, setPi, cfg, setCfg, onExit }) {
             React.createElement("p", { style: { fontSize: 15, lineHeight: 1.55, color: P.ink, marginTop: 22, paddingTop: 16, borderTop: `1px solid ${P.line}` } }, mod.prompt),
             React.createElement("p", { style: { fontFamily: MN, fontSize: 11.5, color: P.dim, marginTop: 12 } }, "Arrow keys to move \u00B7 Esc to exit"))));
 }
+/* Generated from the tested primer build. Do not hand-edit: regenerate. */
+const PRIMER_CARDS = [
+    {
+        "id": "raw-trace",
+        "topic": "The two pictures",
+        "title": "The raw trace",
+        "tldr": "The wiggly line. Voltage at the forehead, drawn against time.",
+        "lede": "A seismograph does not know what the earthquake was. It records how the ground moved, and everything else is read off that.",
+        "body": [
+            {
+                "p": "The raw trace is the same kind of instrument. It plots the voltage difference between two electrodes against time, in microvolts. Millionths of a volt. An ECG deals in millivolts, a thousand times larger, which is most of why the EEG is so much fussier about electrode contact."
+            },
+            {
+                "h": "What it is good at"
+            },
+            {
+                "p": "Shape, timing, and anything sudden. Every named thing in this dictionary is named on the raw trace, because a name is a claim about a shape and this is the only picture that shows shape."
+            },
+            {
+                "h": "What it hides"
+            },
+            {
+                "p": "Anything slow. You cannot watch a line for forty minutes and notice that a rhythm has been gradually fading, because by the time it has faded the earlier picture is gone. That is the job of the second picture."
+            }
+        ],
+        "src": [
+            "General signal description. The microvolt and millivolt figures are standard and are not taken from any paper held here."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "trace",
+        "scale": 70
+    },
+    {
+        "id": "amplitude",
+        "topic": "Describing what you see",
+        "title": "Amplitude",
+        "tldr": "How big a wave is, measured in microvolts from its bottom to its top.",
+        "lede": "Wave height at sea is measured trough to crest, not from an imagined flat sea level, because the flat level is a fiction and the trough is a thing you can point at.",
+        "body": [
+            {
+                "p": "EEG amplitude works the same way and gets described the same way: peak to peak, bottom of the wave to top. It is worth saying out loud because it means the numbers run roughly double what you would guess if you were measuring from the middle line."
+            },
+            {
+                "h": "Rough sizes worth carrying"
+            },
+            {
+                "p": "Tap the three settings above and watch the microvolt readout, not the picture. An anaesthetised adult on propofol runs somewhere around 100 microvolts peak to peak. Suppression is under 5. Electrocerebral inactivity is 2 or less. Those last two are criteria with their own card further along, so take them as landmarks for now. The two faint horizontal lines are at plus and minus 50 microvolts, so a wave that reaches both of them is 100 peak to peak, and at the other two settings the trace does not come close to either line."
+            },
+            {
+                "h": "The catch, which the card on gain takes up"
+            },
+            {
+                "p": "How big a wave looks on a screen is not the same question as how big it is. The picture depends on a setting, and the setting is not part of the patient."
+            }
+        ],
+        "src": [
+            "Guay 2025 — the 5 microvolt suppression and 2 microvolt inactivity anchors the programme teaches."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "trace",
+        "scale": 70,
+        "ctrl": {
+            "k": "Same patient, three depths",
+            "key": "cfg",
+            "def": 0,
+            "opts": [
+                [
+                    {
+                        "state": "propofol"
+                    },
+                    "Maintenance"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "bsr": 0.55
+                    },
+                    "Suppression"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "bsr": 1
+                    },
+                    "Inactivity"
+                ]
+            ]
+        },
+        "fwd": [
+            "suppression",
+            "gain"
+        ]
+    },
+    {
+        "id": "gain",
+        "topic": "Describing what you see",
+        "title": "Gain and the scale",
+        "tldr": "The setting that changes how big a wave looks without changing the patient.",
+        "lede": "Turning up the volume does not make the singer louder. It is an honest control and it tells you nothing about the performance.",
+        "body": [
+            {
+                "p": "Try the three settings above. It is one recording, unchanged, drawn three times. At the tightest scale it looks like a patient in trouble and at the widest it looks like a quiet record, and neither impression is about the patient."
+            },
+            {
+                "h": "Sweep speed does the same thing sideways"
+            },
+            {
+                "p": "Widening the stretch of time on screen squeezes the same waves closer together, so a rhythm can look faster or slower than it is. Together the two settings can make one record look like several different ones."
+            },
+            {
+                "h": "So read the number"
+            },
+            {
+                "p": "When size is the actual question, take it off the readout rather than off the picture. This is also the first honest reason to look at the second picture, which does not care what the trace gain was set to."
+            }
+        ],
+        "src": [
+            "The scale control here changes only the drawing. The signal behind all three settings is byte-identical."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "trace",
+        "scale": 70,
+        "ctrl": {
+            "k": "Vertical scale",
+            "key": "scale",
+            "opts": [
+                [
+                    35,
+                    "±35 µV"
+                ],
+                [
+                    70,
+                    "±70 µV"
+                ],
+                [
+                    140,
+                    "±140 µV"
+                ]
+            ]
+        }
+    },
+    {
+        "id": "frequency",
+        "topic": "Describing what you see",
+        "title": "Frequency",
+        "tldr": "How fast, counted in cycles per second.",
+        "lede": "You do not need an instrument for this one. You need to be able to count, and to know where one second is.",
+        "body": [
+            {
+                "p": "The faint vertical lines on the panel above are one second apart. Count the peaks between two of them and you have the frequency in hertz. Tap through the three settings: two peaks, then six, then ten. Each one is a single oscillation drawn alone, so there is nothing else to count."
+            },
+            {
+                "h": "Frequency and duration are one fact said two ways"
+            },
+            {
+                "p": "A ten hertz rhythm has a cycle lasting a hundred milliseconds. A two hertz rhythm has a cycle lasting five hundred. You can see that above: at 2 Hz each cycle fills half the gap between gridlines, at 10 Hz it fills a tenth. This matters more than it looks, because rhythms get described by their frequency and single waves get described by their duration, and it is the same measurement underneath."
+            },
+            {
+                "h": "Why nobody counts in practice"
+            },
+            {
+                "p": "Because the real record is several rhythms on top of each other and you cannot count a sum by eye. That is the whole reason the second picture exists: it does the counting without pause and shows you the answer as a picture."
+            }
+        ],
+        "src": [
+            "The oscillation above is the programme's own single-component band demonstration, generated at 10 Hz."
+        ],
+        "band": "alpha",
+        "kind": "trace",
+        "span": 3,
+        "scale": 40,
+        "ctrl": {
+            "k": "Count the peaks between two gridlines",
+            "key": "band",
+            "def": 2,
+            "opts": [
+                [
+                    "delta",
+                    "2 Hz"
+                ],
+                [
+                    "theta",
+                    "6 Hz"
+                ],
+                [
+                    "alpha",
+                    "10 Hz"
+                ]
+            ]
+        }
+    },
+    {
+        "id": "epoch",
+        "topic": "Describing what you see",
+        "title": "Epoch",
+        "tldr": "The slice of time you happen to be looking at, and what it lets you ask.",
+        "lede": "A photograph of a crowd and a photograph of a face are both true. They answer different questions and you cannot get one from the other.",
+        "body": [
+            {
+                "p": "An epoch is just the length of record in front of you. Move the control above. Nothing about the patient changes, but the question you are able to ask does, and on this record the change is not subtle: the same trace measures about 105 microvolts peak to peak at four seconds and 140 at sixteen."
+            },
+            {
+                "h": "Short windows answer shape questions"
+            },
+            {
+                "p": "At four seconds you can see individual waves and you could measure one. This is the window for anything with a shape and a name."
+            },
+            {
+                "h": "Long windows answer pattern questions"
+            },
+            {
+                "p": "At sixteen seconds the individual waves are too cramped to measure, but brief events appear that the short window kept missing entirely. They were always there. They just recur more slowly than four seconds, so a four-second view could only ever catch them by luck."
+            },
+            {
+                "h": "Which is why the readout grew"
+            },
+            {
+                "p": "That is the whole reason the peak-to-peak figure changed when you moved the control. It is not a bigger signal. It is a longer look at the same one, and a longer look catches the rare large events."
+            },
+            {
+                "h": "So the honest answer to most disagreements"
+            },
+            {
+                "p": "When two people are looking at the same record and describing it differently, check the window before you check the physiology."
+            }
+        ],
+        "src": [
+            "The record behind all three windows is the same, generated continuously. The peak-to-peak figures are measured off it."
+        ],
+        "cfg": {
+            "state": "nrem2"
+        },
+        "kind": "trace",
+        "scale": 90,
+        "ctrl": {
+            "k": "Window",
+            "key": "span",
+            "opts": [
+                [
+                    4,
+                    "4 s"
+                ],
+                [
+                    8,
+                    "8 s"
+                ],
+                [
+                    16,
+                    "16 s"
+                ]
+            ]
+        }
+    },
+    {
+        "id": "dsa",
+        "topic": "The second picture",
+        "title": "The DSA",
+        "tldr": "The same signal, redrawn so that minutes fit where the trace shows seconds.",
+        "lede": "A thermometer tells you the temperature now. A weather map tells you what has been moving across the country all week. Neither one replaces the other.",
+        "body": [
+            {
+                "p": "The raw trace answers what is happening now. The DSA answers what has been happening. Both come from exactly the same signal."
+            },
+            {
+                "p": "Tap between the two settings above. Nothing about the signal changes; only the way it is drawn. That is the entire claim of this card, and it is worth doing rather than reading."
+            },
+            {
+                "h": "How it is made"
+            },
+            {
+                "p": "Chop the record into short epochs of a few seconds. For each slice, work out how much of the signal sits at each frequency. Draw that slice as a single vertical stripe, with colour standing for how much. Then set the stripes side by side as time passes, so the picture crawls across the screen."
+            },
+            {
+                "h": "The two axes"
+            },
+            {
+                "p": "Time runs across. Frequency runs up, slow at the bottom and fast at the top. Colour is how much power sits at that frequency at that moment. Once you can read those three things you can read any spectrogram on any monitor."
+            },
+            {
+                "h": "What you give up"
+            },
+            {
+                "p": "Shape. Everything the raw trace was good at has been thrown away to buy the long view, which is exactly why every monitor shows you both and why this dictionary teaches both."
+            },
+            {
+                "h": "How much time is on it"
+            },
+            {
+                "p": "The window above holds about 38 seconds, which is short for a density spectral array. A theatre monitor will usually show you many minutes at once, and that compression is the whole reason it exists. The picture does not change in kind when it holds more, only in how much history you can take in at a glance."
+            }
+        ],
+        "src": [
+            "Density spectral array is the term the ESAIC consensus uses. Spectrogram is the same object under a different name.",
+            "The spectrum here is a sine multitaper estimate, which is the browser-tractable stand-in the programme uses for Chronux DPSS."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "spec",
+        "ctrl": {
+            "k": "One signal, two pictures",
+            "key": "view",
+            "def": 1,
+            "opts": [
+                [
+                    "trace",
+                    "Raw trace"
+                ],
+                [
+                    "spec",
+                    "The DSA"
+                ]
+            ]
+        }
+    },
+    {
+        "id": "morphology",
+        "topic": "Describing what you see",
+        "title": "Morphology",
+        "tldr": "The shape of a wave, described before anybody names it.",
+        "lede": "You can describe a letter of handwriting without knowing which letter it is. Tall, looped, joined to the next one. The description comes first and it survives being wrong about the letter.",
+        "body": [
+            {
+                "p": "Morphology is that description applied to a wave: how steep, how symmetrical, how sharp, which way up, and does it look like a sine wave or like something else. The element above is drawn alone on a near-silent background so there is nothing else to look at."
+            },
+            {
+                "h": "Sinusoidal, and not"
+            },
+            {
+                "p": "A sine wave is symmetrical: one half is the mirror of the other. The wave above is not. One phase is faster and sharper than the other, and that asymmetry is a property of the physiology rather than of the drawing, which is why it survives being redrawn on any monitor."
+            },
+            {
+                "h": "Which way is up"
+            },
+            {
+                "p": "Clinical EEG is drawn with negative deflections pointing upward, the opposite of most physiological traces, and that is the convention used here. It only matters for a wave like this one: a sine wave looks identical either way, but an asymmetric element turns over. If a record ever looks upside down to you against a textbook, check the convention before you check the patient."
+            },
+            {
+                "h": "Describe first, name second"
+            },
+            {
+                "p": "This is the rule the rest of the dictionary rests on. Two different things can share a name, and one thing can have several names depending on who taught you. A description does not have that problem, and if you can describe it accurately you can always find out later what it is called."
+            }
+        ],
+        "src": [
+            "The element above is the programme's slow-wave shape, whose asymmetric down-state is sourced to Guay 2025 (down-states of 0.25 to 2 s).",
+            "The negative-up display convention is not stated in any source the programme holds. Confirm how your own equipment draws polarity."
+        ],
+        "cfg": {
+            "state": "quiet",
+            "transient": {
+                "kind": "slowWave",
+                "period": 2.4
+            }
+        },
+        "kind": "trace",
+        "span": 3,
+        "scale": 100
+    },
+    {
+        "id": "continuity",
+        "topic": "Describing what you see",
+        "title": "Continuity",
+        "tldr": "Whether the activity runs on, comes and goes, or arrives as separate events.",
+        "lede": "Rain, showers, and a single thunderclap are three different weather reports, and the difference between them is not how hard the water falls.",
+        "body": [
+            {
+                "p": "Continuity is the same distinction applied to a record, and it is one of the few descriptions you can make confidently from across the room. Activity that runs on without interruption is continuous. Activity that stops and restarts is intermittent. A one-off event on an otherwise unremarkable background is episodic."
+            },
+            {
+                "h": "What is on the screen above"
+            },
+            {
+                "p": "That record is intermittent. There are stretches of activity and stretches with almost nothing, alternating. It has a name, the name is a criterion with a number attached, and you will meet it properly further along."
+            },
+            {
+                "h": "Why not just say the name now"
+            },
+            {
+                "p": "Because the useful skill at this stage is being able to say what you see without reaching for a label. A registrar who can say the record went from continuous to intermittent has told you something real and checkable. A registrar who reaches for the name and picks the wrong one has told you nothing, and you cannot tell which has happened."
+            }
+        ],
+        "src": [
+            "The record above is generated at a burst-suppression ratio of 0.45 using the programme's own gate."
+        ],
+        "cfg": {
+            "state": "propofol",
+            "bsr": 0.45
+        },
+        "kind": "trace",
+        "scale": 70
+    },
+    {
+        "id": "the-bands",
+        "topic": "The frequency bands",
+        "title": "The bands",
+        "tldr": "Six named slices of the frequency axis, with edges that are conventions rather than facts.",
+        "lede": "A graphic equaliser has sliders labelled bass, mid and treble. Nothing in the music changes at the boundary between them. Somebody drew the lines so that people could talk about it.",
+        "body": [
+            {
+                "p": "The EEG frequency axis is divided the same way and for the same reason. Six names, running from the slowest at the bottom to the fastest at the top. Tap through them above and watch the bright stripe climb the axis. That vertical position is the band, and it is the only thing the name refers to."
+            },
+            {
+                "h": "The edges used here"
+            },
+            {
+                "p": "Slow below 1 Hz, delta 1 to 4, theta 4 to 8, alpha 8 to 12, beta 13 to 25, gamma above 25. Carry them as landmarks rather than as thresholds, and do not expect them to add up to a tidy hundred per cent of anything."
+            },
+            {
+                "h": "And they disagree between sources"
+            },
+            {
+                "p": "Guay puts alpha at 8 to 12, which is what you have just read. Purdon puts it at 9 to 12. A recent paediatric paper uses 7.5 to 12.5 and shifts every neighbouring edge to match. Sleep medicine adds a seventh band that anaesthesia does not use at all. None of them is wrong. They are conventions, and which numbers you were taught depends on whose table you learned from."
+            },
+            {
+                "h": "Why that is worth knowing"
+            },
+            {
+                "p": "Because two monitors computing over different edges will not agree, and neither will two people describing the same record. When a band figure is quoted at you, the useful question is which edges it was measured over."
+            }
+        ],
+        "src": [
+            "Guay 2025 — the band edges this programme uses.",
+            "Purdon 2015 Part I, Table 1 — alpha at 9 to 12 Hz.",
+            "Markus et al. Pediatric Anesthesia 2026;36:641-49 — delta 0.5-3.5, theta 3.5-7.5, alpha 7.5-12.5, beta 12.5-30.",
+            "<em>Flagged:</em> Guay 2025 and Purdon 2015 are cited second-hand; the primary texts are not held here."
+        ],
+        "band": "slow",
+        "kind": "spec",
+        "ctrl": {
+            "k": "One band at a time",
+            "key": "band",
+            "def": 0,
+            "opts": [
+                [
+                    "slow",
+                    "Slow"
+                ],
+                [
+                    "delta",
+                    "Delta"
+                ],
+                [
+                    "theta",
+                    "Theta"
+                ],
+                [
+                    "alpha",
+                    "Alpha"
+                ],
+                [
+                    "beta",
+                    "Beta"
+                ],
+                [
+                    "gamma",
+                    "Gamma"
+                ]
+            ]
+        },
+        "section": "bands",
+        "opener": true
+    },
+    {
+        "id": "band-slow",
+        "topic": "The frequency bands",
+        "title": "Slow",
+        "tldr": "Below 1 Hz. The largest and slowest thing on the record.",
+        "lede": "Start at the bottom of the ladder. Everything after this is faster and, on the same scale, smaller.",
+        "body": [
+            {
+                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
+            },
+            {
+                "h": "Where you see it"
+            },
+            {
+                "p": "It grows more than any other band as anaesthesia deepens, which is most of why a deep record looks like long rolling swells rather than a busy line."
+            },
+            {
+                "h": "A word of warning about the name"
+            },
+            {
+                "p": "Slow here is a claim about speed. There is also a named element called a slow wave, which is a claim about shape. They overlap constantly in conversation and they are not the same claim. That shape gets its own card further along; for now just keep the two claims apart."
+            }
+        ],
+        "src": [
+            "Generated from the programme's own single-component band demonstration. The clinical line is the note that demonstration already carries."
+        ],
+        "band": "slow",
+        "kind": "trace",
+        "span": 8,
+        "scale": 80,
+        "ctrl": {
+            "k": "Window",
+            "key": "span",
+            "def": 0,
+            "opts": [
+                [
+                    8,
+                    "Compare · 8 s"
+                ],
+                [
+                    16,
+                    "Wider · 16 s"
+                ]
+            ]
+        },
+        "section": "bands",
+        "fwd": [
+            "slow-wave"
+        ]
+    },
+    {
+        "id": "band-delta",
+        "topic": "The frequency bands",
+        "title": "Delta",
+        "tldr": "1 to 4 Hz. The band that dominates general anaesthesia.",
+        "lede": "One step up, and still large enough that it carries most of what you can see on an anaesthetised trace.",
+        "body": [
+            {
+                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
+            },
+            {
+                "h": "Where you see it"
+            },
+            {
+                "p": "Dominant under general anaesthesia and in deep sleep. In infants it dominates the record at baseline, before any drug at all, which is a trap if you are used to adults."
+            },
+            {
+                "h": "Against the card before this one"
+            },
+            {
+                "p": "Slow and delta usually move together and are often spoken of as one thing, slow-delta. That is a convenience rather than a rule, and the two have different edges."
+            }
+        ],
+        "src": [
+            "Generated from the programme's own single-component band demonstration. The clinical line is the note that demonstration already carries."
+        ],
+        "band": "delta",
+        "kind": "trace",
+        "span": 8,
+        "scale": 80,
+        "ctrl": {
+            "k": "Window",
+            "key": "span",
+            "def": 0,
+            "opts": [
+                [
+                    8,
+                    "Compare · 8 s"
+                ],
+                [
+                    4,
+                    "Close up · 4 s"
+                ]
+            ]
+        },
+        "section": "bands"
+    },
+    {
+        "id": "band-theta",
+        "topic": "The frequency bands",
+        "title": "Theta",
+        "tldr": "4 to 8 Hz. The middle of the ladder, and easy to overlook.",
+        "lede": "Halfway up. The amplitude has fallen by more than half since the slow band, and it keeps falling.",
+        "body": [
+            {
+                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
+            },
+            {
+                "h": "Where you see it"
+            },
+            {
+                "p": "It is sevoflurane's extra stripe against propofol, and it reappears during emergence."
+            },
+            {
+                "h": "Why it gets missed"
+            },
+            {
+                "p": "It sits between two bands that are louder than it in almost every record, so on a raw trace it is buried. This is a band you read off the second picture rather than off the line."
+            }
+        ],
+        "src": [
+            "Generated from the programme's own single-component band demonstration. The clinical line is the note that demonstration already carries."
+        ],
+        "band": "theta",
+        "kind": "trace",
+        "span": 8,
+        "scale": 80,
+        "ctrl": {
+            "k": "Window",
+            "key": "span",
+            "def": 0,
+            "opts": [
+                [
+                    8,
+                    "Compare · 8 s"
+                ],
+                [
+                    3,
+                    "Close up · 3 s"
+                ]
+            ]
+        },
+        "section": "bands"
+    },
+    {
+        "id": "band-alpha",
+        "topic": "The frequency bands",
+        "title": "Alpha",
+        "tldr": "8 to 12 Hz. The band that moves.",
+        "lede": "The most useful band in anaesthesia, and the only one whose location on the head is part of what it means.",
+        "body": [
+            {
+                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
+            },
+            {
+                "h": "Where you see it"
+            },
+            {
+                "p": "Occipital when a patient is awake with their eyes closed. Frontal under a GABA-A anaesthetic. The rhythm does not appear from nowhere; it changes address."
+            },
+            {
+                "h": "Where it is not"
+            },
+            {
+                "p": "In infants it is not reliably present until somewhere between four and six months of age, and the sources do not agree on exactly when."
+            }
+        ],
+        "src": [
+            "Generated from the programme's own single-component band demonstration. The clinical line is the note that demonstration already carries."
+        ],
+        "band": "alpha",
+        "kind": "trace",
+        "span": 8,
+        "scale": 80,
+        "ctrl": {
+            "k": "Window",
+            "key": "span",
+            "def": 0,
+            "opts": [
+                [
+                    8,
+                    "Compare · 8 s"
+                ],
+                [
+                    2,
+                    "Close up · 2 s"
+                ]
+            ]
+        },
+        "section": "bands"
+    },
+    {
+        "id": "band-beta",
+        "topic": "The frequency bands",
+        "title": "Beta",
+        "tldr": "13 to 25 Hz. Small, fast, and informative at exactly one moment.",
+        "lede": "Near the top of the ladder. At this scale you are looking at texture rather than at waves you could measure by eye.",
+        "body": [
+            {
+                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
+            },
+            {
+                "h": "Where you see it"
+            },
+            {
+                "p": "It rises at induction, before consciousness is lost, which is the phenomenon called paradoxical excitation. It also rises in light anaesthesia."
+            },
+            {
+                "h": "Why the size is the point"
+            },
+            {
+                "p": "Beta is roughly a fifth of the amplitude of the slow band. That fall from bottom to top is a real property of the EEG, not a rendering choice, and it is why one fixed vertical scale can never show every band well."
+            }
+        ],
+        "src": [
+            "Generated from the programme's own single-component band demonstration. The clinical line is the note that demonstration already carries."
+        ],
+        "band": "beta",
+        "kind": "trace",
+        "span": 8,
+        "scale": 80,
+        "ctrl": {
+            "k": "Window",
+            "key": "span",
+            "def": 0,
+            "opts": [
+                [
+                    8,
+                    "Compare · 8 s"
+                ],
+                [
+                    1,
+                    "Close up · 1 s"
+                ]
+            ]
+        },
+        "section": "bands"
+    },
+    {
+        "id": "band-gamma",
+        "topic": "The frequency bands",
+        "title": "Gamma",
+        "tldr": "Above 25 Hz. The band most likely not to be the brain.",
+        "lede": "The top of the ladder, and the one to be most suspicious of.",
+        "body": [
+            {
+                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
+            },
+            {
+                "h": "Where you see it"
+            },
+            {
+                "p": "On a forehead channel a large part of what sits up here is frontalis muscle rather than cortex. Ketamine is the anaesthetic that puts real gamma there."
+            },
+            {
+                "h": "What that means in practice"
+            },
+            {
+                "p": "A number that climbs when a patient is light and their muscles come back is doing something real, but it is not necessarily telling you about the cortex. Anything read off this band deserves the question of whether the patient was paralysed."
+            }
+        ],
+        "src": [
+            "Generated from the programme's own single-component band demonstration. The clinical line is the note that demonstration already carries."
+        ],
+        "band": "gamma",
+        "kind": "trace",
+        "span": 8,
+        "scale": 80,
+        "ctrl": {
+            "k": "Window",
+            "key": "span",
+            "def": 0,
+            "opts": [
+                [
+                    8,
+                    "Compare · 8 s"
+                ],
+                [
+                    0.5,
+                    "Close up · 0.5 s"
+                ]
+            ]
+        },
+        "section": "bands"
+    },
+    {
+        "id": "slow-wave",
+        "topic": "The waves themselves",
+        "title": "Slow wave",
+        "tldr": "One cycle of the slow rhythm, on its own, measured by its down-state.",
+        "lede": "You have already met this one. It was the shape on the morphology card, and it is worth naming now that you have the vocabulary for it.",
+        "body": [
+            {
+                "p": "A single cycle of the slow-delta rhythm, drawn alone on a near-silent background of about 2 microvolts so there is nothing else to look at. It peaks at about 91 microvolts here."
+            },
+            {
+                "h": "It is measured by its down-state, not its whole cycle"
+            },
+            {
+                "p": "The figure is 453 milliseconds, and that is the down-state alone. Guay gives down-states of a quarter of a second to two seconds. Measuring the whole cycle would give a different and less useful number, because the down-state is the part that carries the meaning."
+            },
+            {
+                "h": "Why the asymmetry matters"
+            },
+            {
+                "p": "The down-state is sharper than the up-state. Tap the polarity control and watch the whole thing turn over. That is what the negative-up convention does to an asymmetric element, and it is the only reason the convention is worth knowing."
+            },
+            {
+                "h": "Slow wave against delta wave"
+            },
+            {
+                "p": "A delta wave is any wave in the delta band, which is a claim about speed. A slow wave is this shape, which is a claim about form. They get used interchangeably in conversation and they are not the same claim."
+            }
+        ],
+        "src": [
+            "Guay 2025 — down-states of 0.25 to 2 s. This is the only one of the four named elements here whose criterion comes from a source the programme holds."
+        ],
+        "cfg": {
+            "state": "quiet",
+            "transient": {
+                "kind": "slowWave",
+                "period": 3.0
+            }
+        },
+        "kind": "trace",
+        "span": 3,
+        "scale": 110,
+        "ctrl": {
+            "k": "Polarity",
+            "key": "pol",
+            "def": 0,
+            "opts": [
+                [
+                    1,
+                    "Negative up"
+                ],
+                [
+                    -1,
+                    "Positive up"
+                ]
+            ]
+        },
+        "section": "waves"
+    },
+    {
+        "id": "k-complex",
+        "topic": "The waves themselves",
+        "title": "K-complex",
+        "tldr": "A large, long, two-part deflection, biggest at the front of the head.",
+        "lede": "The largest single thing you will see on a normal record, and the easiest to recognise once you have seen one.",
+        "body": [
+            {
+                "p": "A sharp negative component followed by a slower positive one, frontally maximal, and long. It measures 891 milliseconds here and peaks at about 117 microvolts, which is more than the whole propofol record you met earlier."
+            },
+            {
+                "h": "Long is the defining feature"
+            },
+            {
+                "p": "The usual criterion is at least half a second. That figure is an AASM scoring definition, which is licensed and is not held by this programme, so treat it as orientation rather than as something you can quote."
+            },
+            {
+                "h": "Two parts, and both of them count"
+            },
+            {
+                "p": "Tap the polarity control. The sharp phase and the slow phase swap sides, and the shape stops looking like the one in your textbook if the textbook drew it the other way up. Nothing about the element changed."
+            }
+        ],
+        "src": [
+            "<em>Flagged:</em> the at-least-0.5-second criterion is an AASM scoring definition. AASM is licensed and is not held by this programme. Confirm it against your own reference before teaching it."
+        ],
+        "cfg": {
+            "state": "quiet",
+            "transient": {
+                "kind": "kcomplex",
+                "period": 3.0
+            }
+        },
+        "kind": "trace",
+        "span": 3,
+        "scale": 140,
+        "ctrl": {
+            "k": "Polarity",
+            "key": "pol",
+            "def": 0,
+            "opts": [
+                [
+                    1,
+                    "Negative up"
+                ],
+                [
+                    -1,
+                    "Positive up"
+                ]
+            ]
+        },
+        "section": "waves"
+    },
+    {
+        "id": "vertex",
+        "topic": "The waves themselves",
+        "title": "Vertex sharp wave",
+        "tldr": "A single sharp deflection, about six times shorter than a K-complex.",
+        "lede": "Sharp means short. It does not mean steeply drawn, and the difference is the whole point of this card.",
+        "body": [
+            {
+                "p": "One negative transient, measuring 141 milliseconds against the K-complex's 891, and peaking at about 78 microvolts."
+            },
+            {
+                "h": "Sharpness is a duration, not an impression"
+            },
+            {
+                "p": "Go back to the card on gain and remember what changing the vertical scale did. Steepness on a screen is a setting. Duration is not. That is why sharpness is something you measure rather than something you judge, and it is why the two elements are told apart by one number."
+            },
+            {
+                "h": "What the polarity control shows here"
+            },
+            {
+                "p": "Less than on the other two, because this shape is nearly symmetrical about its peak. Which is itself the lesson: the convention only bites on an asymmetric element."
+            }
+        ],
+        "src": [
+            "<em>Flagged:</em> the duration range for this element is clinical convention and is not stated in any source the programme holds."
+        ],
+        "cfg": {
+            "state": "quiet",
+            "transient": {
+                "kind": "vertex",
+                "period": 3.0
+            }
+        },
+        "kind": "trace",
+        "span": 3,
+        "scale": 100,
+        "ctrl": {
+            "k": "Polarity",
+            "key": "pol",
+            "def": 0,
+            "opts": [
+                [
+                    1,
+                    "Negative up"
+                ],
+                [
+                    -1,
+                    "Positive up"
+                ]
+            ]
+        },
+        "section": "waves"
+    },
+    {
+        "id": "spindle",
+        "topic": "The waves themselves",
+        "title": "Sleep spindle",
+        "tldr": "Not a single deflection at all, but a short run of oscillation.",
+        "lede": "Put this beside a K-complex and the difference between an element and a rhythm stops being abstract.",
+        "body": [
+            {
+                "p": "A run of oscillation between about 11 and 16 hertz, lasting around 805 milliseconds here and peaking at only 34 microvolts. Conventionally a run has to last at least half a second to count."
+            },
+            {
+                "h": "One event, many cycles"
+            },
+            {
+                "p": "A K-complex is one deflection that happens to be long. This is many cycles inside one envelope that begins and ends. Both last about eight hundred milliseconds, and they are nothing like each other."
+            },
+            {
+                "h": "Why it is small"
+            },
+            {
+                "p": "At 34 microvolts it is a third the size of a K-complex. It sits in the sigma range just above alpha, and by the ladder you have already walked, faster means smaller."
+            },
+            {
+                "h": "Polarity does almost nothing here"
+            },
+            {
+                "p": "An oscillation is symmetrical, so turning it over leaves it looking the same. Compare that with the slow wave and you have the whole of why the convention matters where it matters."
+            }
+        ],
+        "src": [
+            "<em>Flagged:</em> the 11 to 16 hertz range and the half-second minimum are scoring conventions and are not stated in any source the programme holds."
+        ],
+        "cfg": {
+            "state": "quiet",
+            "transient": {
+                "kind": "spindleRun",
+                "period": 3.0
+            }
+        },
+        "kind": "trace",
+        "span": 3,
+        "scale": 60,
+        "ctrl": {
+            "k": "Polarity",
+            "key": "pol",
+            "def": 0,
+            "opts": [
+                [
+                    1,
+                    "Negative up"
+                ],
+                [
+                    -1,
+                    "Positive up"
+                ]
+            ]
+        },
+        "section": "waves"
+    },
+    {
+        "id": "suppression",
+        "topic": "The waves themselves",
+        "title": "Suppression",
+        "tldr": "Three words that everything later depends on, separated by one number.",
+        "lede": "These are not descriptions of how a record feels. They are three names for three measurements, and getting them the wrong way round changes what you have said.",
+        "body": [
+            {
+                "p": "A burst is a segment of activity. Suppression is the near-flat segment between bursts, under 5 microvolts peak to peak. Attenuation is a fall in amplitude that does not reach that criterion. Both a burst and a suppression are on the record above."
+            },
+            {
+                "h": "The scale control is the argument"
+            },
+            {
+                "p": "Move it. At the widest setting the quiet stretch looks completely flat and the bursts look modest. At the tightest it looks like there is something going on in both. Neither impression is a measurement, and the microvolt readout has not moved through any of it."
+            },
+            {
+                "h": "So the difference between the three words is a number"
+            },
+            {
+                "p": "Not an impression, and not how flat something looks at whatever gain the last person left the monitor on. If you cannot say which side of 5 microvolts a segment falls, you cannot yet say which of the three words applies."
+            }
+        ],
+        "src": [
+            "Guay 2025 — the 5 microvolt suppression criterion, and attenuation as a fall that does not reach it."
+        ],
+        "cfg": {
+            "state": "propofol",
+            "bsr": 0.45
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 70,
+        "ctrl": {
+            "k": "Vertical scale",
+            "key": "scale",
+            "def": 1,
+            "opts": [
+                [
+                    35,
+                    "±35 µV"
+                ],
+                [
+                    70,
+                    "±70 µV"
+                ],
+                [
+                    140,
+                    "±140 µV"
+                ]
+            ]
+        },
+        "section": "waves"
+    },
+    {
+        "id": "frontal-alpha",
+        "topic": "Rhythms",
+        "title": "Frontal alpha",
+        "tldr": "A steady rhythm over the forehead that turns up when propofol takes hold.",
+        "lede": "Pick up a landline and you get a dial tone. It tells you nothing about who you are calling, only that the line is open and the exchange is working.",
+        "body": [
+            {
+                "p": "Frontal alpha works a little like that. Once propofol has taken an adult past loss of consciousness, a rhythm of about ten cycles a second appears over the forehead, riding on much slower and much larger waves. On the record above the slow and delta bands carry about 89% of the power and the alpha about 11%, which is why it reads as a fine ripple on a long swell rather than as a wave in its own right."
+            },
+            {
+                "h": "The rhythm changed address, it did not appear"
+            },
+            {
+                "p": "An awake patient with their eyes shut already has alpha. It sits at the back of the head. Under propofol it turns up at the front instead. That relocation is the finding, and it reverses on the way out."
+            },
+            {
+                "h": "What it is good for"
+            },
+            {
+                "p": "It is one of the steadier things on the screen once you can see it. It arrives with loss of consciousness and it leaves on emergence. If it fades in the middle of a case while nothing about the dose has changed, that is worth a second look at the patient rather than at the monitor."
+            },
+            {
+                "h": "Where it is not"
+            },
+            {
+                "p": "Tap the second setting. Same drug, same dose, a two-month-old, and the alpha is simply not there. It is not reliably present until somewhere between four and six months of age, and the sources do not agree on exactly when. In a small baby its absence tells you about the age of the brain, not about the depth of anaesthesia."
+            }
+        ],
+        "src": [
+            "Purdon et al. Proc Natl Acad Sci USA 2013;110(12):E1142-51. doi 10.1073/pnas.1221180110 — the anterior shift.",
+            "Bong &amp; Yuan. Anesth Analg 2026;142:1155-68, and Markus et al. Pediatric Anesthesia 2026;36:641-49 — the paediatric threshold, and the disagreement about it.",
+            "<em>Flagged:</em> the Purdon primary text is cited second-hand in the programme's own notes. Verify before teaching from it."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 70,
+        "ctrl": {
+            "k": "Same drug, two patients",
+            "key": "cfg",
+            "def": 0,
+            "opts": [
+                [
+                    {
+                        "state": "propofol",
+                        "age": 40
+                    },
+                    "Adult"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "age": 0.17
+                    },
+                    "Two months old"
+                ]
+            ]
+        }
+    },
+    {
+        "id": "burst-suppression",
+        "topic": "Patterns",
+        "title": "Burst suppression",
+        "tldr": "The cortex goes quiet between bursts. That is the whole of what it tells you.",
+        "lede": "A smoke alarm tells you there is smoke. It will not tell you whether that is toast, a candle or the wiring.",
+        "body": [
+            {
+                "p": "It is a good instrument for exactly that reason: completely unambiguous about one thing, completely silent about everything else. Burst suppression carries the same shape of information. The record alternates. A few seconds of activity, then a stretch that is almost flat, then activity again. The flat stretches are the suppression."
+            },
+            {
+                "h": "How flat counts as flat"
+            },
+            {
+                "p": "The threshold taught here is under 5 microvolts peak to peak. On the middle setting the suppressed stretches measure about 1.7 against bursts of 96, so the difference stops being subtle once you know to look for it. Critical care and the ACNS glossary use under 10 microvolts for the same word. Two numbers for one term is worth knowing before somebody quotes one of them at you."
+            },
+            {
+                "h": "The third setting is not more of the same"
+            },
+            {
+                "p": "Tap it and the bursts stop entirely. A record with no bursts at all, measuring 2 microvolts or less, is electrocerebral inactivity, and that is a different statement. Notice what does not distinguish them: the suppressed stretches are about as small in both. What makes it burst suppression is that something still bursts."
+            },
+            {
+                "h": "It is a state, not a cause"
+            },
+            {
+                "p": "Too much anaesthetic will produce it. So will hypothermia, cerebral ischaemia, and the period after a seizure. The record cannot tell you which of those you are looking at. That is not a gap to work around, it is how the finding is meant to be used. You read the trace, then you read the temperature, the pressure, the dose and the patient."
+            }
+        ],
+        "src": [
+            "Guay 2025 — the 5 microvolt suppression figure and the 2 microvolt inactivity figure this programme teaches.",
+            "Sewell, Abbas &amp; Kane. BJA Education 2019;19(3):74-82. doi 10.1016/j.bjae.2018.11.002 — the 10 microvolt critical-care figure, and the alternative causes."
+        ],
+        "cfg": {
+            "state": "propofol",
+            "bsr": 0.6
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 70,
+        "ctrl": {
+            "k": "Depth",
+            "key": "cfg",
+            "def": 1,
+            "opts": [
+                [
+                    {
+                        "state": "propofol",
+                        "bsr": 0.3
+                    },
+                    "Occasional"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "bsr": 0.6
+                    },
+                    "Frequent"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "bsr": 1
+                    },
+                    "No bursts"
+                ]
+            ]
+        }
+    },
+    {
+        "id": "sef95",
+        "topic": "The numbers",
+        "title": "SEF95",
+        "tldr": "One line across the spectrogram with 95% of the power below it.",
+        "lede": "Look at a loaded ship and you can see where the water comes up the hull. The waterline tells you nothing at all about what is in the hold.",
+        "body": [
+            {
+                "p": "SEF95 is a waterline drawn across the frequency axis. Take all the power in the record, from the slowest waves to the fastest, and find the frequency with 95% of it underneath. The picture above is the density spectral array you already know, with that line drawn on it. This is how a monitor shows it, and it is worth noticing why: the line and the picture it came from are on the same screen."
+            },
+            {
+                "h": "Why it moves the way it does"
+            },
+            {
+                "p": "Slow, large waves carry most of the power. So as a patient goes deeper and the record fills with slow activity, the line drops. As they lighten and faster activity comes back, it climbs. As orientation rather than as targets: around 20 Hz at emergence, around 17 when light, around 10 when deep. The record above sits at about 10.3."
+            },
+            {
+                "h": "The catch"
+            },
+            {
+                "p": "It is a summary, and summarising costs you the picture. On this exact record 95% of the power sits below 10.3 Hz, but 50% of it sits below 1.0 Hz. Same signal, two lines nine hertz apart. Which of them you are shown is a choice somebody else made, and so is the frequency band it was measured over, which here is 0.5 to 45 Hz."
+            },
+            {
+                "h": "It is not the number on your monitor"
+            },
+            {
+                "p": "BIS, PSi and Narcotrend are proprietary and are calculated differently. SEF95 is one of the few figures you can work out openly and check against the picture underneath it."
+            }
+        ],
+        "src": [
+            "Bong &amp; Yuan. Anesth Analg 2026;142:1155-68. doi 10.1213/ANE.0000000000007230 — the orientation values.",
+            "<em>Provenance:</em> that is a narrative review rather than a trial, and one author declares a Masimo consulting fee and research grant."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "spec",
+        "span": 8,
+        "sef": true
+    }
+];
+/* ==========================================================================
+   THE PRIMER — a basics on-ramp that runs before module 01.
+
+   Everything here is ADDITIVE. It calls the app's own makeEngine, spectrum,
+   sefBand, jet, BAND_DEMO, TRANSIENTS and P, so there is one engine and one
+   theme table, not two.
+
+   Written against the subset mini.js implements: useState / useEffect / useRef.
+   No fragments, no context, and NO MEMOISATION OF ANY KIND — the build already
+   rejects that, because P is mutated in place and a memoised subtree would stop
+   seeing a theme change.
+   ========================================================================== */
+/* ---- scopes ---------------------------------------------------------------
+   SCOPE is a singleton for the ONE instrument the app shows. The primer's index
+   shows 23 at once, so it needs a map. Kept SEPARATE and additive: nothing here
+   touches SCOPE, and SCOPE never sees these buffers.
+
+   Held OUTSIDE the components for the same reason SCOPE is: a tab change would
+   otherwise unmount every canvas and throw away its history.                  */
+const PSCOPES = {};
+const PSCOPE_MAX = 26;
+const PSCOPE_ORDER = [];
+const PCOL_S = 0.25; // seconds per spectrogram column
+const PNCOL = 150;
+const PNBIN = Math.round(40 / DF);
+function pOrdered(s) {
+    if (!s.scratch || s.scratch.length !== s.buf.length)
+        s.scratch = new Float64Array(s.buf.length);
+    const out = s.scratch, n = s.buf.length, head = n - s.i;
+    out.set(s.buf.subarray(s.i));
+    out.set(s.buf.subarray(0, s.i), head);
+    return out;
+}
+function pScopeFor(key, cfg, span, wantsDSA) {
+    let s = PSCOPES[key];
+    if (s)
+        return s;
+    const need = Math.max(Math.round(span * FS), FS * 4);
+    s = { eng: makeEngine(3), cfg, span, buf: new Float64Array(need), i: 0, t: 0, acc: 0, cols: [], dsa: wantsDSA };
+    // prime the ring buffer, then the column history, through the SAME path the
+    // live loop uses, so a DSA never opens as a block in the corner
+    for (let k = 0; k < need; k++) {
+        s.buf[k] = s.eng(s.t, cfg, 0);
+        s.t += 1 / FS;
+    }
+    if (wantsDSA) {
+        const per = Math.round(PCOL_S * FS);
+        for (let c = 0; c < PNCOL; c++) {
+            for (let j = 0; j < per; j++) {
+                s.buf[s.i] = s.eng(s.t, cfg, 0);
+                s.i = (s.i + 1) % s.buf.length;
+                s.t += 1 / FS;
+            }
+            s.cols.push(spectrum(pOrdered(s).subarray(s.buf.length - WIN_N), NFFT, 3));
+        }
+    }
+    PSCOPES[key] = s;
+    PSCOPE_ORDER.push(key);
+    while (PSCOPE_ORDER.length > PSCOPE_MAX) {
+        const k = PSCOPE_ORDER.shift();
+        delete PSCOPES[k];
+    }
+    return s;
+}
+function pAdvance(s, dt) {
+    const n = Math.min(Math.round(dt * FS), FS); // cap after a background tab
+    for (let k = 0; k < n; k++) {
+        s.buf[s.i] = s.eng(s.t, s.cfg, 0);
+        s.i = (s.i + 1) % s.buf.length;
+        s.t += 1 / FS;
+    }
+    if (!s.dsa || !n)
+        return;
+    s.acc += n / FS;
+    while (s.acc >= PCOL_S) {
+        s.acc -= PCOL_S;
+        s.cols.push(spectrum(pOrdered(s).subarray(s.buf.length - WIN_N), NFFT, 3));
+        if (s.cols.length > PNCOL)
+            s.cols.shift();
+    }
+}
+/* ---- resolving a card to something the engine can draw -------------------- */
+function pResolve(card, optIdx) {
+    const c = { band: card.band, cfg: card.cfg, kind: card.kind, scale: card.scale,
+        span: card.span, sef: card.sef, pol: 1 };
+    let tag = "";
+    if (card.ctrl) {
+        const v = card.ctrl.opts[optIdx][0];
+        tag = ":" + optIdx;
+        if (card.ctrl.key === "scale")
+            c.scale = v;
+        else if (card.ctrl.key === "span")
+            c.span = v;
+        else if (card.ctrl.key === "band")
+            c.band = v;
+        else if (card.ctrl.key === "view")
+            c.kind = v;
+        else if (card.ctrl.key === "cfg")
+            c.cfg = v;
+        else if (card.ctrl.key === "pol")
+            c.pol = v;
+    }
+    const cfg = c.band ? { custom: BAND_DEMO[c.band] } : (c.cfg || { state: "propofol" });
+    return {
+        key: card.id + tag + ":" + (c.span || 8) + ":" + (c.band || ""),
+        cfg, kind: c.kind || "trace", scale: c.scale || 70, span: c.span || 8,
+        sef: !!c.sef, pol: c.pol === -1 ? -1 : 1,
+        dsa: c.kind === "spec" || (card.ctrl && card.ctrl.key === "view"),
+    };
+}
+const pGrid = (span) => (span >= 2 ? 1 : 0.1);
+const pGridLabel = (span) => (pGrid(span) === 1 ? "gridlines 1 s apart" : "gridlines 100 ms apart");
+/* ---- one instrument window ------------------------------------------------
+   Colours read P on every frame, so a theme change lands on the next frame
+   without remounting — the same property that keeps SCOPE's spectrogram alive.
+   The window itself stays specBg in BOTH themes: it sits inside a P.surface
+   card, so a P.surface window would be the same colour as its own card.       */
+function PrimerScope({ spec, height, small }) {
+    const ref = useRef(null);
+    const specRef = useRef(spec);
+    const lastRef = useRef(0);
+    const [ro, setRo] = useState({ pp: 0, sef: 0 });
+    specRef.current = spec;
+    useEffect(() => {
+        let raf;
+        const cv = ref.current;
+        if (!cv)
+            return;
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        let off = null, octx = null, img = null;
+        const fit = () => {
+            const r = cv.getBoundingClientRect();
+            cv.width = Math.max(1, Math.round(r.width * dpr));
+            cv.height = Math.max(1, Math.round(r.height * dpr));
+            const c2 = cv.getContext("2d");
+            if (c2)
+                c2.setTransform(dpr, 0, 0, dpr, 0, 0);
+            return c2;
+        };
+        let ctx = fit();
+        const onResize = () => { ctx = fit(); };
+        window.addEventListener("resize", onResize);
+        const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const minGap = reduced ? 1000 / 12 : 1000 / 30;
+        const step = (now) => {
+            raf = requestAnimationFrame(step);
+            if (!ctx)
+                return;
+            if (lastRef.current && now - lastRef.current < minGap)
+                return;
+            const dt = lastRef.current ? Math.min((now - lastRef.current) / 1000, 0.5) : 0;
+            lastRef.current = now;
+            const sp = specRef.current;
+            const s = pScopeFor(sp.key, sp.cfg, sp.span, sp.dsa);
+            if (dt)
+                pAdvance(s, dt);
+            const sig = pOrdered(s);
+            const w = cv.width / dpr, h = cv.height / dpr;
+            if (sp.kind === "spec") {
+                if (!off) {
+                    off = document.createElement("canvas");
+                    off.width = PNCOL;
+                    off.height = PNBIN;
+                    octx = off.getContext("2d");
+                    if (!octx)
+                        return;
+                    img = octx.createImageData(PNCOL, PNBIN);
+                }
+                const cols = s.cols, d = img.data, sb = rgbOf(P.specBg);
+                for (let cx = 0; cx < PNCOL; cx++) {
+                    const col = cols[cols.length - PNCOL + cx];
+                    for (let y = 0; y < PNBIN; y++) {
+                        const o = (y * PNCOL + cx) * 4;
+                        if (!col) {
+                            d[o] = sb[0];
+                            d[o + 1] = sb[1];
+                            d[o + 2] = sb[2];
+                            d[o + 3] = 255;
+                            continue;
+                        }
+                        const db = 10 * Math.log10(Math.max(1e-6, col[PNBIN - 1 - y]));
+                        const rgb = jet((db + 8) / 52);
+                        d[o] = rgb[0];
+                        d[o + 1] = rgb[1];
+                        d[o + 2] = rgb[2];
+                        d[o + 3] = 255;
+                    }
+                }
+                octx.putImageData(img, 0, 0);
+                const padL = small ? 0 : 26, padB = small ? 0 : 14;
+                ctx.fillStyle = P.specBg;
+                ctx.fillRect(0, 0, w, h);
+                ctx.drawImage(off, padL, 0, w - padL, h - padB);
+                const last = s.cols[s.cols.length - 1];
+                const s95 = last ? sefBand(last, 0.95, NFFT, FS, 45) : 0;
+                if (sp.sef && last) {
+                    const sy = (h - padB) * (1 - Math.min(s95, 40) / 40);
+                    ctx.strokeStyle = P.specInk;
+                    ctx.lineWidth = 1.6;
+                    ctx.beginPath();
+                    ctx.moveTo(padL, sy);
+                    ctx.lineTo(w, sy);
+                    ctx.stroke();
+                    if (!small) {
+                        ctx.fillStyle = P.specInk;
+                        ctx.font = "600 10px " + MN;
+                        ctx.textAlign = "right";
+                        ctx.fillText("SEF95 " + s95.toFixed(1) + " Hz", w - 5, Math.max(11, sy - 5));
+                    }
+                }
+                if (!small) {
+                    ctx.fillStyle = tint(P.specInk, 0.55);
+                    ctx.font = "9px " + MN;
+                    ctx.textAlign = "right";
+                    for (let i = 0; i <= 40; i += 10) {
+                        const yy = (h - padB) * (1 - i / 40);
+                        ctx.fillText(i === 40 ? "40 Hz" : String(i), padL - 4, Math.min(h - padB - 1, Math.max(8, yy + 3)));
+                    }
+                    ctx.textAlign = "left";
+                    ctx.fillText("\u2190 " + Math.round(PNCOL * PCOL_S) + " s of record", padL + 2, h - 4);
+                }
+                if (Math.abs(s95 - ro.sef) > 0.05)
+                    setRo({ pp: ro.pp, sef: s95 });
+                return;
+            }
+            // trace
+            const scale = sp.scale, span = sp.span, pol = sp.pol;
+            const n = Math.min(sig.length, Math.round(span * FS)), start = sig.length - n;
+            ctx.fillStyle = P.specBg;
+            ctx.fillRect(0, 0, w, h);
+            ctx.strokeStyle = tint(P.specInk, 0.10);
+            ctx.lineWidth = 1;
+            const gi = pGrid(span);
+            for (let g = gi; g < span - 1e-9; g += gi) {
+                const px = Math.round(w * g / span) + 0.5;
+                ctx.beginPath();
+                ctx.moveTo(px, 0);
+                ctx.lineTo(px, h);
+                ctx.stroke();
+            }
+            const mid = h / 2, k = (h / 2 - 3) / scale;
+            if (scale > 55 && h > 60) {
+                ctx.strokeStyle = tint(P.specRef, 0.26);
+                for (let u = 0; u < 2; u++) {
+                    const yy = mid - (u ? 50 : -50) * k;
+                    if (yy > 2 && yy < h - 2) {
+                        ctx.beginPath();
+                        ctx.moveTo(0, yy);
+                        ctx.lineTo(w, yy);
+                        ctx.stroke();
+                    }
+                }
+            }
+            ctx.strokeStyle = tint(P.specInk, 0.16);
+            ctx.beginPath();
+            ctx.moveTo(0, Math.round(mid) + 0.5);
+            ctx.lineTo(w, Math.round(mid) + 0.5);
+            ctx.stroke();
+            ctx.strokeStyle = P.specInk;
+            ctx.lineWidth = h < 70 ? 1 : 1.4;
+            ctx.lineJoin = "round";
+            ctx.beginPath();
+            // Catmull-Rom when stretched: at a close-up window there are four samples
+            // per cycle at 32 Hz, and a polyline through four points under-reads the
+            // true peak by up to 29%.
+            const sub = (w / Math.max(1, n - 1)) > 3 ? 6 : 1;
+            const g0 = (j) => sig[start + Math.max(0, Math.min(n - 1, j))];
+            let lo = 1e9, hi = -1e9;
+            for (let i = 0; i < n; i++) {
+                const v = g0(i);
+                if (v < lo)
+                    lo = v;
+                if (v > hi)
+                    hi = v;
+            }
+            for (let i = 0; i < n - 1; i++) {
+                for (let q = 0; q < sub; q++) {
+                    const u = q / sub, u2 = u * u, u3 = u2 * u;
+                    const v = sub === 1 ? g0(i)
+                        : 0.5 * ((2 * g0(i)) + (-g0(i - 1) + g0(i + 1)) * u
+                            + (2 * g0(i - 1) - 5 * g0(i) + 4 * g0(i + 1) - g0(i + 2)) * u2
+                            + (-g0(i - 1) + 3 * g0(i) - 3 * g0(i + 1) + g0(i + 2)) * u3);
+                    const px = ((i + u) / (n - 1)) * w, y = mid + pol * v * k;
+                    if (i === 0 && q === 0)
+                        ctx.moveTo(px, y);
+                    else
+                        ctx.lineTo(px, y);
+                }
+            }
+            ctx.lineTo(w, mid + pol * g0(n - 1) * k);
+            ctx.stroke();
+            const pp = hi - lo;
+            if (Math.abs(pp - ro.pp) > 0.5)
+                setRo({ pp, sef: ro.sef });
+        };
+        raf = requestAnimationFrame(step);
+        return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); };
+    }, []);
+    const label = spec.kind === "spec"
+        ? "Density spectral array, 0 to 40 hertz, " + Math.round(PNCOL * PCOL_S) + " seconds of record, colour is power"
+        : "Live EEG trace, " + spec.span + " second window";
+    return (React.createElement("div", { style: { background: P.specBg, borderRadius: small ? 8 : 10, overflow: "hidden", lineHeight: 0 } },
+        React.createElement("canvas", { ref: ref, role: "img", "aria-label": label, style: { display: "block", width: "100%", height } })));
+}
+/* ---- readout -------------------------------------------------------------- */
+function PrimerReadout({ spec }) {
+    const chip = { fontFamily: MN, fontSize: 11, color: P.dim, letterSpacing: "0.02em" };
+    if (spec.kind === "spec") {
+        return (React.createElement("div", { style: { display: "flex", gap: 14, flexWrap: "wrap", margin: "7px 0 0" } },
+            React.createElement("span", { style: chip }, spec.sef ? "SEF95 · band 0.5–45 Hz" : "time across · frequency up · colour is power")));
+    }
+    return (React.createElement("div", { style: { display: "flex", gap: 14, flexWrap: "wrap", margin: "7px 0 0" } },
+        React.createElement("span", { style: chip },
+            spec.span,
+            " s window"),
+        React.createElement("span", { style: chip }, pGridLabel(spec.span))));
+}
+/* ---- index ---------------------------------------------------------------- */
+function PrimerIndex({ opts, onOpen, onExit }) {
+    return (React.createElement("div", null,
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 6 } },
+            React.createElement("p", { style: { flex: 1, minWidth: 0, fontFamily: MN, fontSize: 11, letterSpacing: "0.13em",
+                    textTransform: "uppercase", color: P.dim, margin: 0 } }, "The basics"),
+            React.createElement(ThemeButton, null)),
+        React.createElement("h1", { style: { fontFamily: UI, fontSize: 28, fontWeight: 700, letterSpacing: "-0.03em",
+                lineHeight: 1.12, margin: "0 0 10px" } }, "Before the modules"),
+        React.createElement("p", { style: { fontFamily: UI, fontSize: 15.5, lineHeight: 1.5, color: P.ink, margin: "0 0 18px" } },
+            PRIMER_CARDS.length,
+            " terms, read in order. Nothing here uses a word that has not already been explained. Every panel is live and is generated on this device."),
+        PRIMER_CARDS.map((c, i) => (React.createElement("button", { key: c.id, onClick: () => onOpen(i), style: {
+                width: "100%", textAlign: "left", cursor: "pointer", border: `1px solid ${P.line}`,
+                background: P.surface, borderRadius: 13, padding: "11px 13px", marginBottom: 9,
+                minHeight: 74, display: "block",
+            } },
+            React.createElement("span", { style: { display: "flex", alignItems: "center", gap: 13 } },
+                React.createElement("span", { style: { fontFamily: MN, fontSize: 11, color: P.dim, flex: "0 0 20px" } }, i < 9 ? "0" + (i + 1) : String(i + 1)),
+                React.createElement("span", { style: { flex: "0 0 96px", height: 52 } },
+                    React.createElement(PrimerScope, { spec: pResolve(c, (c.ctrl && c.ctrl.def) || 0), height: 52, small: true })),
+                React.createElement("span", { style: { flex: 1, minWidth: 0, display: "block" } },
+                    React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 16, fontWeight: 600,
+                            color: P.ink, lineHeight: 1.2 } }, c.title),
+                    React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 12.5, lineHeight: 1.4,
+                            color: P.dim, marginTop: 3 } }, c.tldr)))))),
+        React.createElement("div", { style: { marginTop: 16 } },
+            React.createElement(Btn, { kind: "ghost", full: true, onClick: onExit }, "Done \u2014 go to the modules"))));
+}
+/* ---- one term ------------------------------------------------------------- */
+function PrimerEntry({ idx, optIdx, setOpt, onGo, onBack, narrow }) {
+    const c = PRIMER_CARDS[idx];
+    const spec = pResolve(c, optIdx);
+    const prev = PRIMER_CARDS[idx - 1], next = PRIMER_CARDS[idx + 1];
+    const eyebrow = { fontFamily: MN, fontSize: 11, letterSpacing: "0.13em",
+        textTransform: "uppercase", color: P.dim, margin: 0 };
+    return (React.createElement("div", null,
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 6 } },
+            React.createElement("button", { onClick: onBack, "aria-label": "Back to all terms", style: {
+                    background: "none", border: "none", cursor: "pointer", minHeight: 44, padding: 0,
+                    fontFamily: UI, fontSize: 14, fontWeight: 500, color: P.accent,
+                } }, "\u2190 All terms"),
+            React.createElement("span", { style: { ...eyebrow, marginLeft: "auto" } },
+                idx + 1,
+                " of ",
+                PRIMER_CARDS.length),
+            React.createElement(ThemeButton, null)),
+        React.createElement(PrimerScope, { spec: spec, height: narrow ? 152 : 180 }),
+        React.createElement(PrimerReadout, { spec: spec }),
+        c.ctrl ? (React.createElement("div", null,
+            React.createElement("p", { style: { ...eyebrow, margin: "14px 0 0" } }, c.ctrl.k),
+            React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" } }, c.ctrl.opts.map((o, i) => (React.createElement("button", { key: String(o[1]), onClick: () => setOpt(i), "aria-pressed": i === optIdx, style: {
+                    flex: "1 1 28%", minWidth: 84, minHeight: 44, borderRadius: 10, cursor: "pointer",
+                    textAlign: "center", fontFamily: MN, fontSize: 12,
+                    background: i === optIdx ? P.ink : P.surface,
+                    color: i === optIdx ? P.surface : P.dim,
+                    border: `1px solid ${i === optIdx ? P.ink : P.line}`,
+                } }, o[1])))))) : null,
+        React.createElement("p", { style: { ...eyebrow, margin: "22px 0 0" } }, c.topic),
+        React.createElement("h1", { style: { fontFamily: UI, fontSize: narrow ? 27 : 30, fontWeight: 700,
+                letterSpacing: "-0.03em", lineHeight: 1.12, margin: "6px 0 0" } }, c.title),
+        React.createElement("div", { style: { borderLeft: `3px solid ${P.accent}`, padding: "1px 0 1px 13px", margin: "13px 0 0" } },
+            React.createElement("span", { style: { ...eyebrow, color: P.accent, display: "block" } }, "In one line"),
+            React.createElement("p", { style: { fontFamily: UI, fontSize: 16.5, lineHeight: 1.45, color: P.ink, margin: "4px 0 0" } }, c.tldr)),
+        React.createElement("p", { style: { fontFamily: UI, fontSize: 17.5, lineHeight: 1.55, fontStyle: "italic",
+                color: P.ink, margin: "22px 0 15px" } }, c.lede),
+        c.body.map((x, i) => (x.h
+            ? React.createElement("p", { key: i, style: { fontFamily: UI, fontSize: 15, fontWeight: 700, lineHeight: 1.4,
+                    color: P.ink, margin: "24px 0 9px" } }, x.h)
+            : React.createElement("p", { key: i, style: { fontFamily: UI, fontSize: 16, lineHeight: 1.6,
+                    color: P.ink, margin: "0 0 15px" } }, x.p))),
+        React.createElement("div", { style: { background: P.surface, border: `1px solid ${P.line}`, borderRadius: 11,
+                padding: "13px 14px", margin: "22px 0 0" } },
+            React.createElement("span", { style: { ...eyebrow, display: "block", marginBottom: 7 } }, "Sources"),
+            c.src.map((s, i) => (React.createElement("p", { key: i, style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.55, color: P.ink,
+                    margin: i === c.src.length - 1 ? 0 : "0 0 7px" } }, withDoi(s.replace(/<\/?em>/g, ""), i))))),
+        React.createElement("div", { style: { display: "flex", gap: 10, margin: "26px 0 0" } },
+            React.createElement("button", { onClick: () => onGo(prev ? idx - 1 : -1), style: {
+                    flex: 1, minHeight: 60, display: "block", padding: "10px 14px", cursor: "pointer",
+                    border: `1px solid ${P.line}`, borderRadius: 12, background: P.surface, textAlign: "left",
+                } },
+                React.createElement("span", { style: { display: "block", ...eyebrow } },
+                    "\u2190 ",
+                    prev ? "Previous" : "Back"),
+                React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 15, fontWeight: 600,
+                        color: P.ink, marginTop: 3 } }, prev ? prev.title : "All terms")),
+            React.createElement("button", { onClick: () => onGo(next ? idx + 1 : -1), style: {
+                    flex: 1, minHeight: 60, display: "block", padding: "10px 14px", cursor: "pointer",
+                    border: `1px solid ${P.line}`, borderRadius: 12, background: P.surface, textAlign: "right",
+                } },
+                React.createElement("span", { style: { display: "block", ...eyebrow } },
+                    next ? "Next" : "Done",
+                    " \u2192"),
+                React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 15, fontWeight: 600,
+                        color: P.ink, marginTop: 3 } }, next ? next.title : "All terms")))));
+}
+/* ---- the primer view ------------------------------------------------------
+   Sits where Session sits: a top-level branch that bypasses the tab shell,
+   because the primer is an on-ramp rather than a destination.                 */
+function Primer({ prog, persist, onExit, narrow }) {
+    const start = (prog.primer && prog.primer.at) || 0;
+    const [idx, setIdx] = useState(start > 0 ? start : -1); // -1 = the index screen
+    const [opts, setOpts] = useState({});
+    useEffect(() => {
+        persist({ ...prog, primer: { seen: true, at: idx < 0 ? 0 : idx } });
+    }, [idx]); // eslint-disable-line
+    const card = idx >= 0 ? PRIMER_CARDS[idx] : null;
+    const optIdx = card ? (opts[card.id] !== undefined ? opts[card.id] : (card.ctrl && card.ctrl.def) || 0) : 0;
+    const announce = card
+        ? card.title + ", term " + (idx + 1) + " of " + PRIMER_CARDS.length + ". " + card.tldr
+        : "The basics, all " + PRIMER_CARDS.length + " terms";
+    return (React.createElement("div", { style: { minHeight: "100vh", background: P.bg, color: P.ink, fontFamily: UI } },
+        React.createElement(Styles, null),
+        React.createElement("p", { "aria-live": "polite", "aria-atomic": "true", style: {
+                position: "absolute", width: 1, height: 1, margin: -1, padding: 0,
+                overflow: "hidden", whiteSpace: "nowrap", border: 0, clip: "rect(0 0 0 0)",
+            } }, announce),
+        React.createElement("main", { style: { maxWidth: 620, margin: "0 auto", padding: "20px 17px 44px" } }, idx < 0
+            ? React.createElement(PrimerIndex, { opts: opts, onOpen: setIdx, onExit: onExit })
+            : React.createElement(PrimerEntry, { idx: idx, optIdx: optIdx, narrow: narrow, setOpt: (i) => { if (card)
+                    setOpts({ ...opts, [card.id]: i }); }, onGo: setIdx, onBack: () => setIdx(-1) }))));
+}
 /* ---- app ----------------------------------------------------------------- */
 function App() {
     const [tab, setTab] = useState("learn");
@@ -2828,6 +4499,7 @@ function App() {
     const [pi, setPi] = useState(0);
     const [inSession, setInSession] = useState(false);
     const [showIntro, setShowIntro] = useState(false);
+    const [inPrimer, setInPrimer] = useState(false);
     const [cfg, setCfg] = useState({ state: "awake", ch: 0, age: 40, bsr: 0, window: 5, scale: 200, map: "jet", art: {} });
     const [prog, setProg] = useState(EMPTY_PROG);
     const [theme, setTheme] = useState(P.name);
@@ -2863,6 +4535,16 @@ function App() {
             setCfg((c) => ({ ...c, bsr: 0, age: 40, ch: 0, art: {}, casePos: null, combo: null, transient: null, band: null, polarity: 'neg-up', window: 5, scale: 200, ...pt.cfg }));
         }
     }, [mi, pi, view, inSession]); // eslint-disable-line
+    // This used to only write seenIntro: false. showIntro is state, set once at
+    // mount, so writing the flag deferred the whole effect to the next launch and
+    // the control looked dead. It also has to leave More, because the landing
+    // only renders on Learn / home.
+    const showOpening = () => {
+        persist({ ...prog, seenIntro: false });
+        setShowIntro(true);
+        setTab("learn");
+        setView("home");
+    };
     const openModule = (i, atPoint = 0) => { setMi(i); setPi(atPoint); setView("module"); };
     const finishModule = () => setView("check");
     const finishCheck = () => {
@@ -2875,6 +4557,9 @@ function App() {
         else
             setView("home");
     };
+    if (inPrimer) {
+        return React.createElement(Primer, { prog: prog, persist: persist, narrow: narrow, onExit: () => setInPrimer(false) });
+    }
     if (inSession) {
         return React.createElement(Session, { mi: mi, pi: pi, setMi: setMi, setPi: setPi, cfg: cfg, setCfg: setCfg, onExit: () => setInSession(false) });
     }
@@ -2894,14 +4579,14 @@ function App() {
                 overflow: "hidden", whiteSpace: "nowrap", border: 0, clip: "rect(0 0 0 0)",
             } }, announce),
         React.createElement("main", { style: { maxWidth: 620, margin: "0 auto", padding: "20px 17px 108px" } },
-            tab === "learn" && view === "home" && showIntro && (React.createElement(Landing, { onStart: () => { persist({ ...prog, seenIntro: true }); setShowIntro(false); openModule(0, 0); }, onSkip: () => { persist({ ...prog, seenIntro: true }); setShowIntro(false); openModule(5, 0); } })),
+            tab === "learn" && view === "home" && showIntro && (React.createElement(Landing, { onStart: () => { persist({ ...prog, seenIntro: true }); setShowIntro(false); openModule(0, 0); }, onSkip: () => { persist({ ...prog, seenIntro: true }); setShowIntro(false); openModule(5, 0); }, onPrimer: () => { persist({ ...prog, seenIntro: true }); setShowIntro(false); setInPrimer(true); } })),
             tab === "learn" && view === "home" && !showIntro && (React.createElement(Home, { prog: prog, onOpen: openModule, onSession: () => { setMi(0); setPi(0); setInSession(true); } })),
             tab === "learn" && view === "check" && (React.createElement(DrillScreen, { prog: prog, persist: persist, cfg: cfg, setCfg: setCfg, narrow: narrow, only: MODULES[mi].n, onDone: finishCheck })),
             tab === "learn" && view === "module" && (React.createElement(ModuleScreen, { mi: mi, pi: pi, setPi: setPi, cfg: cfg, setCfg: setCfg, narrow: narrow, onBack: () => setView("home"), onDone: finishModule })),
             tab === "drill" && React.createElement(DrillScreen, { prog: prog, persist: persist, cfg: cfg, setCfg: setCfg, narrow: narrow }),
             tab === "bench" && React.createElement(BenchScreen, { cfg: cfg, setCfg: setCfg, narrow: narrow }),
             tab === "ref" && React.createElement(RefScreen, null),
-            tab === "more" && React.createElement(MoreScreen, { prog: prog, persist: persist, theme: theme, onTheme: chooseTheme })),
+            tab === "more" && React.createElement(MoreScreen, { prog: prog, persist: persist, theme: theme, onTheme: chooseTheme, onShowIntro: showOpening })),
         React.createElement("nav", { style: {
                 position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 10,
                 background: tint(P.bg, 0.94), borderTop: `1px solid ${P.line}`,
@@ -2947,49 +4632,30 @@ function Styles() {
 }
 
 </script>
-
 <script>
 (function () {
   var root = document.getElementById("root");
   var reported = false;
-
   function report(what, detail) {
     if (reported) return;
     reported = true;
-    var diag = [
-      "where: " + what,
+    var diag = ["where: " + what,
       "renderer loaded: " + (typeof React !== "undefined" && !!React.createElement),
       "mount loaded: " + (typeof ReactDOM !== "undefined" && !!ReactDOM.createRoot),
       "app loaded: " + (typeof Root === "function"),
       "page bytes: " + (document.documentElement.outerHTML.length),
-      "detail: " + String(detail || "none")
-    ].join("\n");
-    root.innerHTML =
-      '<div class="boot"><b>The programme did not start.</b>' +
+      "detail: " + String(detail || "none")].join("\n");
+    root.innerHTML = '<div class="boot"><b>The programme did not start.</b>' +
       'Nothing here is downloaded, so this is not a connection problem. Send the block below and it will say where it stopped.' +
       '<code>' + diag.replace(/[<>&]/g, "") + '</code></div>';
   }
-
-  // anything thrown anywhere, including asynchronously, becomes a visible message
-  window.addEventListener("error", function (e) {
-    if (!root.firstElementChild) report("uncaught error", e && e.message);
-  });
-  window.addEventListener("unhandledrejection", function (e) {
-    if (!root.firstElementChild) report("unhandled promise", e && e.reason && e.reason.message);
-  });
-
+  window.addEventListener("error", function (e) { if (!root.firstElementChild) report("uncaught error", e && e.message); });
+  window.addEventListener("unhandledrejection", function (e) { if (!root.firstElementChild) report("unhandled promise", e && e.reason && e.reason.message); });
   try {
     if (typeof Root !== "function") { report("app script did not define Root", "the third script block did not finish"); return; }
     ReactDOM.createRoot(root).render(React.createElement(Root));
-  } catch (e) {
-    report("first render threw", (e && e.message) || e);
-    return;
-  }
-
-  // watchdog: a silent half-render looks identical to a page that never loaded
-  setTimeout(function () {
-    if (!root.firstElementChild) report("rendered nothing within 1.5 s", "no error was thrown");
-  }, 1500);
+  } catch (e) { report("first render threw", (e && e.message) || e); return; }
+  setTimeout(function () { if (!root.firstElementChild) report("rendered nothing within 1.5 s", "no error was thrown"); }, 1500);
 })();
 </script>
 </body>
