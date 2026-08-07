@@ -237,7 +237,7 @@ if (!window.storage) {
   function reconcile(vnode, parentDom, oldInst, doc) {
     // text
     if (typeof vnode !== "object") {
-      if (oldInst && oldInst.isText) {
+      if (oldInst && oldInst.isText) { 
         if (oldInst.dom.nodeValue !== String(vnode)) oldInst.dom.nodeValue = String(vnode);
         oldInst.vnode = vnode;
         return oldInst;
