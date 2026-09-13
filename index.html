@@ -6,23 +6,28 @@
 <meta name="theme-color" content="#0E1116">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Reading the EEG</title> 
- <meta name="mobile-web-app-capable" content="yes">
+<title>Reading the EEG</title>
+<meta name="author" content="Dr Ganesh Sivasankara">
+<meta name="description" content="A teaching instrument on the raw EEG and the density spectral array for anaesthetists. A basics primer and fourteen modules. Waveforms are synthesised.">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230E1116'/%3E%3Cpath d='M8 50 L22 50 L28 26 L36 74 L44 38 L50 62 L56 50 L92 50' stroke='%23F0A63C' stroke-width='6' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
+<!-- Home-screen shell and link-preview card. These were pasted into index.html
+     by hand on 8 August 2026 and a rebuild wiped them; they live here now.
+     The two PNGs sit in the repository root beside index.html. -->
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Reading EEG">
-<link rel="apple-touch-icon" href="eeg-icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="eeg-icon-180.png">
 <link rel="icon" type="image/png" href="eeg-icon-180.png">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Reading the EEG">
 <meta property="og:title" content="Reading the EEG">
-<meta property="og:description" content="Fourteen interactive modules on the EEG under anaesthesia. Synthesised waveforms, drills and a live scope. A personal teaching resource by Dr Ganesh Sivasankara.">
+<meta property="og:description" content="A teaching instrument on the raw EEG and the density spectral array for anaesthetists. A basics primer and fourteen modules. Waveforms are synthesised.">
 <meta property="og:url" content="https://gundoc9.github.io/reading-the-eeg/">
 <meta property="og:image" content="https://gundoc9.github.io/reading-the-eeg/reading-the-eeg-card.png">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="627">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Reading the EEG">
-<meta name="twitter:image" content="https://gundoc9.github.io/reading-the-eeg/reading-the-eeg-card.png"><meta name="author" content="Dr Ganesh Sivasankara">
-<meta name="description" content="A teaching instrument on the raw EEG and the density spectral array for anaesthetists. A basics primer and fourteen modules. Waveforms are synthesised.">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230E1116'/%3E%3Cpath d='M8 50 L22 50 L28 26 L36 74 L44 38 L50 62 L56 50 L92 50' stroke='%23F0A63C' stroke-width='6' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="twitter:image" content="https://gundoc9.github.io/reading-the-eeg/reading-the-eeg-card.png">
 <style>
   html,body{margin:0;padding:0;background:#0E1116;-webkit-text-size-adjust:100%;}
   #root{min-height:100vh;box-sizing:border-box;
@@ -237,7 +242,10 @@ if (!window.storage) {
   }
 
   function sameType(inst, vnode) {
-    if (!inst || !vnode) return false;
+    // 0 and "" are real text children. Testing them as falsy made every
+    // zero readout ("0 µV", "0 of 14 modules") get torn down and re-appended
+    // on its second render, which is how a number ended up after its unit.
+    if (!inst || vnode === undefined || vnode === null) return false;
     var a = inst.vnode, b = vnode;
     if (typeof a === "object" && typeof b === "object") {
       if (a.type !== b.type) return false;
@@ -327,6 +335,11 @@ if (!window.storage) {
 
     var oldKids = inst.kids || [], newKids = [];
     var n = Math.max(oldKids.length, vnode.kids.length);
+    // Each child is PLACED at its index, not merely appended. appendChild-only
+    // placement left any node created on a later render at the end of its
+    // parent, so a child that appeared, disappeared or was recreated could
+    // land after siblings that follow it in the tree.
+    var after = null;
     for (var i = 0; i < n; i++) {
       var kv = vnode.kids[i], ko = oldKids[i];
       if (kv === undefined) { if (ko) { unmount(ko); if (ko.dom && ko.dom.parentNode) ko.dom.parentNode.removeChild(ko.dom); } continue; }
@@ -334,7 +347,15 @@ if (!window.storage) {
       if (ko && !reuse) { unmount(ko); if (ko.dom && ko.dom.parentNode) ko.dom.parentNode.removeChild(ko.dom); }
       var ki = reconcile(kv, inst.dom, reuse, doc);
       newKids.push(ki);
-      if (ki.dom && ki.dom.parentNode !== inst.dom) inst.dom.appendChild(ki.dom);
+      if (ki.dom) {
+        if (typeof inst.dom.insertBefore === "function") {
+          var want = after ? after.nextSibling : inst.dom.firstChild;
+          if (ki.dom !== want) inst.dom.insertBefore(ki.dom, want || null);
+        } else if (ki.dom.parentNode !== inst.dom) {
+          inst.dom.appendChild(ki.dom);
+        }
+        after = ki.dom;
+      }
     }
     inst.kids = newKids;
     return inst;
@@ -1952,6 +1973,10 @@ function applyTheme(name) {
     try {
         if (typeof document !== "undefined" && document.body) {
             document.body.style.background = P.bg;
+            // the html element shows during overscroll bounce on iOS; left at the
+            // boot colour it flashed a dark band above and below a chart-paper page
+            if (document.documentElement)
+                document.documentElement.style.background = P.bg;
             const m = document.querySelector('meta[name="theme-color"]');
             if (m)
                 m.setAttribute("content", P.bg);
@@ -1974,8 +1999,8 @@ function bootTheme() {
 bootTheme();
 // Bump both by hand when the content changes. Without them a colleague who hits
 // a problem cannot say which build, and there is no way to issue a correction.
-const VERSION = "v23";
-const BUILT = "7 August 2026";
+const VERSION = "v26";
+const BUILT = "13 September 2026";
 const AUTHOR = "Dr Ganesh Sivasankara";
 const CREDENTIALS = "MD · FRCA · FCARCSI · Consultant Anaesthetist";
 const UI = "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif";
@@ -2189,10 +2214,10 @@ function Scope({ cfg, trace = 104, spec = 104, onPause }) {
             React.createElement("span", { style: chip },
                 Math.round(ro.pp),
                 " \u00B5V"),
-            React.createElement("span", { style: chip },
+            cfg.state === "quiet" ? null : React.createElement("span", { style: chip },
                 "SEF95 ",
                 ro.sef.toFixed(1)),
-            React.createElement("span", { style: { ...chip, color: ro.bsr > 0.05 ? P.warn : P.dim } },
+            cfg.state === "quiet" ? null : React.createElement("span", { style: { ...chip, color: ro.bsr > 0.05 ? P.warn : P.dim } },
                 "BSR ",
                 (ro.bsr * 100).toFixed(0),
                 "%"),
@@ -2246,13 +2271,21 @@ const OUTBOUND = {
 const DOI_RE = /\b(10\.\d{4,9}\/[^\s,;)\]]+)/;
 // render a line of prose with any doi inside it turned into a link
 function withDoi(text, key) {
-    const m = DOI_RE.exec(text);
-    if (!m)
-        return text;
-    const i = m.index;
-    return [text.slice(0, i),
-        React.createElement(Link, { href: "https://doi.org/" + m[1], key: "d" + key }, m[1]),
-        text.slice(i + m[1].length)];
+    // every doi in the string becomes a link, not only the first: the paediatric
+    // set in Sources carries two in its text and both were plain
+    const out = [];
+    let rest = text, n = 0;
+    for (;;) {
+        const m = DOI_RE.exec(rest);
+        if (!m) {
+            out.push(rest);
+            break;
+        }
+        out.push(rest.slice(0, m.index));
+        out.push(React.createElement(Link, { href: "https://doi.org/" + m[1], key: "d" + key + "-" + n++ }, m[1]));
+        rest = rest.slice(m.index + m[1].length);
+    }
+    return out.length === 1 ? text : out;
 }
 function Btn({ children, onClick, kind = "ghost", full, size = "md" }) {
     const base = {
@@ -2743,7 +2776,7 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
                 React.createElement("p", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: r.ok ? P.accent : P.warn, margin: "0 0 5px" } },
                     r.s,
                     r.ok ? "" : " · flagged"),
-                React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: 0 } }, r.full),
+                React.createElement("p", { style: { fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: 0 } }, withDoi(r.full, k)),
                 r.doi ? React.createElement("p", { style: { fontFamily: MN, fontSize: 11.5, color: P.dim, margin: "4px 0 0" } },
                     "doi ",
                     React.createElement(Link, { href: "https://doi.org/" + r.doi }, r.doi)) : null,
@@ -4063,6 +4096,255 @@ const PRIMER_CARDS = [
         "kind": "spec",
         "span": 8,
         "sef": true
+    },
+    {
+        "id": "artefact",
+        "topic": "Artefacts",
+        "title": "Artefact",
+        "tldr": "Signal that was never the brain.",
+        "lede": "A microphone picks up the singer and also the traffic outside. The traffic is on the tape; it was never part of the song.",
+        "body": [
+            {
+                "p": "The electrode records everything electrical that reaches it, and the brain is only one of the sources. Some of the rest comes from equipment and surroundings, which the sources call technical; some comes from the patient's own body, which they call physiological. The rule the app already teaches carries the whole card: technical artefacts have shapes physiology cannot make, and physiological artefacts come from muscle and eye, with their own topography."
+            }
+        ],
+        "src": [
+            "AR1, AR2, AR5, Berger-Estilita 2026, mapped to module 05."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 70,
+        "ctrl": {
+            "k": "One at a time",
+            "key": "cfg",
+            "def": 0,
+            "opts": [
+                [
+                    {
+                        "state": "propofol"
+                    },
+                    "Clean"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "art": {
+                            "mains": 0.6,
+                            "mainsHz": 50
+                        }
+                    },
+                    "Mains on (technical)"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "art": {
+                            "emg": 0.55
+                        }
+                    },
+                    "EMG on (physiological)"
+                ]
+            ]
+        },
+        "section": "artefacts",
+        "opener": true
+    },
+    {
+        "id": "muscle",
+        "topic": "Artefacts",
+        "title": "Muscle",
+        "tldr": "The forehead has muscles, and they are loud.",
+        "lede": "Fingers drumming on the microphone stand. It arrives with the music, and it stops the moment the fingers do.",
+        "body": [
+            {
+                "p": "Frontalis muscle activity writes fast, spiky voltage on top of whatever the brain is doing, loading the top of the display while the record underneath is unchanged. It rides hardest on frontal electrodes, which is exactly where the monitoring strip sits."
+            }
+        ],
+        "src": [
+            "Suppressed by neuromuscular blockade, which is why it moves a processed index without the brain changing."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 70,
+        "ctrl": {
+            "k": "EMG, then the relaxant",
+            "key": "cfg",
+            "def": 1,
+            "opts": [
+                [
+                    {
+                        "state": "propofol"
+                    },
+                    "Clean"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "art": {
+                            "emg": 0.55
+                        }
+                    },
+                    "EMG on"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "art": {}
+                    },
+                    "Relaxant given"
+                ]
+            ]
+        },
+        "section": "artefacts"
+    },
+    {
+        "id": "eye-blink",
+        "topic": "Artefacts",
+        "title": "Eye blink",
+        "tldr": "The biggest thing on a frontal trace can be the eyes.",
+        "lede": "A wiper sweeping across a dashcam lens - huge in the picture, nothing to do with the road.",
+        "body": [
+            {
+                "p": "A blink writes a tall, slow dome lasting about a third of a second, far larger than the rhythms behind it. It is big, brief, stereotyped and repeating, which is how you tell it from a slow wave, and the engine draws it at about a third of its size on the back channel - the topography is a text claim here, since the primer window is frontal-only."
+            }
+        ],
+        "src": [
+            "Blinks and eye movement: large, slow, frontal. PHYSIOLOGICAL."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 140,
+        "ctrl": {
+            "k": "Blinks",
+            "key": "cfg",
+            "def": 1,
+            "opts": [
+                [
+                    {
+                        "state": "propofol"
+                    },
+                    "Clean"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "art": {
+                            "eye": 0.7
+                        }
+                    },
+                    "Blinks on"
+                ]
+            ]
+        },
+        "section": "artefacts"
+    },
+    {
+        "id": "electrical-noise",
+        "topic": "Artefacts",
+        "title": "Electrical noise",
+        "tldr": "The wall socket, drawn on the trace.",
+        "lede": "The feedback whine from a PA system - it holds a single pitch no instrument holds.",
+        "body": [
+            {
+                "p": "Mains interference arrives at exactly one frequency, 50 or 60 Hz depending on the country. Brain rhythms occupy bands several hertz wide, so a perfectly thin, perfectly steady oscillation at one frequency has a machine behind it. On this display the line sits above the 40 Hz top of the spectral array, so you find mains on the trace and in the quality figure."
+            }
+        ],
+        "src": [
+            "Mains interference: a single narrow line. TECHNICAL."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 70,
+        "ctrl": {
+            "k": "Mains frequency",
+            "key": "cfg",
+            "def": 1,
+            "opts": [
+                [
+                    {
+                        "state": "propofol"
+                    },
+                    "Clean"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "art": {
+                            "mains": 0.6,
+                            "mainsHz": 50
+                        }
+                    },
+                    "50 Hz"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "art": {
+                            "mains": 0.6,
+                            "mainsHz": 60
+                        }
+                    },
+                    "60 Hz"
+                ]
+            ]
+        },
+        "section": "artefacts"
+    },
+    {
+        "id": "electrode-pop",
+        "topic": "Artefacts",
+        "title": "Electrode pop",
+        "tldr": "Physiology has no jumps.",
+        "lede": "A half-seated headphone plug. The music jumps when the plug moves, and the jump tells you about the plug.",
+        "body": [
+            {
+                "p": "A failing electrode contact writes an abrupt step that then decays away, with a slow wander underneath. No brain process changes voltage in an instant, and the excursions run past 150 microvolts, beyond anything an anaesthetised cortex produces - both giveaways point at the contact."
+            }
+        ],
+        "src": [
+            "Electrode pop / movement: abrupt step with exponential decay plus drift. TECHNICAL."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 140,
+        "ctrl": {
+            "k": "Electrode contact",
+            "key": "cfg",
+            "def": 1,
+            "opts": [
+                [
+                    {
+                        "state": "propofol"
+                    },
+                    "Clean"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "art": {
+                            "pop": 1
+                        }
+                    },
+                    "Pop on"
+                ]
+            ]
+        },
+        "section": "artefacts"
     }
 ];
 /* ==========================================================================
@@ -4079,13 +4361,13 @@ const PRIMER_CARDS = [
    ========================================================================== */
 /* ---- scopes ---------------------------------------------------------------
    SCOPE is a singleton for the ONE instrument the app shows. The primer's index
-   shows 23 at once, so it needs a map. Kept SEPARATE and additive: nothing here
+   shows 28 at once, so it needs a map. Kept SEPARATE and additive: nothing here
    touches SCOPE, and SCOPE never sees these buffers.
 
    Held OUTSIDE the components for the same reason SCOPE is: a tab change would
    otherwise unmount every canvas and throw away its history.                  */
 const PSCOPES = {};
-const PSCOPE_MAX = 26;
+const PSCOPE_MAX = 34;
 const PSCOPE_ORDER = [];
 const PCOL_S = 0.25; // seconds per spectrogram column
 const PNCOL = 150;

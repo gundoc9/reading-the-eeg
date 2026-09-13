@@ -182,7 +182,10 @@
   }
 
   function sameType(inst, vnode) {
-    if (!inst || !vnode) return false;
+    // 0 and "" are real text children. Testing them as falsy made every
+    // zero readout ("0 µV", "0 of 14 modules") get torn down and re-appended
+    // on its second render, which is how a number ended up after its unit.
+    if (!inst || vnode === undefined || vnode === null) return false;
     var a = inst.vnode, b = vnode;
     if (typeof a === "object" && typeof b === "object") {
       if (a.type !== b.type) return false;
@@ -272,6 +275,11 @@
 
     var oldKids = inst.kids || [], newKids = [];
     var n = Math.max(oldKids.length, vnode.kids.length);
+    // Each child is PLACED at its index, not merely appended. appendChild-only
+    // placement left any node created on a later render at the end of its
+    // parent, so a child that appeared, disappeared or was recreated could
+    // land after siblings that follow it in the tree.
+    var after = null;
     for (var i = 0; i < n; i++) {
       var kv = vnode.kids[i], ko = oldKids[i];
       if (kv === undefined) { if (ko) { unmount(ko); if (ko.dom && ko.dom.parentNode) ko.dom.parentNode.removeChild(ko.dom); } continue; }
@@ -279,7 +287,15 @@
       if (ko && !reuse) { unmount(ko); if (ko.dom && ko.dom.parentNode) ko.dom.parentNode.removeChild(ko.dom); }
       var ki = reconcile(kv, inst.dom, reuse, doc);
       newKids.push(ki);
-      if (ki.dom && ki.dom.parentNode !== inst.dom) inst.dom.appendChild(ki.dom);
+      if (ki.dom) {
+        if (typeof inst.dom.insertBefore === "function") {
+          var want = after ? after.nextSibling : inst.dom.firstChild;
+          if (ki.dom !== want) inst.dom.insertBefore(ki.dom, want || null);
+        } else if (ki.dom.parentNode !== inst.dom) {
+          inst.dom.appendChild(ki.dom);
+        }
+        after = ki.dom;
+      }
     }
     inst.kids = newKids;
     return inst;
