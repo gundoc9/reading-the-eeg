@@ -164,6 +164,9 @@ ALLOWED_PREFIXES = (
     "https://pedseeg.com",            # PALNET, named in Where to see real records
     "https://youtube.com/",           # the EEG for Anesthesia channel
     SITE,                             # link-preview metadata: read by LinkedIn's scraper, never fetched by the page
+    "https://gundoc9.github.io/reading-the-clot/",       # More from the same author, on the About page
+    "https://gundoc9.github.io/cannulation-geometry/",   # (tappable only, like every other outbound link)
+    "https://gundoc9.github.io/how-the-ai-works/",
 )
 found = sorted(u for u in set(re.findall(r"https?://[^\"')> ]+", html))
               if not u.startswith(ALLOWED_PREFIXES))

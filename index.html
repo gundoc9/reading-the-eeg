@@ -1855,6 +1855,15 @@ const REAL_RECORDS = {
         ["PALNET workshops and site visits", "Small-group interpretation of real cases, and in-theatre teaching at your own institution.", "pedseeg.com"],
     ],
 };
+/* ---- the author's other teaching apps, listed on the About page ----------- */
+const SAME_AUTHOR = {
+    title: "More from the same author",
+    items: [
+        ["Reading the clot", "TEG and ROTEM, one term per card, with the normal trace drawn beside the abnormal one.", "gundoc9.github.io/reading-the-clot"],
+        ["Cannulation geometry", "Insertion angle, catheter length, and how far the tip reaches into the vein.", "gundoc9.github.io/cannulation-geometry"],
+        ["How the AI you use works", "The words for what happens once your prompt is inside the model.", "gundoc9.github.io/how-the-ai-works"],
+    ],
+};
 /* ===================== storage ============================================ */
 const KEY_STORE = "eeg-programme:v9";
 const KEY_OLD = "eeg-programme:v2";
@@ -1999,8 +2008,8 @@ function bootTheme() {
 bootTheme();
 // Bump both by hand when the content changes. Without them a colleague who hits
 // a problem cannot say which build, and there is no way to issue a correction.
-const VERSION = "v26";
-const BUILT = "13 September 2026";
+const VERSION = "v28";
+const BUILT = "17 September 2026";
 const AUTHOR = "Dr Ganesh Sivasankara";
 const CREDENTIALS = "MD · FRCA · FCARCSI · Consultant Anaesthetist";
 const UI = "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif";
@@ -2267,6 +2276,9 @@ function Link({ href, children, style }) {
 const OUTBOUND = {
     "youtube.com/@eegforanesthesia3954": "https://youtube.com/@eegforanesthesia3954",
     "pedseeg.com": "https://pedseeg.com",
+    "gundoc9.github.io/reading-the-clot": "https://gundoc9.github.io/reading-the-clot/",
+    "gundoc9.github.io/cannulation-geometry": "https://gundoc9.github.io/cannulation-geometry/",
+    "gundoc9.github.io/how-the-ai-works": "https://gundoc9.github.io/how-the-ai-works/",
 };
 const DOI_RE = /\b(10\.\d{4,9}\/[^\s,;)\]]+)/;
 // render a line of prose with any doi inside it turned into a link
@@ -2805,6 +2817,14 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
                     VERSION,
                     " \u00B7 built ",
                     BUILT)),
+            React.createElement("div", { style: { padding: "0 0 16px", marginBottom: 16, borderBottom: `1px solid ${P.line}` } },
+                React.createElement("p", { style: { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 10px" } }, SAME_AUTHOR.title),
+                SAME_AUTHOR.items.map((l) => (React.createElement("div", { key: l[0], style: { marginBottom: 12 } },
+                    React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 15.5, fontWeight: 600, color: P.ink } }, l[0]),
+                    React.createElement("span", { style: { display: "block", fontFamily: UI, fontSize: 13.5, lineHeight: 1.45, color: P.ink, margin: "2px 0" } }, l[1]),
+                    OUTBOUND[l[2]]
+                        ? React.createElement(Link, { href: OUTBOUND[l[2]], style: { display: "block", fontFamily: MN, fontSize: 12 } }, l[2])
+                        : React.createElement("span", { style: { display: "block", fontFamily: MN, fontSize: 12, color: P.dim } }, l[2]))))),
             React.createElement(Btn, { kind: "ghost", full: true, onClick: onShowIntro }, "Show the opening screen again"))),
         panel === "reading" && (React.createElement(React.Fragment, null,
             React.createElement("p", { style: { fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 16px" } }, FURTHER.note),
@@ -3989,6 +4009,77 @@ const PRIMER_CARDS = [
         }
     },
     {
+        "id": "sensor-position",
+        "topic": "The instrument",
+        "title": "Where the sensor sits",
+        "tldr": "The strip on the forehead records the front of the head, and the alpha you were taught lives at the back.",
+        "lede": "A rain gauge in the front garden measures the front garden. If the shower fell on the back garden, the gauge reads dry and it has not lied.",
+        "body": [
+            {
+                "p": "Every monitoring strip sits on the forehead; the one in the source papers records from four spots near Fp1, Fp2, F7 and F8. Awake with the eyes closed, the alpha rhythm is at the back of the head. Tap between the two awake settings above: on the same record the forehead carries about one seventh of the alpha power that the back of the head does, so a frontal monitor on an awake patient shows very little alpha, and the reason is where the sensor sits."
+            },
+            {
+                "h": "Under propofol the address changes"
+            },
+            {
+                "p": "Now tap the two propofol settings. The occipital alpha has faded and a frontal alpha has appeared, about fourteen times stronger at the front than at the back. Purdon's group called this anteriorisation. From the forehead you only ever see the rhythm arrive, because the strip never recorded the back of the head, so the move the textbooks describe happens off screen."
+            },
+            {
+                "h": "What to expect on a frontal monitor"
+            },
+            {
+                "p": "Alpha there is a frontal fact. Expect little of it awake, expect it to appear with loss of consciousness under propofol or sevoflurane, and expect it to go on emergence. If someone says the awake patient has no alpha, ask where the sensor was."
+            }
+        ],
+        "src": [
+            "Purdon 2015 Part I, p. 947 - most brain monitors record a few channels from the front of the head; eyes-closed alpha is occipital in the awake patient; anteriorisation with loss of consciousness and its reversal on emergence. Electrode positions from their methods, the Sedline array at approximately Fp1, Fp2, F7 and F8.",
+            "Guay 2025 Part 2, p. 1598-9 - alpha most prominent occipitally in the resting, eyes-closed state; under propofol and sevoflurane occipital alpha power falls as frontal alpha power rises.",
+            "The one-seventh and fourteen-fold figures are alpha band power measured off the programme's own two channels, whose weighting follows Purdon 2013's anterior shift. The back channel is a teaching model; no occipital recording was used to build it."
+        ],
+        "cfg": {
+            "state": "awake",
+            "ch": 1
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 70,
+        "ctrl": {
+            "k": "Sensor and state",
+            "key": "cfg",
+            "def": 0,
+            "opts": [
+                [
+                    {
+                        "state": "awake",
+                        "ch": 1
+                    },
+                    "Awake · back of the head"
+                ],
+                [
+                    {
+                        "state": "awake",
+                        "ch": 0
+                    },
+                    "Awake · forehead"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "ch": 0
+                    },
+                    "Propofol · forehead"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "ch": 1
+                    },
+                    "Propofol · back of the head"
+                ]
+            ]
+        }
+    },
+    {
         "id": "burst-suppression",
         "topic": "Patterns",
         "title": "Burst suppression",
@@ -4058,6 +4149,73 @@ const PRIMER_CARDS = [
         }
     },
     {
+        "id": "bsr",
+        "topic": "The numbers",
+        "title": "Burst suppression ratio",
+        "tldr": "The share of the recent record that was suppressed, shown as a percentage.",
+        "lede": "A parking meter that reports how much of the last hour the space was occupied. Forty per cent is a share of time, and it says nothing about which car was there or when.",
+        "body": [
+            {
+                "p": "The ratio takes the criterion you already know, suppression under 5 microvolts, and asks how much of a window of record fell below it. The answer is a fraction of time. Move the depth control and read the figure in the corner of the trace: mostly bursts reads around 25 to 30 per cent, mostly suppressed around 55, and with no bursts at all it reads 100. The figure drifts as the window slides along the record, because each new second replaces an old one."
+            },
+            {
+                "h": "The window is part of the number"
+            },
+            {
+                "p": "On the BIS monitor the ratio is the share of the last 63 seconds that was suppressed, so 5 per cent means three seconds of suppression in the last minute. A number averaged over a minute moves slowly, which is why suppression shows on the trace first and reaches the figure later. The readout on this card averages about the last half minute in half-second pieces, so it moves faster than a monitor would."
+            },
+            {
+                "h": "What it cannot tell you"
+            },
+            {
+                "p": "The number counts time below a threshold and has no way of knowing why the record went quiet. It reads the same whether the suppression came from the anaesthetic, from cooling, from low blood sugar or from a brain short of blood or oxygen. Studies that set the monitor's figure against a person reading the same trace found the monitor reported less suppression than was there, so the ratio is a prompt to look at the trace, and the trace settles it."
+            }
+        ],
+        "src": [
+            "Purdon 2015 Part I, p. 948 and Figure 8 - the burst suppression ratio as the fraction of a time interval in which the record is suppressed, 0 to 1; the plus and minus 5 microvolt thresholds separating bursts from suppression.",
+            "Aydin et al. Anesth Analg 2026;142:1056-66. doi 10.1213/ANE.0000000000007877 - the BIS ratio is the percentage of the last 63 seconds fully suppressed; 5 per cent equals 3 seconds; the ratio rose with a lag behind visually identified suppression; no agreed threshold for a clinically relevant ratio.",
+            "Garcia and Goldstein, Anesth Analg 2026;142:1050-54. doi 10.1213/ANE.0000000000007934 - algorithm-based suppression ratios underestimate suppression against visual inspection of the raw EEG.",
+            "Guay 2025 Part 2, p. 1600 - burst suppression precipitated by ischaemia, hypoxaemia, hypothermia, hypoglycaemia and brain injury as well as by the anaesthetic.",
+            "The readout figures are measured from the programme's own gate: half-second pieces of about the last half minute under 5 microvolts peak to peak."
+        ],
+        "cfg": {
+            "state": "propofol",
+            "bsr": 0.6
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 70,
+        "ctrl": {
+            "k": "Depth",
+            "key": "cfg",
+            "def": 1,
+            "opts": [
+                [
+                    {
+                        "state": "propofol",
+                        "bsr": 0.3
+                    },
+                    "Mostly bursts"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "bsr": 0.6
+                    },
+                    "Mostly suppressed"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "bsr": 1
+                    },
+                    "No bursts"
+                ]
+            ]
+        },
+        "readout": "bsr"
+    },
+    {
         "id": "sef95",
         "topic": "The numbers",
         "title": "SEF95",
@@ -4096,6 +4254,63 @@ const PRIMER_CARDS = [
         "kind": "spec",
         "span": 8,
         "sef": true
+    },
+    {
+        "id": "the-index",
+        "topic": "The numbers",
+        "title": "The index",
+        "tldr": "The single number on your monitor, computed from this same signal by a method the maker does not publish.",
+        "lede": "A credit score. It is built from real transactions by a formula you cannot see, and two people with very different accounts can carry the same number.",
+        "body": [
+            {
+                "p": "BIS, PSi and the Narcotrend index are numbers from 0 to 100 built from the frontal EEG on the same strip, with lower meaning deeper. The formulas are proprietary, which is why this programme shows you SEF95 and never shows an index: any index drawn here would have to be invented. The record on this card is the record such a number would be made from."
+            },
+            {
+                "h": "When the index reads adequate during suppression"
+            },
+            {
+                "p": "Tap the second setting. Suppression has crept into the record, and the ratio in the corner of the trace has risen to around 15 to 20 per cent. In 62 patients aged around 81 having valve replacement, titrated to a BIS of 40 to 60, 29 had a run of at least ten seconds in which the index stayed inside that range while the suppression ratio sat at 5 per cent or more. The median run was 52 seconds and the longest 202. The index read adequate while the record underneath it was suppressed."
+            },
+            {
+                "h": "So read the record"
+            },
+            {
+                "p": "An index is a summary of the spectrum you can already see, and where the two disagree the record is the observation. The editorial published with that study says to reduce the hypnotic when suppression appears even if the index drifts into the 60s. Treat the number as a prompt to look at the trace, because two states this programme can tell apart from the display can share one index value."
+            }
+        ],
+        "src": [
+            "Purdon 2015 Part I, p. 938 - indices scaled 0 to 100 with low values meaning greater depth; the algorithms in many monitors are proprietary; the indices assume one value means the same depth for every anaesthetic.",
+            "Aydin et al. Anesth Analg 2026;142:1056-66. doi 10.1213/ANE.0000000000007877 - retrospective, 62 patients aged 80.9 ± 5.8 years, elective transcatheter aortic valve replacement, sevoflurane with remifentanil; 29 of 62 with BIS 40 to 60 and a suppression ratio of 5 per cent or more for over ten seconds, median run 52 s, maximum 202 s. Kreuzer and Schneider hold EEG patents; Kreuzer reports funding from Masimo, Narcotrend, Medtronic and Fresenius Kabi.",
+            "Garcia and Goldstein, Anesth Analg 2026;142:1050-54. doi 10.1213/ANE.0000000000007934 - editorial: reduce hypnotic dosing when burst suppression emerges even if the BIS drifts into the 60s; reading the raw EEG as integral to training. Goldstein handled the Aydin manuscript as editor; both authors declare EEG-related patents and company links.",
+            "The ratio in the corner of the trace is the programme's own measured figure, described on the Burst suppression ratio card."
+        ],
+        "cfg": {
+            "state": "propofol"
+        },
+        "kind": "trace",
+        "span": 8,
+        "scale": 70,
+        "ctrl": {
+            "k": "Two records",
+            "key": "cfg",
+            "def": 0,
+            "opts": [
+                [
+                    {
+                        "state": "propofol"
+                    },
+                    "Maintenance"
+                ],
+                [
+                    {
+                        "state": "propofol",
+                        "bsr": 0.2
+                    },
+                    "Suppression creeping in"
+                ]
+            ]
+        },
+        "readout": "bsr"
     },
     {
         "id": "artefact",
@@ -4361,13 +4576,13 @@ const PRIMER_CARDS = [
    ========================================================================== */
 /* ---- scopes ---------------------------------------------------------------
    SCOPE is a singleton for the ONE instrument the app shows. The primer's index
-   shows 28 at once, so it needs a map. Kept SEPARATE and additive: nothing here
+   shows 31 at once, so it needs a map. Kept SEPARATE and additive: nothing here
    touches SCOPE, and SCOPE never sees these buffers.
 
    Held OUTSIDE the components for the same reason SCOPE is: a tab change would
    otherwise unmount every canvas and throw away its history.                  */
 const PSCOPES = {};
-const PSCOPE_MAX = 34;
+const PSCOPE_MAX = 40;
 const PSCOPE_ORDER = [];
 const PCOL_S = 0.25; // seconds per spectrogram column
 const PNCOL = 150;
@@ -4380,23 +4595,30 @@ function pOrdered(s) {
     out.set(s.buf.subarray(0, s.i), head);
     return out;
 }
-function pScopeFor(key, cfg, span, wantsDSA) {
+function pScopeFor(key, cfg, span, wantsDSA, hold = 0) {
+    var _a;
     let s = PSCOPES[key];
     if (s)
         return s;
-    const need = Math.max(Math.round(span * FS), FS * 4);
-    s = { eng: makeEngine(3), cfg, span, buf: new Float64Array(need), i: 0, t: 0, acc: 0, cols: [], dsa: wantsDSA };
+    // hold: seconds of record to keep beyond what the window shows, so a figure
+    // measured over the buffer (the burst suppression ratio) has a longer, steadier
+    // window than the trace it sits on. The trace still draws only the last span.
+    const need = Math.max(Math.round(Math.max(span, hold) * FS), FS * 4);
+    // ch: 0 is the forehead, 1 the back of the head. The engine already draws both;
+    // the primer only ever asked it for the front until the sensor card.
+    const ch = (_a = cfg.ch) !== null && _a !== void 0 ? _a : 0;
+    s = { eng: makeEngine(3), cfg, ch, span, buf: new Float64Array(need), i: 0, t: 0, acc: 0, cols: [], dsa: wantsDSA };
     // prime the ring buffer, then the column history, through the SAME path the
     // live loop uses, so a DSA never opens as a block in the corner
     for (let k = 0; k < need; k++) {
-        s.buf[k] = s.eng(s.t, cfg, 0);
+        s.buf[k] = s.eng(s.t, cfg, ch);
         s.t += 1 / FS;
     }
     if (wantsDSA) {
         const per = Math.round(PCOL_S * FS);
         for (let c = 0; c < PNCOL; c++) {
             for (let j = 0; j < per; j++) {
-                s.buf[s.i] = s.eng(s.t, cfg, 0);
+                s.buf[s.i] = s.eng(s.t, cfg, ch);
                 s.i = (s.i + 1) % s.buf.length;
                 s.t += 1 / FS;
             }
@@ -4414,7 +4636,7 @@ function pScopeFor(key, cfg, span, wantsDSA) {
 function pAdvance(s, dt) {
     const n = Math.min(Math.round(dt * FS), FS); // cap after a background tab
     for (let k = 0; k < n; k++) {
-        s.buf[s.i] = s.eng(s.t, s.cfg, 0);
+        s.buf[s.i] = s.eng(s.t, s.cfg, s.ch || 0);
         s.i = (s.i + 1) % s.buf.length;
         s.t += 1 / FS;
     }
@@ -4427,6 +4649,18 @@ function pAdvance(s, dt) {
         if (s.cols.length > PNCOL)
             s.cols.shift();
     }
+}
+/* ---- the burst suppression ratio of a held buffer --------------------------
+   measuredBSR counts half-second pieces from the start of whatever it is given.
+   Counting from the start of a sliding buffer moves the grid under the record on
+   every sample, and the count then flickers as burst edges cross piece boundaries.
+   Anchoring the pieces to the record's own clock makes the figure change only
+   when the record does.                                                          */
+function pBSR(s) {
+    const sig = pOrdered(s), w = Math.round(0.5 * FS);
+    const first = Math.round(s.t * FS) - sig.length; // absolute index of sig[0]
+    const off = (w - (first % w)) % w;
+    return measuredBSR(sig.subarray(off));
 }
 /* ---- resolving a card to something the engine can draw -------------------- */
 function pResolve(card, optIdx) {
@@ -4455,6 +4689,9 @@ function pResolve(card, optIdx) {
         cfg, kind: c.kind || "trace", scale: c.scale || 70, span: c.span || 8,
         sef: !!c.sef, pol: c.pol === -1 ? -1 : 1,
         dsa: c.kind === "spec" || (card.ctrl && card.ctrl.key === "view"),
+        // the burst suppression ratio is measured over 32 s of held record, eight
+        // gate periods, so the figure moves less than it would over the 8 s shown
+        bsr: card.readout === "bsr", hold: card.readout === "bsr" ? 32 : 0,
     };
 }
 const pGrid = (span) => (span >= 2 ? 1 : 0.1);
@@ -4500,7 +4737,7 @@ function PrimerScope({ spec, height, small }) {
             const dt = lastRef.current ? Math.min((now - lastRef.current) / 1000, 0.5) : 0;
             lastRef.current = now;
             const sp = specRef.current;
-            const s = pScopeFor(sp.key, sp.cfg, sp.span, sp.dsa);
+            const s = pScopeFor(sp.key, sp.cfg, sp.span, sp.dsa, sp.hold);
             if (dt)
                 pAdvance(s, dt);
             const sig = pOrdered(s);
@@ -4638,6 +4875,20 @@ function PrimerScope({ spec, height, small }) {
             }
             ctx.lineTo(w, mid + pol * g0(n - 1) * k);
             ctx.stroke();
+            if (sp.bsr && !small) {
+                // measured over the whole held buffer, 0.5 s pieces under 5 uV peak to
+                // peak, the same measuredBSR the app's own readout uses, on pieces
+                // anchored to the record's clock. A backing pill keeps the figure
+                // legible when a burst runs under it.
+                const label = "BSR " + Math.round(pBSR(s) * 100) + "%";
+                ctx.font = "600 10px " + MN;
+                ctx.textAlign = "right";
+                const tw = ctx.measureText(label).width;
+                ctx.fillStyle = tint(P.specBg, 0.82);
+                ctx.fillRect(w - 5 - tw - 6, 2, tw + 10, 15);
+                ctx.fillStyle = P.specInk;
+                ctx.fillText(label, w - 6, 13);
+            }
             const pp = hi - lo;
             if (Math.abs(pp - ro.pp) > 0.5)
                 setRo({ pp, sef: ro.sef });
@@ -4716,7 +4967,7 @@ function PrimerEntry({ idx, optIdx, setOpt, onGo, onBack, narrow }) {
         c.ctrl ? (React.createElement("div", null,
             React.createElement("p", { style: { ...eyebrow, margin: "14px 0 0" } }, c.ctrl.k),
             React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" } }, c.ctrl.opts.map((o, i) => (React.createElement("button", { key: String(o[1]), onClick: () => setOpt(i), "aria-pressed": i === optIdx, style: {
-                    flex: "1 1 28%", minWidth: 84, minHeight: 44, borderRadius: 10, cursor: "pointer",
+                    flex: c.ctrl.opts.length === 4 ? "1 1 42%" : "1 1 28%", minWidth: 84, minHeight: 44, borderRadius: 10, cursor: "pointer",
                     textAlign: "center", fontFamily: MN, fontSize: 12,
                     background: i === optIdx ? P.ink : P.surface,
                     color: i === optIdx ? P.surface : P.dim,
