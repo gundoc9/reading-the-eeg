@@ -910,7 +910,7 @@ const MODULES = [
     points: [
       { t: "Every other organ has a monitor that reads the organ. The brain is the target of the drug, and for most of a case we infer its state from blood pressure, heart rate and end-tidal agent. The EEG reads the target.", r: "guay", cfg: { state: "propofol" }, look: "Nothing on this display is derived from a haemodynamic variable." },
       { t: "The old case for monitoring was preventing awareness. The current case is avoiding excess: unnecessarily deep anaesthesia, particularly in older and frailer patients.", r: "esaic", cfg: { state: "propofol", bsr: 0.5 }, look: "This record is not light. It is far too deep, and the blood pressure will not tell you." },
-      { t: "Two patients on the same dose of the same drug can sit in different states. Dose is an input. The EEG is an output.", r: "guay", cfg: { state: "propofol", age: 82 }, look: "Same propofol, an 82-year-old. Compare the amplitude with a 30-year-old on the same dose in Age changes the picture." },
+      { t: "Two patients on the same dose of the same drug can be in different states. Dose is an input. The EEG is an output.", r: "guay", cfg: { state: "propofol", age: 82 }, look: "Same propofol, an 82-year-old. Compare the amplitude with a 30-year-old on the same dose in Age changes the picture." },
       { t: "Reaching for it is cheap. Not reading it is the expensive part, and that is what this programme is for.", r: "esaic", cfg: { state: "propofol" }, look: "" },
     ],
     prompt: "Ask the group: in the last month, name one case where you would have changed something if you had been reading the EEG.",
@@ -922,7 +922,7 @@ const MODULES = [
     points: [
       { t: "The trace answers what is happening now. The spectrogram — the density spectral array on most monitors — answers what has been happening. Neither replaces the other.", r: "guay", cfg: { state: "awake" }, look: "The two lanes move at different speeds. That is the point of having both." },
       { t: "On the DSA, frequency runs up the side, time runs across, and colour is how much of each rhythm is present. Nothing else is encoded.", r: "guay", cfg: { state: "propofol" }, look: "The band near 10 Hz is frontal alpha. The heat along the bottom is slow-delta." },
-      { t: "The signal is the summed post-synaptic activity of cortical neurons under the electrode, filtered by skull and scalp. It is cortex you are reading, and mostly the cortex nearest the sensor.", r: "purdon15", cfg: { state: "propofol" }, look: "Which is why where the sensor sits decides what you can see. Where the alpha is takes that further." },
+      { t: "The signal is the summed post-synaptic activity of cortical neurons under the electrode, filtered by skull and scalp. It is cortex you are reading, and mostly the cortex nearest the sensor.", r: "purdon15", cfg: { state: "propofol" }, look: "Which is why where the sensor is placed decides what you can see. Where the alpha is takes that further." },
       { t: "Amplitude changes five to twenty times between states. A fixed gain flattens most of them, so the µV readout matters as much as the shape.", r: "guay", cfg: { state: "awake" }, look: "Switch to propofol and watch the peak-to-peak number, not just the picture." },
       { t: "Bands used here: slow below 1 Hz, delta 1 to 4, theta 4 to 8, alpha 8 to 12, beta 13 to 25, gamma above 25.", r: "guay", cfg: { state: "propofol" }, look: "Other papers set slightly different edges. Say which you are using." },
     ],
@@ -991,9 +991,9 @@ const MODULES = [
     codes: ["RW4", "RW13", "AN1", "AN4"],
     aim: "Separate the three physiological states that all involve a 10 Hz rhythm.",
     points: [
-      { t: "Awake with eyes closed: alpha is posterior and it persists. It is the posterior dominant rhythm, and it is why eye closure changes the recording.", r: "purdon15", cfg: { state: "awake", ch: 1 }, look: "Switch to frontal. Most of the alpha goes — and your monitor sits on the forehead." },
+      { t: "Awake with eyes closed: alpha is posterior and it persists. It is the posterior dominant rhythm, and it is why eye closure changes the recording.", r: "purdon15", cfg: { state: "awake", ch: 1 }, look: "Switch to frontal. Most of the alpha goes — and your monitor is on the forehead." },
       { t: "That is an adult statement. In children delta predominates in the awake record at every age, and this module assumes an adult until Age changes the picture says otherwise.", r: "markus", cfg: { state: "awake", age: 0.25, ch: 1 }, ctrl: "age", look: "Drop the age to three months here and the awake baseline stops looking like the one this module is built on." },
-      { t: "NREM stage 2: slow waves with spindles on top. Spindles are brief and repeated, not continuous, and they sit around 12 to 15 Hz.", r: "prerau", cfg: { state: "nrem2" }, look: "Time the sigma band on the DSA. Discrete blobs every few seconds, not a stripe." },
+      { t: "NREM stage 2: slow waves with spindles on top. Spindles are brief and repeated, not continuous, and they fall around 12 to 15 Hz.", r: "prerau", cfg: { state: "nrem2" }, look: "Time the sigma band on the DSA. Discrete blobs every few seconds, not a stripe." },
       { t: "REM on the raw trace looks close to wake. On the DSA it does not: background power is higher, and REM alpha arrives in bursts at a lower frequency.", r: "prerau", cfg: { state: "rem" }, look: "Compare with awake. The whole field is brighter and the alpha stripe is broken." },
       { t: "Same band, three meanings. An EEG pattern is not the same thing as a brain state, and this is the cleanest demonstration of it.", r: "prerau", cfg: { state: "rem" }, look: "Cycle awake, NREM, REM on one channel at one gain." },
     ],
@@ -1018,7 +1018,7 @@ const MODULES = [
     points: [
       { t: "Propofol at surgical depth: slow-delta with a strong frontal alpha. This is the reference pattern the others are read against.", r: "purdon15", cfg: { state: "propofol" }, look: "Two features only: heat at the bottom, a solid stripe at 10 Hz." },
       { t: "Sevoflurane: the propofol pattern plus theta, with coherence peaking near 4.9 Hz. Both are GABA-A drugs and the family resemblance is real.", r: "akeju14s", cfg: { state: "sevoflurane" }, look: "A second stripe appears between the slow-delta and the alpha." },
-      { t: "Ketamine: gamma alternating with slow-delta, cycling below 1 Hz. Not gamma sitting on continuous slow waves — the two take turns. Alpha and beta are reduced, not abolished.", r: "akeju16", cfg: { state: "ketamine" }, look: "The top of the DSA flickers in antiphase with the bottom." },
+      { t: "Ketamine: gamma alternating with slow-delta, cycling below 1 Hz. Not gamma superimposed on continuous slow waves — the two take turns. Alpha and beta are reduced, not abolished.", r: "akeju16", cfg: { state: "ketamine" }, look: "The top of the DSA flickers in antiphase with the bottom." },
       { t: "Dexmedetomidine: slow-delta with spindles. The morphology resembles stage 2 NREM sleep. The state is not sleep, and the distinction matters.", r: "ab17", cfg: { state: "dexmedetomidine" }, look: "Put this beside NREM 2 from Awake, and asleep. The morphology is the similarity; the pharmacology is not." },
       { t: "Three of these are GABA-A drugs. Ketamine blocks NMDA, dexmedetomidine is an alpha-2 agonist. The mechanism predicts the picture.", r: "purdon15", cfg: { state: "ketamine" }, look: "Run all four at one gain before moving on." },
     ],
@@ -1027,7 +1027,7 @@ const MODULES = [
   {
     n: "09", id: "combos", title: "Combinations", mins: 7,
     codes: ["EF7", "RW12"],
-    aim: "See what happens to the picture when more than one drug is running, and where the honest limit of that knowledge sits.",
+    aim: "See what happens to the picture when more than one drug is running, and where the honest limit of that knowledge lies.",
     points: [
       { t: "Almost nobody gives one drug. The single-agent signatures are the vocabulary; real anaesthesia is sentences.", r: "esaic", cfg: { combo: "propofol+remifentanil" }, ctrl: "combo", look: "Cycle the four combinations and watch which features survive and which are swamped." },
       { t: "Propofol with remifentanil looks like propofol. The opioid has no signature of its own at clinical dose — it changes the propofol dose needed to produce this picture, not the picture.", r: "purdon15", cfg: { combo: "propofol+remifentanil" }, ctrl: "combo", look: "What the EEG cannot show you is often the thing that changed." },
@@ -1074,7 +1074,7 @@ const MODULES = [
     codes: ["PR2", "PR5", "PR6", "PR14", "QT1"],
     aim: "Know what a processed index summarises, and where the summary fails.",
     points: [
-      { t: "SEF95 is the frequency below which 95 per cent of the power sits. It is defined, computable and shown live here. BIS, PSi and the Narcotrend index are proprietary and cannot be reproduced.", r: "guay", cfg: { state: "propofol" }, look: "That is not a limitation of this app. It is a limitation of the field." },
+      { t: "SEF95 is the frequency below which 95 per cent of the power lies. It is defined, computable and shown live here. BIS, PSi and the Narcotrend index are proprietary and cannot be reproduced.", r: "guay", cfg: { state: "propofol" }, look: "That is not a limitation of this app. It is a limitation of the field." },
       { t: "Run the four agents and watch SEF95. Ketamine pushes it up while the patient is anaesthetised, because gamma is high-frequency power.", r: "akeju16", cfg: { state: "ketamine" }, look: "Propofol near 10 Hz, ketamine near 28. Same clinical state, opposite direction of travel." },
       { t: "Dexmedetomidine and NREM stage 2 give nearly the same SEF95 from entirely different pharmacology. The number cannot separate them.", r: "akeju14d", cfg: { state: "dexmedetomidine" }, look: "Switch between dex and NREM 2 and watch the readout barely move." },
       { t: "Indices are built largely on GABA-A anaesthesia, they lag state transitions, and they are degraded by EMG. Each of those is a specific, predictable failure, not general unreliability.", r: "esaic", cfg: { state: "propofol", art: { emg: 0.5 } }, ctrl: "art", look: "Add EMG and watch SEF95 climb on an unchanged brain." },
@@ -1137,7 +1137,7 @@ const DRILLS = [
   { mod: "08", cfg: { state: "sevoflurane", ch: 0 }, q: "Which agent?", opts: AGENTS, a: "sevoflurane",
     why: "The propofol pattern plus a theta stripe near 5 Hz. Both are GABA-A drugs, so the alpha and slow-delta look similar; the theta is the discriminator (Akeju 2014)." },
   { mod: "08", cfg: { state: "ketamine", ch: 0 }, q: "Which agent?", opts: AGENTS, a: "ketamine",
-    why: "Gamma alternating with slow-delta rather than sitting on it, and almost no alpha (Akeju 2016)." },
+    why: "Gamma alternating with slow-delta rather than superimposed on it, and almost no alpha (Akeju 2016)." },
   { mod: "08", cfg: { state: "dexmedetomidine", ch: 0 }, q: "Which agent?", opts: AGENTS, a: "dexmedetomidine",
     why: "Slow-delta with episodic spindles. Against propofol, the give-away is that the 13 Hz stripe is broken, not solid." },
   { mod: "06", cfg: { state: "awake", ch: 1 }, q: "Which state?", opts: ["awake", "nrem2", "rem", "propofol"], a: "awake",
@@ -1235,7 +1235,7 @@ const DRILLS = [
     why: "See, mean, doing, need. Here the need is nil, and saying so briefly is still worth doing — it tells them the change was yours and that it does not affect their field." },
   { mod: "06", cfg: { state: "rem", ch: 0 }, q: "Frontal channel, REM sleep. Would the raw trace alone let you call this?",
     opts: ["Yes, easily", "No — it resembles wake", "Only with EMG", "Only in children"], a: "No — it resembles wake",
-    why: "On the trace REM sits close to wake. The discriminators are on the spectrogram: higher background power, and alpha in bursts at a lower frequency than wake's persistent rhythm." },
+    why: "On the trace REM is close to wake. The discriminators are on the spectrogram: higher background power, and alpha in bursts at a lower frequency than wake's persistent rhythm." },
   { mod: "13", cfg: { state: "awake", age: 0.25, ch: 1 }, q: "Awake three-month-old, before induction. Which band dominates?",
     opts: ["Alpha", "Delta", "Beta", "Theta"], a: "Delta",
     why: "Delta predominates in the awake record at every paediatric age (Markus 2026). The adult teaching — awake means posterior alpha — does not transfer, and it makes a rise in delta a weaker depth signal in a child than in an adult." },
@@ -1255,7 +1255,7 @@ const DRILLS = [
   { mod: "01", cfg: { state: "propofol", ch: 0, age: 82 }, q: "Standard propofol maintenance dose. What does this record tell you about the dose?",
     opts: ["It is too high", "It is too low", "Nothing — dose is the input, this is the output", "It is correct for the weight"],
     a: "Nothing — dose is the input, this is the output",
-    why: "Two patients on the same dose of the same drug can sit in different states, so the record reports where this brain has arrived, not whether the number on the pump was right. Reading it the other way round is how a normal dose gets defended in front of an abnormal record." },
+    why: "Two patients on the same dose of the same drug can be in different states, so the record reports where this brain has arrived, not whether the number on the pump was right. Reading it the other way round is how a normal dose gets defended in front of an abnormal record." },
   { mod: "01", cfg: { state: "ketamine", ch: 0 }, q: "The blood pressure and heart rate are up. Does this record support \"too light\"?",
     opts: ["Yes", "No — this is an anaesthetised record", "Cannot say from the EEG", "Only if the alpha returns"],
     a: "No — this is an anaesthetised record",
@@ -1267,7 +1267,7 @@ const DRILLS = [
   { mod: "07", cfg: { state: "dexmedetomidine", ch: 0 }, q: "Frontal, around 13 Hz. Is \"frontal alpha\" the right name for it?",
     opts: ["Yes, it is frontal and rhythmic", "No — it is spindle activity, and continuity is the difference", "Yes, if the patient is anaesthetised", "No — it is beta"],
     a: "No — it is spindle activity, and continuity is the difference",
-    why: "Two things separate them and neither is topography. It sits at 13 Hz, above this programme's 8 to 12 Hz alpha band — under one per cent of the power here is inside it. And it arrives in discrete runs with gaps, where propofol's alpha is continuous. Solid stripe or broken stripe is the discriminator (Akeju 2014)." },
+    why: "Two things separate them and neither is topography. It is at 13 Hz, above this programme's 8 to 12 Hz alpha band — under one per cent of the power here is inside it. And it arrives in discrete runs with gaps, where propofol's alpha is continuous. Solid stripe or broken stripe is the discriminator (Akeju 2014)." },
   { mod: "11", cfg: { state: "propofol", ch: 0, bsr: 1 }, q: "No bursts at all, and the trace is small but not a straight line. What is this?",
     opts: ["Burst suppression", "Attenuation", "Electrocerebral inactivity if it measures 2 µV or less", "A disconnected electrode"],
     a: "Electrocerebral inactivity if it measures 2 µV or less",
@@ -1568,8 +1568,8 @@ bootTheme();
 
 // Bump both by hand when the content changes. Without them a colleague who hits
 // a problem cannot say which build, and there is no way to issue a correction.
-const VERSION = "v28";
-const BUILT = "17 September 2026";
+const VERSION = "v29";
+const BUILT = "22 October 2026";
 
 const AUTHOR = "Dr Ganesh Sivasankara";
 const CREDENTIALS = "MD · FRCA · FCARCSI · Consultant Anaesthetist";
@@ -1578,14 +1578,66 @@ const UI = "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-s
 const NUM = "'Newsreader', Georgia, serif";
 const MN = "'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace";
 
+/* ---- three layouts from one file -----------------------------------------
+   Chosen by the width of the window, never by the reader. Under 700 px is the
+   phone column, unchanged. 700 to 999 is one wider column that uses the window,
+   with lists in two columns. From 1000 the instrument and the reading are side
+   by side, up to a 1240 px page. narrow keeps its old meaning, so the phone
+   draws exactly what it drew before. tall only sizes the wide instrument. */
+function bandOf(w) { return w >= 1000 ? "wide" : w >= 700 ? "mid" : "phone"; }
+const SHELL = {
+  phone: { max: 620, padX: 17 },
+  mid: { max: 880, padX: 32 },
+  wide: { max: 1320, padX: 40 },
+};
+// the fixed tab bar: a 1 px rule over 58 px of buttons, over the home indicator
+const TABBAR = "calc(59px + env(safe-area-inset-bottom))";
+
 function useViewport() {
-  const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth || 390 : 390);
+  const read = () => {
+    const w = typeof window !== "undefined" ? window.innerWidth || 390 : 390;
+    const h = typeof window !== "undefined" ? window.innerHeight || 800 : 800;
+    return { w, tall: h >= 900 };
+  };
+  const [vp, setVp] = useState(read);
   useEffect(() => {
-    const on = () => setW(window.innerWidth || 390);
+    // a phone toolbar sliding away changes the height on every scroll; only a
+    // change of width, or of tall, is worth a render
+    const on = () => { const n = read(); setVp((o) => (o.w === n.w && o.tall === n.tall ? o : n)); };
     window.addEventListener("resize", on);
-    return () => window.removeEventListener("resize", on);
+    window.addEventListener("orientationchange", on);
+    return () => { window.removeEventListener("resize", on); window.removeEventListener("orientationchange", on); };
   }, []);
-  return { w, narrow: w < 620 };
+  return { w: vp.w, narrow: vp.w < 620, band: bandOf(vp.w), tall: vp.tall };
+}
+
+// Two panes on a wide screen: the instrument on the left, held in view, and the
+// reading, options and controls on the right scrolling past it.
+const paneGrid = { display: "grid", gridTemplateColumns: "minmax(0, 1.12fr) minmax(0, 1fr)", gap: 44, alignItems: "start" };
+const paneStick = { position: "sticky", top: 20 };
+const listGrid = (cols, gap) => ({ display: "grid", gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, gap });
+// instrument heights: the phone keeps its own, the wide panes get the room
+const scopeH = (band, narrow, tall, phone, other) =>
+  band === "wide" ? (tall ? 180 : 150) : band === "mid" ? 150 : narrow ? phone : other;
+
+/* The way on, pinned to the foot of the screen. A Next that is only reached by
+   scrolling past the whole card is a Next nobody sees. Opaque in the theme's
+   own ground, so text passing under it is hidden rather than overprinted; in
+   the tab shell it stops above the tab bar. Sticky, not fixed, so at the end of
+   the card it settles back into place under the last line instead of covering
+   it. On a phone it runs edge to edge, like the tab bar. */
+function pinStyle(band, inShell, gapTop) {
+  const pad = SHELL[band].padX;
+  const padB = inShell ? "10px" : "calc(10px + env(safe-area-inset-bottom))";
+  const base = { position: "sticky", bottom: inShell ? TABBAR : 0, zIndex: 5, background: P.bg, borderTop: `1px solid ${P.line}` };
+  if (band === "wide") return { ...base, margin: `${gapTop}px 0 0`, padding: `12px 0 ${padB}` };
+  return { ...base, margin: `${gapTop}px -${pad}px 0`, padding: `10px ${pad}px ${padB}` };
+}
+
+// a screen opens at its top: the reader came for the new screen, not for the
+// spot they had scrolled to on the old one
+function toTop() {
+  try { if (typeof window !== "undefined" && window.scrollTo) window.scrollTo(0, 0); } catch { /* no window in the test harness */ }
 }
 
 /* ---- scope --------------------------------------------------------------- */
@@ -1664,6 +1716,13 @@ function Scope({ cfg, trace = 104, spec = 104, onPause }) {
     let tctx = fit(tc), sctx = fit(sc);
     const onResize = () => { tctx = fit(tc); sctx = fit(sc); };
     window.addEventListener("resize", onResize);
+    // a rotation, or a move between layouts, changes the canvas size; watch the
+    // canvas itself so it is redrawn at its new width, not stretched
+    let obs = null;
+    if (typeof ResizeObserver !== "undefined") {
+      obs = new ResizeObserver(() => requestAnimationFrame(onResize));
+      obs.observe(tc); obs.observe(sc);
+    }
     primeScope(cfgRef.current);
     const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const minGap = reduced ? 1000 / 12 : 0;
@@ -1748,12 +1807,12 @@ function Scope({ cfg, trace = 104, spec = 104, onPause }) {
       sctx.drawImage(off, 0, 0, sc.width, sc.height);
     };
     raf = requestAnimationFrame(step);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); };
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); if (obs) obs.disconnect(); };
   }, [NBIN]);
 
   const rc = resolveCfg(cfg);
   const title = rc.custom ? rc.custom.label : ((STATES[cfg.state] || {}).label || "");
-  const chip = { fontFamily: MN, fontSize: 10.5, letterSpacing: "0.06em", color: P.dim };
+  const chip = { fontFamily: MN, fontSize: 12, letterSpacing: "0.06em", color: P.dim };
   const sqiCol = ro.sqi > 75 ? P.ok : ro.sqi > 45 ? P.accent : P.warn;
 
   return (
@@ -1977,7 +2036,7 @@ function ComboControls({ cfg, setCfg }) {
         ))}
       </div>
       <div style={{ background: P.surface2, borderRadius: 12, padding: "12px 14px" }}>
-        <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
+        <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
           color: c.sourced ? P.ok : P.warn, margin: "0 0 5px" }}>
           {c.sourced ? "Sourced" : "Teaching interpolation"}
         </p>
@@ -1998,7 +2057,7 @@ function BandControls({ cfg, setCfg }) {
         ))}
       </div>
       <div style={{ background: P.surface2, borderRadius: 12, padding: "12px 14px" }}>
-        <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: P.accent, margin: "0 0 5px" }}>
+        <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: P.accent, margin: "0 0 5px" }}>
           {b.band} · {b.lo} to {b.hi} Hz · {Math.round(1000 / b.f)} ms a cycle
         </p>
         <p style={{ fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.ink, margin: 0 }}>{b.note}</p>
@@ -2019,7 +2078,7 @@ function ElementControls({ cfg, setCfg }) {
         ))}
       </div>
       <div style={{ background: P.surface2, borderRadius: 12, padding: "12px 14px", marginBottom: 12 }}>
-        <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
+        <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
           color: spec.sourced ? P.ok : P.warn, margin: "0 0 5px" }}>
           {spec.label} · {spec.measures || "duration"} {Math.round(spec.dur * 1000)} ms{spec.sourced ? "" : " · criterion not in a held source"}
         </p>
@@ -2083,58 +2142,94 @@ function scoreDrill(prog, idx, right, mod) {
 
 /* ---- screens ------------------------------------------------------------- */
 
-function Landing({ onStart, onSkip, onPrimer }) {
+function Landing({ onStart, onSkip, onPrimer, band = "phone", tall }) {
   const mins = MODULES.reduce((a, m) => a + m.mins, 0);
+  const wide = band === "wide";
   // These four are the first prose anyone reads, and one of them is the promise
   // that nothing is downloaded. Full strength, like every other paragraph.
   const fact = { fontFamily: UI, fontSize: 14.5, lineHeight: 1.5, color: P.ink, margin: "0 0 9px", paddingLeft: 15, position: "relative" };
   const dot = { position: "absolute", left: 0, top: 8, width: 5, height: 5, borderRadius: 3, background: P.accent };
+  const sh = wide ? (tall ? 180 : 150) : band === "mid" ? 140 : 112;
+  const scope = <Scope cfg={{ state: "propofol", ch: 0, age: 40, bsr: 0, window: 5, scale: 220, map: "jet", art: {} }} trace={sh} spec={sh} />;
+  const eyebrow = (
+    <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "18px 0 8px" }}>
+      <p style={{ flex: 1, minWidth: 0, fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: P.accent, margin: 0 }}>
+        A teaching instrument
+      </p>
+      <ThemeButton />
+    </div>
+  );
+  const title = (
+    <h1 style={{ fontFamily: UI, fontSize: wide ? 36 : 30, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, margin: "0 0 12px" }}>
+      Reading the EEG
+    </h1>
+  );
+  const lede = (
+    <p style={{ fontFamily: UI, fontSize: 17, lineHeight: 1.45, color: P.ink, margin: "0 0 22px" }}>
+      Fourteen modules on the raw EEG and the density spectral array, for anaesthetists learning to read
+      the brain rather than the number. Everything above is live and running now.
+    </p>
+  );
+  const byline = (
+    <div style={wide
+      ? { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }
+      : { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", padding: "0 0 20px", marginBottom: 20, borderBottom: `1px solid ${P.line}` }}>
+      <span style={{ fontFamily: UI, fontSize: 15, fontWeight: 600, color: P.ink }}>{AUTHOR}</span>
+      <span style={{ fontFamily: UI, fontSize: 13.5, color: P.dim }}>{CREDENTIALS}</span>
+    </div>
+  );
+  const before = (
+    <div style={{ background: P.surface, borderRadius: 14, padding: wide ? "20px 22px" : "16px 17px", marginBottom: 18 }}>
+      <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 11px" }}>Before you start</p>
+      <p style={fact}><span style={dot} />{MODULES.length} modules, {mins} minutes, designed for separate sittings. It remembers where you stopped.</p>
+      <p style={fact}><span style={dot} />Every waveform is synthesised from published parameters. It teaches recognition, not acquisition, and it is not a patient.</p>
+      <p style={fact}><span style={dot} />Nothing is downloaded and nothing is sent anywhere. Your progress stays on this device. Links open in a new tab, and only if you tap one.</p>
+      <p style={{ ...fact, margin: 0 }}><span style={dot} />Mapped to the ESAIC 2026 learning outcomes, but it cannot certify you against them.</p>
+    </div>
+  );
+  const start = <Btn kind="primary" size="lg" full onClick={onPrimer}>Start with the basics</Btn>;
+  const know = (
+    <div style={{ marginTop: 10 }}>
+      <Btn kind="ghost" full onClick={onStart}>I know the vocabulary — start at module 01</Btn>
+    </div>
+  );
+  const skip = (
+    <div style={{ marginTop: 10 }}>
+      <Btn kind="ghost" full onClick={onSkip}>I already read raw EEG — skip the foundations</Btn>
+    </div>
+  );
+  const reopen = (
+    <p style={{ fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.dim, margin: "16px 0 0", textAlign: "center" }}>
+      You can reopen this from More.
+    </p>
+  );
+  if (wide) {
+    // the live instrument and the title on one side, the way in on the other
+    return (
+      <div style={{ ...paneGrid, gap: 56, minHeight: "calc(100vh - 128px)", alignContent: "center" }}>
+        <div>{scope}{eyebrow}{title}{lede}{byline}</div>
+        <div>{before}{start}{know}{skip}{reopen}</div>
+      </div>
+    );
+  }
   return (
     <div>
-      <Scope cfg={{ state: "propofol", ch: 0, age: 40, bsr: 0, window: 5, scale: 220, map: "jet", art: {} }} trace={112} spec={112} />
-
-      <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "18px 0 8px" }}>
-        <p style={{ flex: 1, minWidth: 0, fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: P.accent, margin: 0 }}>
-          A teaching instrument
-        </p>
-        <ThemeButton />
-      </div>
-      <h1 style={{ fontFamily: UI, fontSize: 30, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, margin: "0 0 12px" }}>
-        Reading the EEG
-      </h1>
-      <p style={{ fontFamily: UI, fontSize: 17, lineHeight: 1.45, color: P.ink, margin: "0 0 22px" }}>
-        Fourteen modules on the raw EEG and the density spectral array, for anaesthetists learning to read
-        the brain rather than the number. Everything above is live and running now.
-      </p>
-
-      <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", padding: "0 0 20px", marginBottom: 20, borderBottom: `1px solid ${P.line}` }}>
-        <span style={{ fontFamily: UI, fontSize: 15, fontWeight: 600, color: P.ink }}>{AUTHOR}</span>
-        <span style={{ fontFamily: UI, fontSize: 13.5, color: P.dim }}>{CREDENTIALS}</span>
-      </div>
-
-      <div style={{ background: P.surface, borderRadius: 14, padding: "16px 17px", marginBottom: 18 }}>
-        <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 11px" }}>Before you start</p>
-        <p style={fact}><span style={dot} />{MODULES.length} modules, {mins} minutes, designed for separate sittings. It remembers where you stopped.</p>
-        <p style={fact}><span style={dot} />Every waveform is synthesised from published parameters. It teaches recognition, not acquisition, and it is not a patient.</p>
-        <p style={fact}><span style={dot} />Nothing is downloaded and nothing is sent anywhere. Your progress stays on this device. Links open in a new tab, and only if you tap one.</p>
-        <p style={{ ...fact, margin: 0 }}><span style={dot} />Mapped to the ESAIC 2026 learning outcomes, but it cannot certify you against them.</p>
-      </div>
-
-      <Btn kind="primary" size="lg" full onClick={onPrimer}>Start with the basics</Btn>
-      <div style={{ marginTop: 10 }}>
-        <Btn kind="ghost" full onClick={onStart}>I know the vocabulary — start at module 01</Btn>
-      </div>
-      <div style={{ marginTop: 10 }}>
-        <Btn kind="ghost" full onClick={onSkip}>I already read raw EEG — skip the foundations</Btn>
-      </div>
-      <p style={{ fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.dim, margin: "16px 0 0", textAlign: "center" }}>
-        You can reopen this from More.
-      </p>
+      {scope}
+      {eyebrow}
+      {title}
+      {lede}
+      {byline}
+      {before}
+      {start}
+      {know}
+      {skip}
+      {reopen}
     </div>
   );
 }
 
-function Home({ prog, onOpen, onSession }) {
+function Home({ prog, onOpen, onSession, band = "phone" }) {
+  const cols = band === "wide" ? 3 : band === "mid" ? 2 : 1;
   const done = Object.keys(prog.done).length;
   const resume = prog.last && MODULES[prog.last.mi] ? prog.last : null;
   const nextIdx = resume ? resume.mi : MODULES.findIndex((m) => !prog.done[m.id]);
@@ -2160,7 +2255,7 @@ function Home({ prog, onOpen, onSession }) {
       }}>
         <span style={{ fontFamily: NUM, fontSize: 38, lineHeight: 1, color: P.accent, fontWeight: 500 }}>{next.n}</span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, marginBottom: 3 }}>
+          <span style={{ display: "block", fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, marginBottom: 3 }}>
             {resume ? `Resume · point ${resume.pi + 1}` : done ? "Continue" : "Start here"}
           </span>
           <span style={{ display: "block", fontFamily: UI, fontSize: 17, fontWeight: 600, color: P.ink, lineHeight: 1.25 }}>{next.title}</span>
@@ -2169,17 +2264,17 @@ function Home({ prog, onOpen, onSession }) {
       </button>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, gap: 10 }}>
-        <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: 0 }}>All modules</p>
+        <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: 0 }}>All modules</p>
         <button onClick={() => onOpen(5, 0)} style={{
           background: "none", border: "none", cursor: "pointer", padding: "6px 0",
           fontFamily: UI, fontSize: 13, fontWeight: 600, color: P.accent, minHeight: 44,
         }}>Skip the foundations ›</button>
       </div>
-      <p style={{ fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: "0 0 12px" }}>
+      <p style={{ fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: "0 0 12px", maxWidth: cols > 1 ? 760 : undefined }}>
         Modules 01 to 05 are foundations — why to look, the two displays, the bands, morphology and artefacts.
         If you already read raw EEG, start at Awake, and asleep.
       </p>
-      <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+      <div style={cols > 1 ? listGrid(cols, 8) : { display: "flex", flexDirection: "column", gap: 7 }}>
         {MODULES.map((m, i) => {
           const isDone = !!prog.done[m.id];
           return (
@@ -2198,21 +2293,22 @@ function Home({ prog, onOpen, onSession }) {
           );
         })}
       </div>
-      <div style={{ marginTop: 18 }}>
+      <div style={{ marginTop: 18, maxWidth: cols > 1 ? 420 : undefined }}>
         <Btn kind="ghost" full onClick={onSession}>Run as a teaching session</Btn>
       </div>
     </div>
   );
 }
 
-function ModuleScreen({ mi, pi, setPi, cfg, setCfg, onBack, onDone, narrow }) {
+function ModuleScreen({ mi, pi, setPi, cfg, setCfg, onBack, onDone, narrow, band = "phone", tall }) {
   const [notes, setNotes] = useState(false);
   const mod = MODULES[mi];
   const pt = mod.points[Math.min(pi, mod.points.length - 1)];
   const last = pi === mod.points.length - 1;
   const ref = REFS[pt.r];
-  return (
-    <div>
+  const wide = band === "wide";
+  const sh = scopeH(band, narrow, tall, 96, 132);
+  const header = (
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
         <button onClick={onBack} aria-label="Back to all modules" style={{
           background: P.surface2, border: "none", borderRadius: 10, width: 44, height: 44,
@@ -2229,40 +2325,46 @@ function ModuleScreen({ mi, pi, setPi, cfg, setCfg, onBack, onDone, narrow }) {
           color: notes ? P.bg : P.dim, fontFamily: UI, fontSize: 12.5, fontWeight: 700, cursor: "pointer", flexShrink: 0,
         }}>T</button>
       </div>
+  );
 
-      {notes ? (
+  const notesEl = notes ? (
         <div style={{ background: P.surface, borderRadius: 12, padding: "13px 15px", marginBottom: 14, borderLeft: `3px solid ${P.accent}` }}>
-          <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.accent, margin: "0 0 6px" }}>Teaching notes</p>
+          <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.accent, margin: "0 0 6px" }}>Teaching notes</p>
           <p style={{ fontFamily: UI, fontSize: 15, lineHeight: 1.55, color: P.ink, margin: "0 0 8px" }}>{mod.prompt}</p>
-          <p style={{ fontFamily: MN, fontSize: 11.5, color: P.dim, margin: 0 }}>{mod.codes.join(" · ")}</p>
+          <p style={{ fontFamily: MN, fontSize: 12, color: P.dim, margin: 0 }}>{mod.codes.join(" · ")}</p>
         </div>
-      ) : null}
+  ) : null;
 
-      <Scope cfg={cfg} trace={narrow ? 96 : 132} spec={narrow ? 96 : 132} onPause={() => setCfg({ ...cfg, paused: !cfg.paused })} />
+  const scope = <Scope cfg={cfg} trace={sh} spec={sh} onPause={() => setCfg({ ...cfg, paused: !cfg.paused })} />;
 
-      <div style={{ margin: "16px 0 14px" }}><Dots n={mod.points.length} i={pi} /></div>
+  const dots = <div style={{ margin: wide && !notes ? "4px 0 14px" : "16px 0 14px" }}><Dots n={mod.points.length} i={pi} /></div>;
 
-      <p style={{ fontFamily: UI, fontSize: narrow ? 18.5 : 21, lineHeight: 1.42, fontWeight: 500, margin: "0 0 14px", letterSpacing: "-0.01em" }}>{pt.t}</p>
+  const text = <p style={{ fontFamily: UI, fontSize: narrow ? 18.5 : 21, lineHeight: 1.42, fontWeight: 500, margin: "0 0 14px", letterSpacing: "-0.01em" }}>{pt.t}</p>;
 
-      {pt.look ? (
+  const look = pt.look ? (
         <div style={{ background: P.surface, borderRadius: 12, padding: "12px 14px", marginBottom: 16 }}>
-          <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.accent, margin: "0 0 5px" }}>Look for</p>
+          <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.accent, margin: "0 0 5px" }}>Look for</p>
           <p style={{ fontFamily: UI, fontSize: 15, lineHeight: 1.5, color: P.ink, margin: 0 }}>{pt.look}</p>
         </div>
-      ) : null}
+  ) : null;
 
-      {pt.ctrl ? <div style={{ marginBottom: 14 }}><Control which={pt.ctrl} cfg={cfg} setCfg={setCfg} /></div> : null}
+  const ctrl = pt.ctrl ? <div style={{ marginBottom: 14 }}><Control which={pt.ctrl} cfg={cfg} setCfg={setCfg} /></div> : null;
 
+  const chans = (
       <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
         <Pill active={(cfg.ch ?? 0) === 0} onClick={() => setCfg({ ...cfg, ch: 0 })}>Frontal</Pill>
         <Pill active={cfg.ch === 1} onClick={() => setCfg({ ...cfg, ch: 1 })}>Occipital</Pill>
       </div>
+  );
 
+  const refLine = (
       <p style={{ fontFamily: MN, fontSize: 11.5, color: ref && ref.ok ? P.dim : P.warn, margin: "0 0 16px" }}>
         {ref ? ref.s + (ref.ok ? "" : " · flagged") : ""}
       </p>
+  );
 
-      <div style={{ display: "flex", gap: 10 }}>
+  const nav = (
+      <div style={{ ...pinStyle(band, true, 0), display: "flex", gap: 10 }}>
         {pi > 0 ? <Btn kind="quiet" onClick={() => setPi(pi - 1)}>Back</Btn> : null}
         <div style={{ flex: 1 }}>
           <Btn kind="primary" size="lg" full onClick={() => (last ? onDone() : setPi(pi + 1))}>
@@ -2270,12 +2372,36 @@ function ModuleScreen({ mi, pi, setPi, cfg, setCfg, onBack, onDone, narrow }) {
           </Btn>
         </div>
       </div>
+  );
 
+  if (wide) {
+    return (
+      <div>
+        {header}
+        <div style={paneGrid}>
+          <div style={paneStick}>{scope}</div>
+          <div>{notesEl}{dots}{text}{look}{ctrl}{chans}{refLine}{nav}</div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div>
+      {header}
+      {notesEl}
+      {scope}
+      {dots}
+      {text}
+      {look}
+      {ctrl}
+      {chans}
+      {refLine}
+      {nav}
     </div>
   );
 }
 
-function DrillScreen({ prog, persist, cfg, setCfg, narrow, only, onDone }) {
+function DrillScreen({ prog, persist, cfg, setCfg, narrow, only, onDone, band = "phone", tall }) {
   const pool = only ? DRILLS.filter((d) => d.mod === only) : DRILLS;
   const [idx, setIdx] = useState(() => (only ? 0 : (prog.drill && prog.drill.idx) || 0));
   const [picked, setPicked] = useState(null);
@@ -2296,8 +2422,11 @@ function DrillScreen({ prog, persist, cfg, setCfg, narrow, only, onDone }) {
     persist({ ...p, drill: { ...p.drill, idx: only ? p.drill.idx : idx } });
   };
   const pct = prog.drill.seen ? Math.round((prog.drill.right / prog.drill.seen) * 100) : null;
-  return (
-    <div>
+  // a new record is a new screen: open it at the top, with the trace in view
+  useEffect(() => { toTop(); }, [idx]);
+  const wide = band === "wide";
+  const sh = scopeH(band, narrow, tall, 96, 132);
+  const header = (
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
         <h1 style={{ flex: 1, minWidth: 0, fontFamily: UI, fontSize: 21, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>
           {only ? "Module check" : "Drill"}
@@ -2307,8 +2436,11 @@ function DrillScreen({ prog, persist, cfg, setCfg, narrow, only, onDone }) {
         </span>
         <ThemeButton />
       </div>
-      <Scope cfg={cfg} trace={narrow ? 96 : 132} spec={narrow ? 96 : 132} />
-      <p style={{ fontFamily: MN, fontSize: 11, color: P.dim, margin: "14px 0 8px" }}>
+  );
+  const scope = <Scope cfg={cfg} trace={sh} spec={sh} />;
+  const body = (
+    <div>
+      <p style={{ fontFamily: MN, fontSize: 11, color: P.dim, margin: wide ? "2px 0 8px" : "14px 0 8px" }}>
         {only ? `Question ${asked + (picked ? 0 : 1)} · module ${d.mod}` : `Module ${d.mod} · box ${(prog.drill.box || {})[DRILLS.indexOf(d)] || 1} of 3`}
       </p>
       <p style={{ fontFamily: UI, fontSize: narrow ? 18.5 : 21, fontWeight: 600, lineHeight: 1.35, margin: "0 0 16px", letterSpacing: "-0.01em" }}>{d.q}</p>
@@ -2330,34 +2462,58 @@ function DrillScreen({ prog, persist, cfg, setCfg, narrow, only, onDone }) {
       </div>
       {picked ? (
         <div style={{ background: P.surface, borderRadius: 12, padding: "13px 15px", marginBottom: 16 }}>
-          <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase",
+          <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase",
             color: picked === d.a ? P.ok : P.warn, margin: "0 0 6px" }}>
             {picked === d.a ? "Correct" : `Answer: ${d.a}`}
           </p>
           <p style={{ fontFamily: UI, fontSize: 15, lineHeight: 1.55, margin: 0 }}>{d.why}</p>
         </div>
       ) : null}
-      {only && asked >= Math.min(3, pool.length) && picked ? (
-        <Btn kind="primary" size="lg" full onClick={onDone}>Finish check</Btn>
-      ) : (
-        <Btn kind="primary" size="lg" full onClick={() => load(only ? (idx + 1) % pool.length : nextDrill(prog, DRILLS.indexOf(d), DRILLS))}>
-          Next record
-        </Btn>
-      )}
+      <div style={pinStyle(band, true, 0)}>
+        {only && asked >= Math.min(3, pool.length) && picked ? (
+          <Btn kind="primary" size="lg" full onClick={onDone}>Finish check</Btn>
+        ) : (
+          <Btn kind="primary" size="lg" full onClick={() => load(only ? (idx + 1) % pool.length : nextDrill(prog, DRILLS.indexOf(d), DRILLS))}>
+            Next record
+          </Btn>
+        )}
+      </div>
+    </div>
+  );
+  if (wide) {
+    return (
+      <div>
+        {header}
+        <div style={paneGrid}>
+          <div style={paneStick}>{scope}</div>
+          {body}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div>
+      {header}
+      {scope}
+      {body}
     </div>
   );
 }
 
-function BenchScreen({ cfg, setCfg, narrow }) {
-  const section = { fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "22px 0 10px" };
-  return (
-    <div>
+function BenchScreen({ cfg, setCfg, narrow, band = "phone", tall }) {
+  const wide = band === "wide";
+  const section = { fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "22px 0 10px" };
+  const sh = band === "wide" ? (tall ? 190 : 160) : band === "mid" ? 150 : narrow ? 104 : 140;
+  const header = (
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
         <h1 style={{ flex: 1, fontFamily: UI, fontSize: 21, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>Bench</h1>
         <ThemeButton />
       </div>
-      <Scope cfg={cfg} trace={narrow ? 104 : 140} spec={narrow ? 104 : 140} />
-      <p style={section}>State or agent</p>
+  );
+  const scope = <Scope cfg={cfg} trace={sh} spec={sh} />;
+  const controls = (
+    <div>
+      <p style={wide ? { ...section, marginTop: 2 } : section}>State or agent</p>
       <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
         {Object.keys(STATES).filter((k) => k !== "quiet").map((s) => (
           <Pill key={s} active={cfg.state === s && !cfg.combo && cfg.casePos == null}
@@ -2391,21 +2547,41 @@ function BenchScreen({ cfg, setCfg, narrow }) {
       </p>
     </div>
   );
-}
-
-function RefScreen() {
-  const [open, setOpen] = useState(LOOKUP[0].id);
+  if (wide) {
+    return (
+      <div>
+        {header}
+        <div style={paneGrid}>
+          <div style={paneStick}>{scope}</div>
+          {controls}
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
+      {header}
+      {scope}
+      {controls}
+    </div>
+  );
+}
+
+function RefScreen({ band = "phone" }) {
+  const [open, setOpen] = useState(LOOKUP[0].id);
+  const wide = band === "wide";
+  const header = (
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
         <h1 style={{ flex: 1, fontFamily: UI, fontSize: 21, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>Reference</h1>
         <ThemeButton />
       </div>
-      <p style={{ fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: "0 0 16px" }}>
+  );
+  const intro = (
+      <p style={{ fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: "0 0 16px", maxWidth: wide ? 760 : undefined }}>
         Criteria and what a finding is consistent with. It does not tell you what to do — that judgement is yours and your department's.
       </p>
-
-      {LOOKUP.map((card) => {
+  );
+  const cardEl = (card) => {
         const isOpen = open === card.id;
         const ref = REFS[card.r];
         return (
@@ -2436,12 +2612,8 @@ function RefScreen() {
             ) : null}
           </div>
         );
-      })}
-
-      <div style={{ background: P.surface, borderRadius: 14, padding: "15px 16px", marginTop: 14, borderLeft: `3px solid ${P.accent}` }}>
-        <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.accent, margin: "0 0 7px" }}>{REAL_RECORDS.title}</p>
-        <p style={{ fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 12px" }}>{REAL_RECORDS.body}</p>
-        {REAL_RECORDS.links.map((l) => (
+  };
+  const links = REAL_RECORDS.links.map((l) => (
           <div key={l[0]} style={{ marginBottom: 10 }}>
             <span style={{ display: "block", fontFamily: UI, fontSize: 14.5, fontWeight: 600, color: P.ink }}>{l[0]}</span>
             <span style={{ display: "block", fontFamily: UI, fontSize: 13.5, lineHeight: 1.45, color: P.ink, margin: "2px 0" }}>{l[1]}</span>
@@ -2449,14 +2621,44 @@ function RefScreen() {
               ? <Link href={OUTBOUND[l[2]]} style={{ display: "block", fontFamily: MN, fontSize: 12 }}>{l[2]}</Link>
               : <span style={{ display: "block", fontFamily: MN, fontSize: 12, color: P.dim }}>{l[2]}</span>}
           </div>
-        ))}
+  ));
+  const records = (
+      <div style={{ background: P.surface, borderRadius: 14, padding: wide ? "18px 20px" : "15px 16px", marginTop: 14, borderLeft: `3px solid ${P.accent}` }}>
+        <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.accent, margin: "0 0 7px" }}>{REAL_RECORDS.title}</p>
+        <p style={{ fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 12px", maxWidth: wide ? 760 : undefined }}>{REAL_RECORDS.body}</p>
+        {wide ? <div style={listGrid(2, 24)}>{links}</div> : links}
       </div>
+  );
+  if (wide) {
+    // two independent columns, so opening a card only moves the cards under it
+    const half = Math.ceil(LOOKUP.length / 2);
+    return (
+      <div>
+        {header}
+        {intro}
+        <div style={{ ...listGrid(2, 12), alignItems: "start" }}>
+          <div>{LOOKUP.slice(0, half).map(cardEl)}</div>
+          <div>{LOOKUP.slice(half).map(cardEl)}</div>
+        </div>
+        {records}
+      </div>
+    );
+  }
+  return (
+    <div>
+      {header}
+      {intro}
+      {LOOKUP.map(cardEl)}
+      {records}
     </div>
   );
 }
 
-function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
+function MoreScreen({ prog, persist, theme, onTheme, onShowIntro, band = "phone" }) {
   const [panel, setPanel] = useState("framework");
+  const wide = band === "wide";
+  const cols = band === "phone" ? 1 : 2;
+  const prose = wide ? 760 : undefined;   // a readable measure for long paragraphs on a wide page
   const all = FRAMEWORK.flatMap(([, , items]) => items);
   const n2 = all.filter((i) => i[2] === 2).length;
   const n1 = all.filter((i) => i[2] === 1).length;
@@ -2476,7 +2678,7 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
         <h1 style={{ flex: 1, fontFamily: UI, fontSize: 21, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>More</h1>
         <ThemeButton />
       </div>
-      <div style={{ display: "flex", gap: 7, marginBottom: 18 }}>
+      <div style={{ display: "flex", gap: 7, marginBottom: 18, flexWrap: "wrap" }}>
         <Pill active={panel === "framework"} onClick={() => setPanel("framework")}>Framework</Pill>
         <Pill active={panel === "sources"} onClick={() => setPanel("sources")}>Sources</Pill>
         <Pill active={panel === "about"} onClick={() => setPanel("about")}>About</Pill>
@@ -2496,7 +2698,7 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
               </span>
             ))}
           </div>
-          <p style={{ fontFamily: UI, fontSize: 14, lineHeight: 1.55, color: P.ink, margin: "0 0 20px" }}>
+          <p style={{ fontFamily: UI, fontSize: 14, lineHeight: 1.55, color: P.ink, margin: "0 0 20px", maxWidth: prose }}>
             Against the 58 learning outcomes in Berger-Estilita et al., Eur J Anaesthesiol 2026;43:1-12. That paper
             defines outcomes only — no assessment standard, no proficiency bar, no mapping to training year — so this
             programme cannot certify anyone against it. Seven of the twelve advanced outcomes are research and
@@ -2504,17 +2706,17 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
           </p>
           {FRAMEWORK.map(([level, dim, items]) => (
             <div key={level + dim} style={{ marginBottom: 18 }}>
-              <h3 style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: P.dim, margin: "0 0 8px" }}>{level} · {dim}</h3>
-              {items.map(([code, text, status, where]) => (
-                <div key={code} style={{ display: "flex", gap: 10, alignItems: "flex-start", background: P.surface, borderRadius: 10, padding: "10px 12px", marginBottom: 6 }}>
+              <h3 style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: P.dim, margin: "0 0 8px" }}>{level} · {dim}</h3>
+              {(() => { const els = items.map(([code, text, status, where]) => (
+                <div key={code} style={{ display: "flex", gap: 10, alignItems: "flex-start", background: P.surface, borderRadius: 10, padding: "10px 12px", marginBottom: cols > 1 ? 0 : 6 }}>
                   <span aria-label={word(status)} title={word(status)} style={{ width: 9, height: 9, flexShrink: 0, marginTop: 6, ...dotStyle(status) }} />
-                  <span style={{ fontFamily: MN, fontSize: 11.5, color: P.accent, width: 42, flexShrink: 0, paddingTop: 1 }}>{code}</span>
+                  <span style={{ fontFamily: MN, fontSize: 12, color: P.accent, width: 42, flexShrink: 0, paddingTop: 1 }}>{code}</span>
                   <span style={{ flex: 1, minWidth: 0 }}>
                     <span style={{ display: "block", fontFamily: UI, fontSize: 14.5, lineHeight: 1.4 }}>{text}</span>
                     <span style={{ display: "block", fontFamily: MN, fontSize: 11, color: status === 0 ? P.warn : P.dim, marginTop: 3 }}>{where}</span>
                   </span>
                 </div>
-              ))}
+              )); return cols > 1 ? <div style={listGrid(cols, 6)}>{els}</div> : els; })()}
             </div>
           ))}
         </>
@@ -2522,22 +2724,22 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
 
       {panel === "sources" && (
         <>
-          <p style={{ fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, margin: "0 0 16px" }}>
+          <p style={{ fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, margin: "0 0 16px", maxWidth: prose }}>
             Every waveform here is synthesised from published parameters. It is idealised — the only artefacts are the
             ones you switch on, and there is no electrode drift, no inter-patient variation and no pathology. It teaches
             recognition, not acquisition. {REAL_RECORDS.links.map((l) => l[2]).join(" and ")} are where to see real records.
           </p>
-          {Object.entries(REFS).map(([k, r]) => (
-            <div key={k} style={{ background: P.surface, borderRadius: 12, padding: "12px 14px", marginBottom: 8 }}>
-              <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: r.ok ? P.accent : P.warn, margin: "0 0 5px" }}>
+          {(() => { const els = Object.entries(REFS).map(([k, r]) => (
+            <div key={k} style={{ background: P.surface, borderRadius: 12, padding: "12px 14px", marginBottom: cols > 1 ? 0 : 8 }}>
+              <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: r.ok ? P.accent : P.warn, margin: "0 0 5px" }}>
                 {r.s}{r.ok ? "" : " · flagged"}
               </p>
               <p style={{ fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.ink, margin: 0 }}>{withDoi(r.full, k)}</p>
-              {r.doi ? <p style={{ fontFamily: MN, fontSize: 11.5, color: P.dim, margin: "4px 0 0" }}>doi <Link href={"https://doi.org/" + r.doi}>{r.doi}</Link></p> : null}
+              {r.doi ? <p style={{ fontFamily: MN, fontSize: 12, color: P.dim, margin: "4px 0 0" }}>doi <Link href={"https://doi.org/" + r.doi}>{r.doi}</Link></p> : null}
               {r.note ? <p style={{ fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.warn, margin: "5px 0 0" }}>{r.note}</p> : null}
             </div>
-          ))}
-          <p style={{ fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.ink, margin: "12px 0 0" }}>
+          )); return cols > 1 ? <div style={listGrid(cols, 8)}>{els}</div> : els; })()}
+          <p style={{ fontFamily: UI, fontSize: 13, lineHeight: 1.5, color: P.ink, margin: cols > 1 ? "16px 0 0" : "12px 0 0", maxWidth: prose }}>
             Declared conflicts. Berger-Estilita 2026: six authors report Medtronic travel support, four Medtronic speaker
             fees, two Masimo grants, one BIS and Narcotrend honoraria, one Medtronic consulting for EEG teaching;
             Medtronic owns BIS through Covidien. Purdon 2015 discloses a Masimo licensing agreement with MGH. Guay 2025:
@@ -2547,8 +2749,10 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
         </>
       )}
 
-      {panel === "about" && (
-        <div>
+      {panel === "about" && (() => {
+        // on a wide page the programme on the left, the author and the way back on the right
+        const about = (
+          <div>
           <h2 style={{ fontFamily: UI, fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", margin: "0 0 10px" }}>Reading the EEG</h2>
           <p style={{ fontFamily: UI, fontSize: 15.5, lineHeight: 1.55, color: P.ink, margin: "0 0 14px" }}>
             {MODULES.length} modules, {MODULES.reduce((a, m) => a + m.mins, 0)} minutes, on the raw EEG and the density
@@ -2564,7 +2768,7 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
             records is at the foot of the Reference tab.
           </p>
           <div style={{ padding: "14px 0 16px", marginBottom: 16, borderTop: `1px solid ${P.line}`, borderBottom: `1px solid ${P.line}` }}>
-            <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 9px" }}>Appearance</p>
+            <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 9px" }}>Appearance</p>
             <div style={{ display: "flex", gap: 7, flexWrap: "wrap", marginBottom: 9 }}>
               {Object.entries(THEMES).map(([k, t]) => (
                 <Pill key={k} active={theme === k} onClick={() => onTheme(k)}>{t.label}</Pill>
@@ -2575,15 +2779,19 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
             </p>
           </div>
 
+          </div>
+        );
+        const who = (
+          <div>
           <div style={{ padding: "0 0 16px", marginBottom: 16, borderBottom: `1px solid ${P.line}` }}>
-            <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 6px" }}>Written by</p>
+            <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 6px" }}>Written by</p>
             <p style={{ fontFamily: UI, fontSize: 16, fontWeight: 600, color: P.ink, margin: "0 0 2px" }}>{AUTHOR}</p>
             <p style={{ fontFamily: UI, fontSize: 14, color: P.dim, margin: 0 }}>{CREDENTIALS}</p>
             <p style={{ fontFamily: MN, fontSize: 11.5, color: P.dim, margin: "9px 0 0" }}>{VERSION} · built {BUILT}</p>
           </div>
 
           <div style={{ padding: "0 0 16px", marginBottom: 16, borderBottom: `1px solid ${P.line}` }}>
-            <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 10px" }}>{SAME_AUTHOR.title}</p>
+            <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 10px" }}>{SAME_AUTHOR.title}</p>
             {SAME_AUTHOR.items.map((l) => (
               <div key={l[0]} style={{ marginBottom: 12 }}>
                 <span style={{ display: "block", fontFamily: UI, fontSize: 15.5, fontWeight: 600, color: P.ink }}>{l[0]}</span>
@@ -2595,20 +2803,24 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
             ))}
           </div>
           <Btn kind="ghost" full onClick={onShowIntro}>Show the opening screen again</Btn>
-        </div>
-      )}
+          </div>
+        );
+        return wide
+          ? <div style={{ ...paneGrid, gap: 56 }}>{about}{who}</div>
+          : <div>{about.props.children}{who.props.children}</div>;
+      })()}
 
       {panel === "reading" && (
         <>
-          <p style={{ fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 16px" }}>{FURTHER.note}</p>
-          {FURTHER.items.map((it) => (
-            <div key={it.doi} style={{ background: P.surface, borderRadius: 12, padding: "13px 15px", marginBottom: 8 }}>
+          <p style={{ fontFamily: UI, fontSize: 14.5, lineHeight: 1.55, color: P.ink, margin: "0 0 16px", maxWidth: prose }}>{FURTHER.note}</p>
+          {(() => { const els = FURTHER.items.map((it) => (
+            <div key={it.doi} style={{ background: P.surface, borderRadius: 12, padding: "13px 15px", marginBottom: cols > 1 ? 0 : 8 }}>
               <p style={{ fontFamily: UI, fontSize: 15, fontWeight: 600, lineHeight: 1.35, margin: "0 0 4px" }}>{it.t}</p>
               <p style={{ fontFamily: UI, fontSize: 13, color: P.dim, margin: "0 0 6px" }}>{it.a} · {it.j}</p>
               <p style={{ fontFamily: UI, fontSize: 14, lineHeight: 1.5, color: P.ink, margin: "0 0 6px" }}>{it.w}</p>
-              <p style={{ fontFamily: MN, fontSize: 11.5, color: P.dim, margin: 0 }}>doi <Link href={"https://doi.org/" + it.doi}>{it.doi}</Link></p>
+              <p style={{ fontFamily: MN, fontSize: 12, color: P.dim, margin: 0 }}>doi <Link href={"https://doi.org/" + it.doi}>{it.doi}</Link></p>
             </div>
-          ))}
+          )); return cols > 1 ? <div style={listGrid(cols, 8)}>{els}</div> : els; })()}
         </>
       )}
 
@@ -2618,8 +2830,8 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
             {Object.keys(prog.done).length} of {MODULES.length} modules complete.
             {prog.drill.seen ? ` ${prog.drill.right} of ${prog.drill.seen} drill records correct.` : " No drill attempts yet."}
           </p>
-          <p style={{ fontFamily: UI, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 10px" }}>Accuracy by module</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 20 }}>
+          <p style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.dim, margin: "0 0 10px" }}>Accuracy by module</p>
+          <div style={cols > 1 ? { ...listGrid(cols, 6), marginBottom: 20 } : { display: "flex", flexDirection: "column", gap: 6, marginBottom: 20 }}>
             {MODULES.map((m) => {
               const a = (prog.drill.byMod || {})[m.n];
               const pct = a && a.seen ? Math.round((a.right / a.seen) * 100) : null;
@@ -2637,7 +2849,9 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro }) {
               );
             })}
           </div>
-          <Btn kind="ghost" full onClick={() => persist(EMPTY_PROG)}>Reset all progress</Btn>
+          <div style={{ maxWidth: cols > 1 ? 420 : undefined }}>
+            <Btn kind="ghost" full onClick={() => persist(EMPTY_PROG)}>Reset all progress</Btn>
+          </div>
         </div>
       )}
     </div>
@@ -2960,13 +3174,13 @@ const PRIMER_CARDS = [
     "h": "How it is made"
    },
    {
-    "p": "Chop the record into short epochs of a few seconds. For each slice, work out how much of the signal sits at each frequency. Draw that slice as a single vertical stripe, with colour standing for how much. Then set the stripes side by side as time passes, so the picture crawls across the screen."
+    "p": "Chop the record into short epochs of a few seconds. For each slice, work out how much of the signal is at each frequency. Draw that slice as a single vertical stripe, with colour standing for how much. Then set the stripes side by side as time passes, so the picture crawls across the screen."
    },
    {
     "h": "The two axes"
    },
    {
-    "p": "Time runs across. Frequency runs up, slow at the bottom and fast at the top. Colour is how much power sits at that frequency at that moment. Once you can read those three things you can read any spectrogram on any monitor."
+    "p": "Time runs across. Frequency runs up, slow at the bottom and fast at the top. Colour is how much power is at that frequency at that moment. Once you can read those three things you can read any spectrogram on any monitor."
    },
    {
     "h": "What you give up"
@@ -3270,7 +3484,7 @@ const PRIMER_CARDS = [
     "h": "Why it gets missed"
    },
    {
-    "p": "It sits between two bands that are louder than it in almost every record, so on a raw trace it is buried. This is a band you read off the second picture rather than off the line."
+    "p": "It lies between two bands that are louder than it in almost every record, so on a raw trace it is buried. This is a band you read off the second picture rather than off the line."
    }
   ],
   "src": [
@@ -3405,7 +3619,7 @@ const PRIMER_CARDS = [
     "h": "Where you see it"
    },
    {
-    "p": "On a forehead channel a large part of what sits up here is frontalis muscle rather than cortex. Ketamine is the anaesthetic that puts real gamma there."
+    "p": "On a forehead channel a large part of what lies up here is frontalis muscle rather than cortex. Ketamine is the anaesthetic that puts real gamma there."
    },
    {
     "h": "What that means in practice"
@@ -3623,7 +3837,7 @@ const PRIMER_CARDS = [
     "h": "Why it is small"
    },
    {
-    "p": "At 34 microvolts it is a third the size of a K-complex. It sits in the sigma range just above alpha, and by the ladder you have already walked, faster means smaller."
+    "p": "At 34 microvolts it is a third the size of a K-complex. It lies in the sigma range just above alpha, and by the ladder you have already walked, faster means smaller."
    },
    {
     "h": "Polarity does almost nothing here"
@@ -3730,7 +3944,7 @@ const PRIMER_CARDS = [
     "h": "The rhythm changed address, it did not appear"
    },
    {
-    "p": "An awake patient with their eyes shut already has alpha. It sits at the back of the head. Under propofol it turns up at the front instead. That relocation is the finding, and it reverses on the way out."
+    "p": "An awake patient with their eyes shut already has alpha. It is found at the back of the head. Under propofol it turns up at the front instead. That relocation is the finding, and it reverses on the way out."
    },
    {
     "h": "What it is good for"
@@ -3781,12 +3995,12 @@ const PRIMER_CARDS = [
  {
   "id": "sensor-position",
   "topic": "The instrument",
-  "title": "Where the sensor sits",
+  "title": "Where the sensor is placed",
   "tldr": "The strip on the forehead records the front of the head, and the alpha you were taught lives at the back.",
   "lede": "A rain gauge in the front garden measures the front garden. If the shower fell on the back garden, the gauge reads dry and it has not lied.",
   "body": [
    {
-    "p": "Every monitoring strip sits on the forehead; the one in the source papers records from four spots near Fp1, Fp2, F7 and F8. Awake with the eyes closed, the alpha rhythm is at the back of the head. Tap between the two awake settings above: on the same record the forehead carries about one seventh of the alpha power that the back of the head does, so a frontal monitor on an awake patient shows very little alpha, and the reason is where the sensor sits."
+    "p": "Every monitoring strip is placed on the forehead; the one in the source papers records from four spots near Fp1, Fp2, F7 and F8. Awake with the eyes closed, the alpha rhythm is at the back of the head. Tap between the two awake settings above: on the same record the forehead carries about one seventh of the alpha power that the back of the head does, so a frontal monitor on an awake patient shows very little alpha, and the reason is where the sensor is placed."
    },
    {
     "h": "Under propofol the address changes"
@@ -3999,13 +4213,13 @@ const PRIMER_CARDS = [
     "h": "Why it moves the way it does"
    },
    {
-    "p": "Slow, large waves carry most of the power. So as a patient goes deeper and the record fills with slow activity, the line drops. As they lighten and faster activity comes back, it climbs. As orientation rather than as targets: around 20 Hz at emergence, around 17 when light, around 10 when deep. The record above sits at about 10.3."
+    "p": "Slow, large waves carry most of the power. So as a patient goes deeper and the record fills with slow activity, the line drops. As they lighten and faster activity comes back, it climbs. As orientation rather than as targets: around 20 Hz at emergence, around 17 when light, around 10 when deep. The record above is at about 10.3."
    },
    {
     "h": "The catch"
    },
    {
-    "p": "It is a summary, and summarising costs you the picture. On this exact record 95% of the power sits below 10.3 Hz, but 50% of it sits below 1.0 Hz. Same signal, two lines nine hertz apart. Which of them you are shown is a choice somebody else made, and so is the frequency band it was measured over, which here is 0.5 to 45 Hz."
+    "p": "It is a summary, and summarising costs you the picture. On this exact record 95% of the power lies below 10.3 Hz, but 50% of it lies below 1.0 Hz. Same signal, two lines nine hertz apart. Which of them you are shown is a choice somebody else made, and so is the frequency band it was measured over, which here is 0.5 to 45 Hz."
    },
    {
     "h": "It is not the number on your monitor"
@@ -4145,7 +4359,7 @@ const PRIMER_CARDS = [
   "lede": "Fingers drumming on the microphone stand. It arrives with the music, and it stops the moment the fingers do.",
   "body": [
    {
-    "p": "Frontalis muscle activity writes fast, spiky voltage on top of whatever the brain is doing, loading the top of the display while the record underneath is unchanged. It rides hardest on frontal electrodes, which is exactly where the monitoring strip sits."
+    "p": "Frontalis muscle activity writes fast, spiky voltage on top of whatever the brain is doing, loading the top of the display while the record underneath is unchanged. It rides hardest on frontal electrodes, which is exactly where the monitoring strip is placed."
    }
   ],
   "src": [
@@ -4240,7 +4454,7 @@ const PRIMER_CARDS = [
   "lede": "The feedback whine from a PA system - it holds a single pitch no instrument holds.",
   "body": [
    {
-    "p": "Mains interference arrives at exactly one frequency, 50 or 60 Hz depending on the country. Brain rhythms occupy bands several hertz wide, so a perfectly thin, perfectly steady oscillation at one frequency has a machine behind it. On this display the line sits above the 40 Hz top of the spectral array, so you find mains on the trace and in the quality figure."
+    "p": "Mains interference arrives at exactly one frequency, 50 or 60 Hz depending on the country. Brain rhythms occupy bands several hertz wide, so a perfectly thin, perfectly steady oscillation at one frequency has a machine behind it. On this display the line falls above the 40 Hz top of the spectral array, so you find mains on the trace and in the quality figure."
    }
   ],
   "src": [
@@ -4493,6 +4707,11 @@ function PrimerScope({ spec, height, small }) {
     let ctx = fit();
     const onResize = () => { ctx = fit(); };
     window.addEventListener("resize", onResize);
+    let obs = null;
+    if (typeof ResizeObserver !== "undefined") {
+      obs = new ResizeObserver(() => requestAnimationFrame(onResize));
+      obs.observe(cv);
+    }
     const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const minGap = reduced ? 1000 / 12 : 1000 / 30;
 
@@ -4613,7 +4832,7 @@ function PrimerScope({ spec, height, small }) {
       if (Math.abs(pp - ro.pp) > 0.5) setRo({ pp, sef: ro.sef });
     };
     raf = requestAnimationFrame(step);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); };
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); if (obs) obs.disconnect(); };
   }, []);
 
   const label = spec.kind === "spec"
@@ -4630,7 +4849,7 @@ function PrimerScope({ spec, height, small }) {
 /* ---- readout -------------------------------------------------------------- */
 
 function PrimerReadout({ spec }) {
-  const chip = { fontFamily: MN, fontSize: 11, color: P.dim, letterSpacing: "0.02em" };
+  const chip = { fontFamily: MN, fontSize: 12, color: P.dim, letterSpacing: "0.02em" };
   if (spec.kind === "spec") {
     return (
       <div style={{ display: "flex", gap: 14, flexWrap: "wrap", margin: "7px 0 0" }}>
@@ -4648,33 +4867,24 @@ function PrimerReadout({ spec }) {
 
 /* ---- index ---------------------------------------------------------------- */
 
-function PrimerIndex({ opts, onOpen, onExit }) {
-  return (
-    <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
-        <p style={{ flex: 1, minWidth: 0, fontFamily: MN, fontSize: 11, letterSpacing: "0.13em",
-          textTransform: "uppercase", color: P.dim, margin: 0 }}>The basics</p>
-        <ThemeButton />
-      </div>
-      <h1 style={{ fontFamily: UI, fontSize: 28, fontWeight: 700, letterSpacing: "-0.03em",
-        lineHeight: 1.12, margin: "0 0 10px" }}>Before the modules</h1>
-      <p style={{ fontFamily: UI, fontSize: 15.5, lineHeight: 1.5, color: P.ink, margin: "0 0 18px" }}>
-        {PRIMER_CARDS.length} terms, read in order. Nothing here uses a word that has not already
-        been explained. Every panel is live and is generated on this device.
-      </p>
-
-      {PRIMER_CARDS.map((c, i) => (
+function PrimerIndex({ opts, onOpen, onExit, band = "phone" }) {
+  // the index as a grid of cards once there is room: two across in the wider
+  // column, three on a wide page, each with a larger live thumbnail
+  const cols = band === "wide" ? 3 : band === "mid" ? 2 : 1;
+  const grid = cols > 1;
+  const tw = grid ? 120 : 96, th = grid ? 66 : 52;
+  const cards = PRIMER_CARDS.map((c, i) => (
         <button key={c.id} onClick={() => onOpen(i)} style={{
           width: "100%", textAlign: "left", cursor: "pointer", border: `1px solid ${P.line}`,
-          background: P.surface, borderRadius: 13, padding: "11px 13px", marginBottom: 9,
+          background: P.surface, borderRadius: 13, padding: grid ? "12px 14px" : "11px 13px", marginBottom: grid ? 0 : 9,
           minHeight: 74, display: "block",
         }}>
           <span style={{ display: "flex", alignItems: "center", gap: 13 }}>
             <span style={{ fontFamily: MN, fontSize: 11, color: P.dim, flex: "0 0 20px" }}>
               {i < 9 ? "0" + (i + 1) : String(i + 1)}
             </span>
-            <span style={{ flex: "0 0 96px", height: 52 }}>
-              <PrimerScope spec={pResolve(c, (c.ctrl && c.ctrl.def) || 0)} height={52} small />
+            <span style={{ flex: `0 0 ${tw}px`, height: th }}>
+              <PrimerScope spec={pResolve(c, (c.ctrl && c.ctrl.def) || 0)} height={th} small />
             </span>
             <span style={{ flex: 1, minWidth: 0, display: "block" }}>
               <span style={{ display: "block", fontFamily: UI, fontSize: 16, fontWeight: 600,
@@ -4684,9 +4894,24 @@ function PrimerIndex({ opts, onOpen, onExit }) {
             </span>
           </span>
         </button>
-      ))}
+  ));
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+        <p style={{ flex: 1, minWidth: 0, fontFamily: MN, fontSize: 12, letterSpacing: "0.13em",
+          textTransform: "uppercase", color: P.dim, margin: 0 }}>The basics</p>
+        <ThemeButton />
+      </div>
+      <h1 style={{ fontFamily: UI, fontSize: band === "wide" ? 34 : 28, fontWeight: 700, letterSpacing: "-0.03em",
+        lineHeight: 1.12, margin: "0 0 10px" }}>Before the modules</h1>
+      <p style={{ fontFamily: UI, fontSize: 15.5, lineHeight: 1.5, color: P.ink, margin: "0 0 18px", maxWidth: grid ? 760 : undefined }}>
+        {PRIMER_CARDS.length} terms, read in order. Nothing here uses a word that has not already
+        been explained. Every panel is live and is generated on this device.
+      </p>
 
-      <div style={{ marginTop: 16 }}>
+      {grid ? <div style={listGrid(cols, 10)}>{cards}</div> : cards}
+
+      <div style={{ marginTop: 16, maxWidth: grid ? 420 : undefined }}>
         <Btn kind="ghost" full onClick={onExit}>Done — go to the modules</Btn>
       </div>
     </div>
@@ -4695,15 +4920,16 @@ function PrimerIndex({ opts, onOpen, onExit }) {
 
 /* ---- one term ------------------------------------------------------------- */
 
-function PrimerEntry({ idx, optIdx, setOpt, onGo, onBack, narrow }) {
+function PrimerEntry({ idx, optIdx, setOpt, onGo, onBack, narrow, band = "phone", tall }) {
   const c = PRIMER_CARDS[idx];
   const spec = pResolve(c, optIdx);
   const prev = PRIMER_CARDS[idx - 1], next = PRIMER_CARDS[idx + 1];
-  const eyebrow = { fontFamily: MN, fontSize: 11, letterSpacing: "0.13em",
+  const eyebrow = { fontFamily: MN, fontSize: 12, letterSpacing: "0.13em",
     textTransform: "uppercase", color: P.dim, margin: 0 };
-  return (
-    <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+  const wide = band === "wide";
+  const figH = wide ? (tall ? 340 : 280) : band === "mid" ? 220 : narrow ? 152 : 180;
+  const top = (
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: wide ? 10 : 6 }}>
         <button onClick={onBack} aria-label="Back to all terms" style={{
           background: "none", border: "none", cursor: "pointer", minHeight: 44, padding: 0,
           fontFamily: UI, fontSize: 14, fontWeight: 500, color: P.accent,
@@ -4711,11 +4937,10 @@ function PrimerEntry({ idx, optIdx, setOpt, onGo, onBack, narrow }) {
         <span style={{ ...eyebrow, marginLeft: "auto" }}>{idx + 1} of {PRIMER_CARDS.length}</span>
         <ThemeButton />
       </div>
-
-      <PrimerScope spec={spec} height={narrow ? 152 : 180} />
-      <PrimerReadout spec={spec} />
-
-      {c.ctrl ? (
+  );
+  const figure = <PrimerScope spec={spec} height={figH} />;
+  const readout = <PrimerReadout spec={spec} />;
+  const ctrl = c.ctrl ? (
         <div>
           <p style={{ ...eyebrow, margin: "14px 0 0" }}>{c.ctrl.k}</p>
           <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
@@ -4730,26 +4955,28 @@ function PrimerEntry({ idx, optIdx, setOpt, onGo, onBack, narrow }) {
             ))}
           </div>
         </div>
-      ) : null}
-
-      <p style={{ ...eyebrow, margin: "22px 0 0" }}>{c.topic}</p>
-      <h1 style={{ fontFamily: UI, fontSize: narrow ? 27 : 30, fontWeight: 700,
+  ) : null;
+  const topic = <p style={{ ...eyebrow, margin: wide ? "0" : "22px 0 0" }}>{c.topic}</p>;
+  const title = (
+      <h1 style={{ fontFamily: UI, fontSize: wide ? 34 : narrow ? 27 : 30, fontWeight: 700,
         letterSpacing: "-0.03em", lineHeight: 1.12, margin: "6px 0 0" }}>{c.title}</h1>
-
+  );
+  const oneLine = (
       <div style={{ borderLeft: `3px solid ${P.accent}`, padding: "1px 0 1px 13px", margin: "13px 0 0" }}>
         <span style={{ ...eyebrow, color: P.accent, display: "block" }}>In one line</span>
         <p style={{ fontFamily: UI, fontSize: 16.5, lineHeight: 1.45, color: P.ink, margin: "4px 0 0" }}>{c.tldr}</p>
       </div>
-
+  );
+  const lede = (
       <p style={{ fontFamily: UI, fontSize: 17.5, lineHeight: 1.55, fontStyle: "italic",
         color: P.ink, margin: "22px 0 15px" }}>{c.lede}</p>
-
-      {c.body.map((x, i) => (x.h
+  );
+  const body = c.body.map((x, i) => (x.h
         ? <p key={i} style={{ fontFamily: UI, fontSize: 15, fontWeight: 700, lineHeight: 1.4,
             color: P.ink, margin: "24px 0 9px" }}>{x.h}</p>
         : <p key={i} style={{ fontFamily: UI, fontSize: 16, lineHeight: 1.6,
-            color: P.ink, margin: "0 0 15px" }}>{x.p}</p>))}
-
+            color: P.ink, margin: "0 0 15px" }}>{x.p}</p>));
+  const sources = (
       <div style={{ background: P.surface, border: `1px solid ${P.line}`, borderRadius: 11,
         padding: "13px 14px", margin: "22px 0 0" }}>
         <span style={{ ...eyebrow, display: "block", marginBottom: 7 }}>Sources</span>
@@ -4758,8 +4985,10 @@ function PrimerEntry({ idx, optIdx, setOpt, onGo, onBack, narrow }) {
             margin: i === c.src.length - 1 ? 0 : "0 0 7px" }}>{withDoi(s.replace(/<\/?em>/g, ""), i)}</p>
         ))}
       </div>
-
-      <div style={{ display: "flex", gap: 10, margin: "26px 0 0" }}>
+  );
+  // Back and Next, pinned to the foot of the screen so the way on is always in view
+  const nav = (
+      <div style={{ ...pinStyle(band, false, 26), display: "flex", gap: 10 }}>
         <button onClick={() => onGo(prev ? idx - 1 : -1)} style={{
           flex: 1, minHeight: 60, display: "block", padding: "10px 14px", cursor: "pointer",
           border: `1px solid ${P.line}`, borderRadius: 12, background: P.surface, textAlign: "left",
@@ -4777,6 +5006,32 @@ function PrimerEntry({ idx, optIdx, setOpt, onGo, onBack, narrow }) {
             color: P.ink, marginTop: 3 }}>{next ? next.title : "All terms"}</span>
         </button>
       </div>
+  );
+  if (wide) {
+    // the instrument and its settings on the left, held in view; the reading on the right
+    return (
+      <div>
+        {top}
+        <div style={paneGrid}>
+          <div style={paneStick}>{figure}{readout}{ctrl}</div>
+          <div>{topic}{title}{oneLine}{lede}{body}{sources}{nav}</div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div>
+      {top}
+      {figure}
+      {readout}
+      {ctrl}
+      {topic}
+      {title}
+      {oneLine}
+      {lede}
+      {body}
+      {sources}
+      {nav}
     </div>
   );
 }
@@ -4785,7 +5040,7 @@ function PrimerEntry({ idx, optIdx, setOpt, onGo, onBack, narrow }) {
    Sits where Session sits: a top-level branch that bypasses the tab shell,
    because the primer is an on-ramp rather than a destination.                 */
 
-function Primer({ prog, persist, onExit, narrow }) {
+function Primer({ prog, persist, onExit, narrow, band = "phone", tall }) {
   const start = (prog.primer && prog.primer.at) || 0;
   const [idx, setIdx] = useState(start > 0 ? start : -1);   // -1 = the index screen
   const [opts, setOpts] = useState({});
@@ -4793,6 +5048,9 @@ function Primer({ prog, persist, onExit, narrow }) {
   useEffect(() => {
     persist({ ...prog, primer: { seen: true, at: idx < 0 ? 0 : idx } });
   }, [idx]); // eslint-disable-line
+  // every move between the index and a term, either way, opens at the top
+  useEffect(() => { toTop(); }, [idx]);
+  const shell = SHELL[band] || SHELL.phone;
 
   const card = idx >= 0 ? PRIMER_CARDS[idx] : null;
   const optIdx = card ? (opts[card.id] !== undefined ? opts[card.id] : (card.ctrl && card.ctrl.def) || 0) : 0;
@@ -4807,10 +5065,10 @@ function Primer({ prog, persist, onExit, narrow }) {
         position: "absolute", width: 1, height: 1, margin: -1, padding: 0,
         overflow: "hidden", whiteSpace: "nowrap", border: 0, clip: "rect(0 0 0 0)",
       }}>{announce}</p>
-      <main style={{ maxWidth: 620, margin: "0 auto", padding: "20px 17px 44px" }}>
+      <main style={{ maxWidth: shell.max, margin: "0 auto", padding: `20px ${shell.padX}px 44px` }}>
         {idx < 0
-          ? <PrimerIndex opts={opts} onOpen={setIdx} onExit={onExit} />
-          : <PrimerEntry idx={idx} optIdx={optIdx} narrow={narrow}
+          ? <PrimerIndex opts={opts} onOpen={setIdx} onExit={onExit} band={band} />
+          : <PrimerEntry idx={idx} optIdx={optIdx} narrow={narrow} band={band} tall={tall}
               setOpt={(i) => { if (card) setOpts({ ...opts, [card.id]: i }); }}
               onGo={setIdx} onBack={() => setIdx(-1)} />}
       </main>
@@ -4831,7 +5089,8 @@ export function App() {
   const [cfg, setCfg] = useState({ state: "awake", ch: 0, age: 40, bsr: 0, window: 5, scale: 200, map: "jet", art: {} });
   const [prog, setProg] = useState(EMPTY_PROG);
   const [theme, setTheme] = useState(P.name);
-  const { narrow } = useViewport();
+  const { narrow, band, tall } = useViewport();
+  const shell = SHELL[band];
 
   useEffect(() => {
     loadProgress().then((p) => {
@@ -4862,6 +5121,11 @@ export function App() {
       setCfg((c) => ({ ...c, bsr: 0, age: 40, ch: 0, art: {}, casePos: null, combo: null, transient: null, band: null, polarity: 'neg-up', window: 5, scale: 200, ...pt.cfg }));
     }
   }, [mi, pi, view, inSession]); // eslint-disable-line
+  // Every change of screen opens the new screen at its top: landing to primer,
+  // a tab, a module, the next point, the way back. Without this the page kept
+  // the old scroll position, and the primer opened part way down its index.
+  const screenKey = [inPrimer, inSession, tab, view, mi, pi, showIntro].join("|");
+  useEffect(() => { toTop(); }, [screenKey]);
 
   // This used to only write seenIntro: false. showIntro is state, set once at
   // mount, so writing the flag deferred the whole effect to the next launch and
@@ -4882,7 +5146,7 @@ export function App() {
   };
 
   if (inPrimer) {
-    return <Primer prog={prog} persist={persist} narrow={narrow} onExit={() => setInPrimer(false)} />;
+    return <Primer prog={prog} persist={persist} narrow={narrow} band={band} tall={tall} onExit={() => setInPrimer(false)} />;
   }
 
   if (inSession) {
@@ -4908,29 +5172,29 @@ export function App() {
         position: "absolute", width: 1, height: 1, margin: -1, padding: 0,
         overflow: "hidden", whiteSpace: "nowrap", border: 0, clip: "rect(0 0 0 0)",
       }}>{announce}</p>
-      <main style={{ maxWidth: 620, margin: "0 auto", padding: "20px 17px 108px" }}>
+      <main style={{ maxWidth: shell.max, margin: "0 auto", padding: `20px ${shell.padX}px 108px` }}>
         {tab === "learn" && view === "home" && showIntro && (
-          <Landing
+          <Landing band={band} tall={tall}
             onStart={() => { persist({ ...prog, seenIntro: true }); setShowIntro(false); openModule(0, 0); }}
             onSkip={() => { persist({ ...prog, seenIntro: true }); setShowIntro(false); openModule(5, 0); }}
             onPrimer={() => { persist({ ...prog, seenIntro: true }); setShowIntro(false); setInPrimer(true); }}
           />
         )}
         {tab === "learn" && view === "home" && !showIntro && (
-          <Home prog={prog} onOpen={openModule} onSession={() => { setMi(0); setPi(0); setInSession(true); }} />
+          <Home prog={prog} band={band} onOpen={openModule} onSession={() => { setMi(0); setPi(0); setInSession(true); }} />
         )}
         {tab === "learn" && view === "check" && (
-          <DrillScreen prog={prog} persist={persist} cfg={cfg} setCfg={setCfg} narrow={narrow}
+          <DrillScreen prog={prog} persist={persist} cfg={cfg} setCfg={setCfg} narrow={narrow} band={band} tall={tall}
             only={MODULES[mi].n} onDone={finishCheck} />
         )}
         {tab === "learn" && view === "module" && (
-          <ModuleScreen mi={mi} pi={pi} setPi={setPi} cfg={cfg} setCfg={setCfg} narrow={narrow}
+          <ModuleScreen mi={mi} pi={pi} setPi={setPi} cfg={cfg} setCfg={setCfg} narrow={narrow} band={band} tall={tall}
             onBack={() => setView("home")} onDone={finishModule} />
         )}
-        {tab === "drill" && <DrillScreen prog={prog} persist={persist} cfg={cfg} setCfg={setCfg} narrow={narrow} />}
-        {tab === "bench" && <BenchScreen cfg={cfg} setCfg={setCfg} narrow={narrow} />}
-        {tab === "ref" && <RefScreen />}
-        {tab === "more" && <MoreScreen prog={prog} persist={persist} theme={theme} onTheme={chooseTheme} onShowIntro={showOpening} />}
+        {tab === "drill" && <DrillScreen prog={prog} persist={persist} cfg={cfg} setCfg={setCfg} narrow={narrow} band={band} tall={tall} />}
+        {tab === "bench" && <BenchScreen cfg={cfg} setCfg={setCfg} narrow={narrow} band={band} tall={tall} />}
+        {tab === "ref" && <RefScreen band={band} />}
+        {tab === "more" && <MoreScreen prog={prog} persist={persist} theme={theme} onTheme={chooseTheme} onShowIntro={showOpening} band={band} />}
       </main>
 
       <nav style={{
@@ -4938,7 +5202,7 @@ export function App() {
         background: tint(P.bg, 0.94), borderTop: `1px solid ${P.line}`,
         backdropFilter: "blur(12px)", paddingBottom: "env(safe-area-inset-bottom)",
       }}>
-        <div style={{ maxWidth: 620, margin: "0 auto", display: "flex" }}>
+        <div style={{ maxWidth: shell.max, margin: "0 auto", display: "flex", padding: band === "phone" ? undefined : `0 ${shell.padX}px` }}>
           {TABS.map(([k, l]) => (
             <button key={k} onClick={() => { setTab(k); if (k === "learn") setView("home"); }}
               aria-label={l} style={{
@@ -4965,7 +5229,7 @@ class Boundary extends React.Component {
     return React.createElement("div",
       { style: { minHeight: "100vh", background: P.bg, color: P.ink, fontFamily: UI, padding: "44px 20px" } },
       React.createElement("div", { style: { maxWidth: 560, margin: "0 auto" } },
-        React.createElement("p", { style: { fontSize: 11.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.warn, margin: 0 } }, "Something broke"),
+        React.createElement("p", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: P.warn, margin: 0 } }, "Something broke"),
         React.createElement("h1", { style: { fontSize: 24, fontWeight: 700, margin: "6px 0 12px", letterSpacing: "-0.02em" } }, "The programme stopped."),
         React.createElement("p", { style: { fontSize: 15.5, lineHeight: 1.55, color: P.ink, margin: "0 0 16px" } },
           "Reload to carry on. Progress is saved per module, so you will come back where you were. If it happens again, the message below is what to report."),

@@ -250,9 +250,18 @@
       current = fi; hookIdx = 0;
       var out = vnode.type(vnode.props);
       current = prevCur; hookIdx = prevIdx;
+      var prevKid = fi.kids[0];
       var ci2 = out === null || out === undefined || out === false
         ? null
-        : reconcile(out, parentDom, fi.kids[0], doc);
+        : reconcile(out, parentDom, prevKid, doc);
+      // When a component's output changes to a different component or tag
+      // (Control going from the case scrubber to the artefact sliders), the
+      // old node was unmounted but never taken out of the page, so the old
+      // control stayed on screen under the new one. Take it out.
+      if (prevKid && !ci2) unmount(prevKid);
+      if (prevKid && prevKid.dom && (!ci2 || ci2.dom !== prevKid.dom) && prevKid.dom.parentNode) {
+        prevKid.dom.parentNode.removeChild(prevKid.dom);
+      }
       fi.kids = ci2 ? [ci2] : [];
       fi.dom = ci2 ? ci2.dom : null;
       return fi;
