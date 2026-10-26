@@ -1620,7 +1620,7 @@ const DRILLS = [
         why: "Frontal alpha emerges around four to five months in sedated infants. A two-month-old shows slow-delta without it, and that is normal (Guay 2025)." },
     { mod: "13", cfg: { state: "propofol", ch: 0, age: 88 }, q: "Same dose, same drug. Why is the amplitude low?", opts: ["Too light", "The patient is elderly", "Burst suppression", "EMG"], a: "The patient is elderly",
         why: "Slow-delta amplitude falls with age — about 30 to 40 µV in a younger adult against 10 to 20 µV at 89. Low amplitude here is age, not depth." },
-    { mod: "12", cfg: { state: "ketamine", ch: 0 }, q: "SEF95 reads near 28 Hz. Is the patient light?", opts: ["Yes, lighten is wrong", "No — the agent explains it", "Cannot say", "Yes, deepen"], a: "No — the agent explains it",
+    { mod: "12", cfg: { state: "ketamine", ch: 0 }, q: "SEF95 reads near 28 Hz. Is the patient light?", opts: ["Yes, the patient is light", "No — the agent explains it", "Cannot say", "Yes, deepen"], a: "No — the agent explains it",
         why: "Ketamine's gamma is high-frequency power, so it drags SEF95 and processed indices upward in an anaesthetised patient." },
     { mod: "05", cfg: { state: "awake", ch: 0 }, q: "Frontal channel. What is most of the high-frequency power?", opts: ["Cortical gamma", "Muscle", "Mains", "Alpha harmonic"], a: "Muscle",
         why: "Frontal awake high-frequency activity is substantially frontalis EMG, which is why relaxants move an index without moving the brain." },
@@ -2017,7 +2017,7 @@ function bootTheme() {
 bootTheme();
 // Bump both by hand when the content changes. Without them a colleague who hits
 // a problem cannot say which build, and there is no way to issue a correction.
-const VERSION = "v29";
+const VERSION = "v30";
 const BUILT = "22 October 2026";
 const AUTHOR = "Dr Ganesh Sivasankara";
 const CREDENTIALS = "MD · FRCA · FCARCSI · Consultant Anaesthetist";
@@ -3638,9 +3638,6 @@ const PRIMER_CARDS = [
         "lede": "One step up, and still large enough that it carries most of what you can see on an anaesthetised trace.",
         "body": [
             {
-                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
-            },
-            {
                 "h": "Where you see it"
             },
             {
@@ -3684,9 +3681,6 @@ const PRIMER_CARDS = [
         "tldr": "4 to 8 Hz. The middle of the ladder, and easy to overlook.",
         "lede": "Halfway up. The amplitude has fallen by more than half since the slow band, and it keeps falling.",
         "body": [
-            {
-                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
-            },
             {
                 "h": "Where you see it"
             },
@@ -3732,9 +3726,6 @@ const PRIMER_CARDS = [
         "lede": "The most useful band in anaesthesia, and the only one whose location on the head is part of what it means.",
         "body": [
             {
-                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
-            },
-            {
                 "h": "Where you see it"
             },
             {
@@ -3779,9 +3770,6 @@ const PRIMER_CARDS = [
         "lede": "Near the top of the ladder. At this scale you are looking at texture rather than at waves you could measure by eye.",
         "body": [
             {
-                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
-            },
-            {
                 "h": "Where you see it"
             },
             {
@@ -3825,9 +3813,6 @@ const PRIMER_CARDS = [
         "tldr": "Above 25 Hz. The band most likely not to be the brain.",
         "lede": "The top of the ladder, and the one to be most suspicious of.",
         "body": [
-            {
-                "p": "The trace above is that band on its own, one oscillation with nothing else in the record. On Compare, all six cards use the same window and the same vertical scale, so the size you see is directly comparable between them — but the fast bands pack so many cycles into the window that they read as texture rather than as waves. Close up shortens the window until you can see the individual cycles. Same signal, and the gridline spacing changes with it. The size rises and falls as you watch, which is deliberate: a single frequency held at a fixed amplitude looks like a test tone rather than like a rhythm. That is not the intermittent pattern from Continuity, which drops to almost nothing and comes back."
-            },
             {
                 "h": "Where you see it"
             },
@@ -4466,7 +4451,7 @@ const PRIMER_CARDS = [
                 "h": "When the index reads adequate during suppression"
             },
             {
-                "p": "Tap the second setting. Suppression has crept into the record, and the ratio in the corner of the trace has risen to around 15 to 20 per cent. In 62 patients aged around 81 having valve replacement, titrated to a BIS of 40 to 60, 29 had a run of at least ten seconds in which the index stayed inside that range while the suppression ratio sat at 5 per cent or more. The median run was 52 seconds and the longest 202. The index read adequate while the record underneath it was suppressed."
+                "p": "Tap the second setting. Suppression has crept into the record, and the ratio in the corner of the trace has risen to around 15 to 20 per cent. In 62 patients aged around 81 having valve replacement, titrated to a BIS of 40 to 60, 29 had a run of at least ten seconds in which the index stayed inside that range while the suppression ratio stayed at 5 per cent or more. The median run was 52 seconds and the longest 202. The index read adequate while the record underneath it was suppressed."
             },
             {
                 "h": "So read the record"
