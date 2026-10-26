@@ -1,5 +1,7 @@
 # Reading the EEG — handoff
 
+**Current build: v30, 26 October 2026.** The source is `app2.tsx` (31-card primer). `app2.jsx` is the older v29 source with the 23-card primer and pre-sweep wording, kept for reference only: do not rebuild from it. v30 changes: the paragraph repeated on five primer band cards cut (it stays on Slow), one drill option reworded (module 12, SEF95 near 28 Hz), one word in The index primer card. Everything below describes v14 and is kept as history.
+
 **Current build: v14.** 14 modules, 104 teaching points, 46 drills, 131 minutes.
 173 gates across seven suites, all green.
 
