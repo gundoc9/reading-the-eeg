@@ -2788,6 +2788,9 @@ function MoreScreen({ prog, persist, theme, onTheme, onShowIntro, band = "phone"
             <p style={{ fontFamily: UI, fontSize: 16, fontWeight: 600, color: P.ink, margin: "0 0 2px" }}>{AUTHOR}</p>
             <p style={{ fontFamily: UI, fontSize: 14, color: P.dim, margin: 0 }}>{CREDENTIALS}</p>
             <p style={{ fontFamily: MN, fontSize: 11.5, color: P.dim, margin: "9px 0 0" }}>{VERSION} · built {BUILT}</p>
+            <p style={{ fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.dim, margin: "12px 0 0" }}>Built with Claude (Anthropic). It wrote the code and the first draft of the text; every figure and source was checked by me.</p>
+            <p style={{ fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.dim, margin: "6px 0 0" }}>© 2026 Ganesh Sivasankara. Shared under CC BY-NC-ND 4.0: you may share it unchanged, with credit, but not for commercial use.</p>
+            <p style={{ fontFamily: UI, fontSize: 13.5, lineHeight: 1.5, color: P.dim, margin: "6px 0 0" }}>Spotted an error? Message me on LinkedIn.</p>
           </div>
 
           <div style={{ padding: "0 0 16px", marginBottom: 16, borderBottom: `1px solid ${P.line}` }}>
